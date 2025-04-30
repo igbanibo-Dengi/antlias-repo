@@ -1,5 +1,5 @@
 {
-  "id": "34b4cda1-0842-4bee-a19b-d70a9f30dbba",
+  "id": "b5fc5ca7-575e-43f2-9b93-bb240a4714bb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1322,12 +1322,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "slug": {
-          "name": "slug",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "logo_url": {
           "name": "logo_url",
           "type": "text",
@@ -1342,7 +1336,7 @@
         },
         "franchise_number": {
           "name": "franchise_number",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -1367,34 +1361,10 @@
           "default": "now()"
         }
       },
-      "indexes": {
-        "tenants_slug_idx": {
-          "name": "tenants_slug_idx",
-          "columns": [
-            {
-              "expression": "slug",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "tenants_slug_unique": {
-          "name": "tenants_slug_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "public.transactions": {
       "name": "transactions",

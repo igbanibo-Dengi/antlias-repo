@@ -36,7 +36,6 @@ export const tenants = pgTable(
     {
         id: uuid("id").primaryKey().defaultRandom(),
         name: text("name").notNull(),
-        slug: text("slug").notNull().unique(),
         logoUrl: text("logo_url"),
         contactPhone: text("contact_phone"),
         franchiseNumber: text("franchise_number"),
@@ -44,9 +43,6 @@ export const tenants = pgTable(
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
         updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
     },
-    (table) => ({
-        slugIdx: index("tenants_slug_idx").on(table.slug),
-    })
 );
 
 export const users = pgTable(

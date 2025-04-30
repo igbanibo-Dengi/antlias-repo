@@ -75,7 +75,7 @@ export async function signUpAction(values: unknown): Promise<Res> {
                     url: `${productionUrl}/api/workflows/onboarding`,
                     body: {
                         email,
-                        name,
+                        companyName,
                         token: verificationToken.token,
                         productionUrl
                     },
@@ -107,7 +107,6 @@ export async function signUpAction(values: unknown): Promise<Res> {
                 contactPhone: companyPhone,
                 franchiseNumber: franchiseNumber,
                 numberOfStations: numberOfStations,
-                slug: companyName.toLowerCase().replace(/\s+/g, '-'),
             })
             .returning()
             .then((res) => res[0]);
@@ -145,6 +144,24 @@ export async function signUpAction(values: unknown): Promise<Res> {
             .then((res) => res[0]);
 
         if (!defaultBranch) throw new Error("Failed to create branch");
+
+
+        // Step 4: Create verification token
+        const verificationToken = await createVerificationTokenAction(
+            newUser.email,
+        );
+
+        //  5tep 5:  Send welcome Email
+        await workflowClient.trigger({
+            url: `${productionUrl}/api/workflows/onboarding`,
+            body: {
+                email,
+                companyName,
+                token: verificationToken.token,
+                productionUrl,
+            },
+        });
+
 
         return { success: true };
     } catch (err) {

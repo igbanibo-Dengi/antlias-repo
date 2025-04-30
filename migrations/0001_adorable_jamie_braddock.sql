@@ -1,1 +1,0 @@
-ALTER TABLE "tenants" ALTER COLUMN "franchise_number" SET DATA TYPE text;

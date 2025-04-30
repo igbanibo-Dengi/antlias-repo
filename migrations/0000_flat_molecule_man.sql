@@ -150,14 +150,12 @@ CREATE TABLE IF NOT EXISTS "tanks" (
 CREATE TABLE IF NOT EXISTS "tenants" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
-	"slug" text NOT NULL,
 	"logo_url" text,
 	"contact_phone" text,
-	"franchise_number" integer,
+	"franchise_number" text,
 	"number_of_stations" integer,
 	"created_at" timestamp with time zone DEFAULT now(),
-	"updated_at" timestamp with time zone DEFAULT now(),
-	CONSTRAINT "tenants_slug_unique" UNIQUE("slug")
+	"updated_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "transactions" (
@@ -355,7 +353,6 @@ CREATE INDEX IF NOT EXISTS "selling_prices_fuel_idx" ON "selling_prices" USING b
 CREATE INDEX IF NOT EXISTS "tanks_branch_idx" ON "tanks" USING btree ("branch_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "tanks_fuel_status_idx" ON "tanks" USING btree ("fuel_type","status");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "tanks_number_unique" ON "tanks" USING btree ("tenant_id","branch_id","tank_number");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "tenants_slug_idx" ON "tenants" USING btree ("slug");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "transactions_branch_date_idx" ON "transactions" USING btree ("branch_id","created_at");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "transactions_employee_idx" ON "transactions" USING btree ("employee_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "transactions_fuel_idx" ON "transactions" USING btree ("fuel_type");--> statement-breakpoint
