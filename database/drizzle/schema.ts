@@ -84,6 +84,7 @@ export const branches = pgTable(
         managerId: text("manager_id")
             .references(() => users.id),
         contactPhone: text("contact_phone"),
+        isHeadQuarters: boolean("is_head_quarters").default(false),
         isActive: boolean("is_active").default(true),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
     },

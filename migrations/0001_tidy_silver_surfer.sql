@@ -1,0 +1,1 @@
+ALTER TABLE "branches" ADD COLUMN "is_head_quarters" boolean DEFAULT false;

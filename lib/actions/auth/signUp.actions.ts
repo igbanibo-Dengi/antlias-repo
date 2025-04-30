@@ -72,7 +72,7 @@ export async function signUpAction(values: unknown): Promise<Res> {
                 const verificationToken = await createVerificationTokenAction(existingUser.email)
                 // console.log('token', verificationToken.token, 'productionUrl', productionUrl);
 
-                // send vefification email
+                // send vefification email if user already exists
 
                 const verifyEmailData = {
                     companyName,
@@ -82,7 +82,7 @@ export async function signUpAction(values: unknown): Promise<Res> {
 
                 await sendEmail({
                     email,
-                    subject: "Welcome to Igbanibo's Platform 🎉",
+                    subject: "Welcome to Antlias 🎉",
                     message: getWelcomeEmailHTML(verifyEmailData),
                 });
 
@@ -144,6 +144,7 @@ export async function signUpAction(values: unknown): Promise<Res> {
                 state: branchState,
                 managerId: newUser.id,
                 isActive: true,
+                isHeadQuarters: true,
             })
             .returning()
             .then((res) => res[0]);
@@ -166,7 +167,7 @@ export async function signUpAction(values: unknown): Promise<Res> {
 
         await sendEmail({
             email,
-            subject: "Welcome to Igbanibo's Platform 🎉",
+            subject: "Welcome to Antlias 🎉",
             message: getWelcomeEmailHTML(verifyEmailData),
         });
 
