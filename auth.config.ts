@@ -22,19 +22,13 @@ export const authConfig = {
             verificationTokensTable: schema.verificationTokens,
         }),
         async createUser(data: AdapterUser) {
-            const { id, ...insertData } = data;
+            const { id, tenantId, ...insertData } = data;
             const hasDefaultId = getTableColumns(schema.users)["id"]["hasDefault"];
 
-            const adminEmails = await findAdminUserEmailAddresses();
-            const isAdmin = adminEmails.includes(insertData.email.toLowerCase());
-
-            if (isAdmin) {
-                insertData.role = isAdmin ? USER_ROLES.ADMIN : USER_ROLES.USER;
-            }
 
             return db
                 .insert(schema.users)
-                .values(hasDefaultId ? insertData : { ...insertData, id })
+                .values(hasDefaultId ? { ...insertData, tenantId } : { ...insertData, id, tenantId })
                 .returning()
                 .then((res) => res[0]);
         }
