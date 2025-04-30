@@ -9,7 +9,7 @@ type UserState = "non-active" | "active";
 
 type InitialData = {
   email: string;
-  name: string;
+  companyName: string;
   token: string;
   productionUrl: string;
 };
@@ -42,11 +42,11 @@ const getUserState = async (email: string): Promise<UserState> => {
 };
 
 export const { POST } = serve<InitialData>(async (context) => {
-  const { email, name, token, productionUrl } = context.requestPayload;
+  const { email, companyName, token, productionUrl } = context.requestPayload;
 
 
   const verifyEmailData = {
-    name,
+    companyName,
     token,
     productionUrl,
   }
@@ -59,7 +59,7 @@ export const { POST } = serve<InitialData>(async (context) => {
 
     await sendEmail({
       email,
-      subject: "Welcome to Igbanibo's Platform 🎉",
+      subject: "Welcome to Antlias 🎉",
       message: getWelcomeEmailHTML(verifyEmailData)
     });
   });
