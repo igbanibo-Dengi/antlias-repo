@@ -9,8 +9,10 @@ import { eq } from 'drizzle-orm'
 import { createVerificationTokenAction } from '../admin/create-verification-token-action'
 import { headers } from 'next/headers'
 import ratelimit from '@/lib/ratelimit'
-import { workflowClient } from '@/lib/workflow'
+import { sendEmail, workflowClient } from '@/lib/workflow'
 import config from '@/lib/config'
+import { sendForgotPasswordEmail } from '@/lib/emails/forgotPassword'
+import { getWelcomeEmailHTML } from '@/lib/emails/WelcomeEmail'
 
 type Res =
     | { success: true, redirectTo?: string }
@@ -71,14 +73,17 @@ export async function signUpAction(values: unknown): Promise<Res> {
                 // console.log('token', verificationToken.token, 'productionUrl', productionUrl);
 
                 // send vefification email
-                await workflowClient.trigger({
-                    url: `${productionUrl}/api/workflows/onboarding`,
-                    body: {
-                        email,
-                        companyName,
-                        token: verificationToken.token,
-                        productionUrl
-                    },
+
+                const verifyEmailData = {
+                    companyName,
+                    token: verificationToken.token,
+                    productionUrl,
+                }
+
+                await sendEmail({
+                    email,
+                    subject: "Welcome to Igbanibo's Platform 🎉",
+                    message: getWelcomeEmailHTML(verifyEmailData),
                 });
 
 
@@ -152,14 +157,17 @@ export async function signUpAction(values: unknown): Promise<Res> {
         );
 
         //  5tep 5:  Send welcome Email
-        await workflowClient.trigger({
-            url: `${productionUrl}/api/workflows/onboarding`,
-            body: {
-                email,
-                companyName,
-                token: verificationToken.token,
-                productionUrl,
-            },
+
+        const verifyEmailData = {
+            companyName,
+            token: verificationToken.token,
+            productionUrl,
+        }
+
+        await sendEmail({
+            email,
+            subject: "Welcome to Igbanibo's Platform 🎉",
+            message: getWelcomeEmailHTML(verifyEmailData),
         });
 
 

@@ -17,6 +17,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signUpAction } from "@/lib/actions/auth/signUp.actions";
+import { toast } from "sonner";
 
 export const SignupForm = () => {
   const [success, setSuccess] = useState(false);
@@ -65,6 +66,9 @@ export const SignupForm = () => {
       return;
     }
 
+    console.log(res);
+
+
     if (res.success) {
       router.push("/auth/sign-up/success");
     } else {
@@ -82,6 +86,9 @@ export const SignupForm = () => {
           const error = res.error || "Internal Server Error";
           setError("confirmPassword", { message: error });
       }
+
+      toast(typeof res.error === "string" ? res.error : "Internal Server Error")
+
     }
   };
 
