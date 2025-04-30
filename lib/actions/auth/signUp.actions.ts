@@ -4,7 +4,7 @@ import * as v from 'valibot'
 import { SignupSchema } from "@/validators/signup-validator"
 import bcrypt from 'bcrypt'
 import db from '@/database/drizzle'
-import { lower, users } from '@/database/drizzle/schema'
+import { branches, lower, tenants, users } from '@/database/drizzle/schema'
 import { eq } from 'drizzle-orm'
 import { USER_ROLES } from '@/lib/constants'
 import { findAdminUserEmailAddresses } from '@/resources/admin-user-email-address-queries'
@@ -42,7 +42,22 @@ export async function signUpAction(values: unknown): Promise<Res> {
         return { success: false, error: flatErors, statusCode: 400 }
 
     }
-    const { name, email, password } = parsedValues.output;
+    const {
+        // step 1
+        email,
+        password,
+        //  step 2
+        companyName,
+        companyPhone,
+        franchiseNumber,
+        numberOfStations,
+        // step 3
+        branchName,
+        branchAddress,
+        branchCity,
+        branchState,
+
+    } = parsedValues.output;
 
     // Case-insensitive email handling in PostgreSQL with Drizzle
     try {
@@ -55,7 +70,7 @@ export async function signUpAction(values: unknown): Promise<Res> {
         if (existingUser?.id) {
             if (!existingUser.emailVerified) {
                 const verificationToken = await createVerificationTokenAction(existingUser.email)
-                console.log('token', verificationToken.token, 'productionUrl', productionUrl);
+                // console.log('token', verificationToken.token, 'productionUrl', productionUrl);
 
                 // send vefification email
                 await workflowClient.trigger({
@@ -83,52 +98,59 @@ export async function signUpAction(values: unknown): Promise<Res> {
         return { success: false, error: "Internal Server Error", statusCode: 500 };
     }
 
-
+    // start transaction
     try {
-        // Hash password with bcrypt
         const hashedPassword = await bcrypt.hash(password, 10);
+        // Step 1: Create tenant
+        const newTenant = await db
+            .insert(tenants)
+            .values({
+                name: companyName,
+                contactPhone: companyPhone,
+                franchiseNumber: franchiseNumber,
+                numberOfStations: numberOfStations,
+                slug: companyName.toLowerCase().replace(/\s+/g, '-'),
+            })
+            .returning()
+            .then((res) => res[0]);
 
-        const adminEmails = await findAdminUserEmailAddresses();
-        const isAdmin = adminEmails.includes(email.toLowerCase());
+        if (!newTenant) throw new Error("Failed to create tenant");
 
-
-        //Save user to database
+        // Step 2: Create user
         const newUser = await db
             .insert(users)
             .values({
-                name,
                 email,
                 password: hashedPassword,
-                role: isAdmin ? USER_ROLES.ADMIN : USER_ROLES.USER
+                role: "tenant",
+                isActive: true,
+                tenantId: newTenant.id,
             })
-            .returning({ id: users.id, email: users.email, emailVerified: users.emailVerified })
-            .then((res) => res[0])
+            .returning()
+            .then((res) => res[0]);
 
-        // console.log({ inseredId: newUser.id });
+        if (!newUser) throw new Error("Failed to create user");
 
-        const verificationToken = await createVerificationTokenAction(newUser.email)
-        console.log('token', verificationToken.token, 'productionUrl', productionUrl);
+        // Step 3: Create branch
+        const defaultBranch = await db
+            .insert(branches)
+            .values({
+                tenantId: newTenant.id,
+                name: branchName,
+                address: branchAddress,
+                city: branchCity,
+                state: branchState,
+                managerId: newUser.id,
+                isActive: true,
+            })
+            .returning()
+            .then((res) => res[0]);
 
+        if (!defaultBranch) throw new Error("Failed to create branch");
 
-
-        await workflowClient.trigger({
-            url: `${productionUrl}/api/workflows/onboarding`,
-            body: {
-                email,
-                name,
-                token: verificationToken.token,
-                productionUrl
-            },
-        });
-
-
-        // send verification email
-
-
-        return { success: true }
-
+        return { success: true };
     } catch (err) {
-        console.error(err)
-        return { success: false, error: "Internal Server Error", statusCode: 500 }
+        console.error(err);
+        return { success: false, error: "Internal Server Error", statusCode: 500 };
     }
 }

@@ -1,14 +1,18 @@
-import { defineConfig } from "drizzle-kit"
-import type { Config } from "drizzle-kit"
-import config from "./lib/config";
+// filepath: c:\Users\dengi\Desktop\Projects\e-coomerce-store\drizzle.config.ts
+import { config as loadEnv } from "dotenv";
+import { defineConfig } from "drizzle-kit";
+import type { Config } from "drizzle-kit";
 
-const DATABASE_URL = config.env.databaseUrl ?? "";
+// Explicitly load .env.local
+loadEnv({ path: ".env.local" });
+
+const DATABASE_URL = process.env.DATABASE_URL ?? "";
 
 const drizzleConfig = {
     schema: "database/drizzle/schema.ts",
     out: "./migrations",
     dialect: "postgresql",
     dbCredentials: { url: DATABASE_URL },
-} satisfies Config
+} satisfies Config;
 
-export default defineConfig(drizzleConfig)
+export default defineConfig(drizzleConfig);

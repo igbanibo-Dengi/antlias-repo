@@ -13,9 +13,9 @@ const SignUpPage = () => {
 
           <div className="w-full space-y-4">
             <SignupForm />
-            <Suspense fallback={<OAuthButtonsSkeleton signup />} >
+            {/* <Suspense fallback={<OAuthButtonsSkeleton signup />} >
               <OAuthButtons signup />
-            </Suspense>
+            </Suspense> */}
             <Button
               variant={"link"}
               className=" text-muted-foreground"
