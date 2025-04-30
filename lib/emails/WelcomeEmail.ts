@@ -21,7 +21,7 @@ export const getWelcomeEmailHTML = ({ companyName, token, productionUrl }: Welco
           <p>Please use the link below to verify your email address and continue on AnTlias. This link will expire in ${VERIFICATION_TOKEN_EXP_MIN} minutes.</p>
     
           <p style="text-align: center;">
-            <a href="${productionUrl}/auth/sign-up/verify-email?token=${token}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #3b82f6; text-decoration: none; border-radius: 5px;">Verify Email</a>
+            <a href="${productionUrl}auth/sign-up/verify-email?token=${token}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #3b82f6; text-decoration: none; border-radius: 5px;">Verify Email</a>
           </p>
           
           <br />
