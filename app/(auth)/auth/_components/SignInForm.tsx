@@ -16,12 +16,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SigninInput, SigninSchema } from "@/validators/signin-validator";
 import { signInAction } from "@/lib/actions/auth/signIn.actions";
-import { ForgotPasswordForm } from "./forgot-password-form";
 import { toast } from "sonner";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
 
 export const SignInForm = () => {
-  const [success, setSuccess] = useState(false);
   const router = useRouter();
 
   const form = useForm<SigninInput>({
@@ -108,7 +107,11 @@ export const SignInForm = () => {
           disabled={formState.isSubmitting}
           className="w-full"
         >
-          Sign In
+          {formState.isSubmitting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            "Sign in"
+          )}
         </Button>
       </form>
     </Form>

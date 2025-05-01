@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { signUpAction } from "@/lib/actions/auth/signUp.actions";
 import Image from "next/image";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export const SignupForm = () => {
   const [success, setSuccess] = useState(false);
@@ -425,7 +426,11 @@ export const SignupForm = () => {
                       disabled={formState.isSubmitting}
                       className="w-full"
                     >
-                      Sign Up
+                      {formState.isSubmitting ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        "Submit"
+                      )}
                     </Button>
                   )}
                 </div>
