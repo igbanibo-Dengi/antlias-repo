@@ -10,25 +10,25 @@ import { revalidatePath } from "next/cache";
 
 // ADMIN PANEL ACTION
 export async function changeUserRoleAction(
-    email: (typeof users.$inferSelect)["email"],
-    newRole: (typeof users.$inferSelect)["role"],
+  email: (typeof users.$inferSelect)["email"],
+  newRole: (typeof users.$inferSelect)["role"],
 ) {
-    const session = await auth();
+  const session = await auth();
 
-    if (session?.user?.role !== USER_ROLES.ADMIN) {
-        throw new Error("Unauthorized");
-    }
+  if (session?.user?.role !== USER_ROLES.ADMIN) {
+    throw new Error("Unauthorized");
+  }
 
-    const existingUser = await findUserByEmail(email);
+  const existingUser = await findUserByEmail(email);
 
-    if (!existingUser?.id) return;
-    if (existingUser.role === USER_ROLES.ADMIN) return;
-    if (existingUser.role === newRole) return;
+  if (!existingUser?.id) return;
+  if (existingUser.role === USER_ROLES.ADMIN) return;
+  if (existingUser.role === newRole) return;
 
-    await db
-        .update(users)
-        .set({ role: newRole })
-        .where(eq(users.id, existingUser.id));
+  await db
+    .update(users)
+    .set({ role: newRole })
+    .where(eq(users.id, existingUser.id));
 
-    revalidatePath("/dashboard");
+  revalidatePath("/dashboard");
 }

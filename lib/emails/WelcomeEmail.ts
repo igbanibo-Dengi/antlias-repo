@@ -6,7 +6,11 @@ interface WelcomeEmailProps {
   productionUrl: string;
 }
 
-export const getWelcomeEmailHTML = ({ companyName, token, productionUrl }: WelcomeEmailProps) => {
+export const getWelcomeEmailHTML = ({
+  companyName,
+  token,
+  productionUrl,
+}: WelcomeEmailProps) => {
   return `
      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
           <h2 style="text-align: center; color: #3b82f6;">Authy</h2>
@@ -33,4 +37,4 @@ export const getWelcomeEmailHTML = ({ companyName, token, productionUrl }: Welco
           <p style="text-align: center; font-size: 12px; color: #aaa;">This email was sent to info@antlias.com. If you'd rather not receive this kind of email, Don’t want any more emails from Antlias? Unsubscribe.</p>
         </div>
   `;
-}; 
+};

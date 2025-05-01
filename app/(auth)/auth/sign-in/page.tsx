@@ -5,9 +5,9 @@ import Image from "next/image";
 
 const SignInPage = () => {
   return (
-    <div className="grid lg:grid-cols-5 w-screen h-screen overflow-hidden">
-      <div className="col-span-2 w-full hidden lg:flex justify-center items-center">
-        <div className="w-[70%] h-[90%] relative">
+    <div className="grid h-screen w-screen overflow-hidden lg:grid-cols-5">
+      <div className="col-span-2 hidden w-full items-center justify-center lg:flex">
+        <div className="relative h-[90%] w-[70%]">
           <Image
             src="/images/auth_image.png"
             alt="Illustration"
@@ -19,10 +19,10 @@ const SignInPage = () => {
         </div>
       </div>
 
-      <div className="relative flex flex-col items-center justify-center w-full h-full col-span-3">
+      <div className="relative col-span-3 flex h-full w-full flex-col items-center justify-center">
         <div className="flex flex-col gap-4 xl:pr-20">
-          <div className="flex  gap-4 items-center">
-            <div className="flex items-center gap-2 ml-4.5">
+          <div className="flex items-center gap-4">
+            <div className="ml-4.5 flex items-center gap-2">
               <Image
                 src="/icons/Logo.svg"
                 alt="logo"
@@ -34,15 +34,12 @@ const SignInPage = () => {
             </div>
           </div>
 
-          <div className="flex flex-col justify-center w-full  md:min-w-[400px]">
+          <div className="flex w-full flex-col justify-center md:min-w-[400px]">
             <SignInForm />
-            <Button
-              variant={"link"}
-              className="text-muted-foreground"
-              asChild
-            >
-              <Link href="/auth/sign-up" className="text-center w-full">
-                Don&apos;t have an account?<span className="text-primary ml-1"> Sign Up</span>
+            <Button variant={"link"} className="text-muted-foreground" asChild>
+              <Link href="/auth/sign-up" className="w-full text-center">
+                Don&apos;t have an account?
+                <span className="ml-1 text-primary"> Sign Up</span>
               </Link>
             </Button>
           </div>

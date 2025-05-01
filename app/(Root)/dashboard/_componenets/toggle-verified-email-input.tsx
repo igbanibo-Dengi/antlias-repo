@@ -5,34 +5,34 @@ import { toggleEmailVerifiedAction } from "@/lib/actions/admin/toggle-email-veri
 import { useTransition } from "react";
 
 type ToggleEmailVerifiedInputProps = {
-    email: (typeof users.$inferSelect)["email"];
-    emailVerified: (typeof users.$inferSelect)["emailVerified"];
-    isAdmin: boolean;
+  email: (typeof users.$inferSelect)["email"];
+  emailVerified: (typeof users.$inferSelect)["emailVerified"];
+  isAdmin: boolean;
 };
 
 export const ToggleEmailVerifiedInput = ({
-    email,
-    emailVerified,
-    isAdmin,
+  email,
+  emailVerified,
+  isAdmin,
 }: ToggleEmailVerifiedInputProps) => {
-    const [isPending, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
-    const clickHandler = (email: string, isCurrentlyVerified: boolean) => {
-        startTransition(async () => {
-            await toggleEmailVerifiedAction(email, isCurrentlyVerified);
-        });
-    };
+  const clickHandler = (email: string, isCurrentlyVerified: boolean) => {
+    startTransition(async () => {
+      await toggleEmailVerifiedAction(email, isCurrentlyVerified);
+    });
+  };
 
-    return (
-        <div className="flex items-center justify-center">
-            <input
-                disabled={isAdmin || isPending}
-                type="checkbox"
-                checked={!!emailVerified}
-                className="scale-150 enabled:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                readOnly
-                onClick={clickHandler.bind(null, email, !!emailVerified)}
-            />
-        </div>
-    );
+  return (
+    <div className="flex items-center justify-center">
+      <input
+        disabled={isAdmin || isPending}
+        type="checkbox"
+        checked={!!emailVerified}
+        className="scale-150 enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+        readOnly
+        onClick={clickHandler.bind(null, email, !!emailVerified)}
+      />
+    </div>
+  );
 };

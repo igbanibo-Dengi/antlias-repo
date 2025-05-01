@@ -42,18 +42,20 @@ export const SignInForm = () => {
 
     if (res.success) {
       // reset();
-      window.location.href = "/"
+      window.location.href = "/";
     } else {
       switch (res.statusCode) {
         case 401:
-          setError("password", { message: res.error })
+          setError("password", { message: res.error });
           break;
         case 500:
         default:
           const error = res.error || "Internal Server Error";
           setError("password", { message: error });
       }
-      toast(typeof res.error === "string" ? res.error : "Internal Server Error");
+      toast(
+        typeof res.error === "string" ? res.error : "Internal Server Error",
+      );
     }
   };
 
@@ -95,14 +97,9 @@ export const SignInForm = () => {
             </FormItem>
           )}
         />
-        <div className="w-full flex items-center justify-end">
-          <Button
-            variant={"link"}
-            className="ml-auto"
-          >
-            <Link href={"/auth/sign-in/forgot-password"}>
-              Forgot Password?
-            </Link>
+        <div className="flex w-full items-center justify-end">
+          <Button variant={"link"} className="ml-auto">
+            <Link href={"/auth/sign-in/forgot-password"}>Forgot Password?</Link>
           </Button>
         </div>
         <Button

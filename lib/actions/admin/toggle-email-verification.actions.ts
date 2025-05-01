@@ -10,26 +10,26 @@ import { revalidatePath } from "next/cache";
 
 // ADMIN PANEL ACTION
 export async function toggleEmailVerifiedAction(
-    email: (typeof users.$inferSelect)["email"],
-    isCurrentlyVerified: boolean,
+  email: (typeof users.$inferSelect)["email"],
+  isCurrentlyVerified: boolean,
 ) {
-    const session = await auth();
+  const session = await auth();
 
-    if (session?.user?.role !== USER_ROLES.ADMIN) {
-        throw new Error("Unauthorized");
-    }
+  if (session?.user?.role !== USER_ROLES.ADMIN) {
+    throw new Error("Unauthorized");
+  }
 
-    const existingUser = await findUserByEmail(email);
+  const existingUser = await findUserByEmail(email);
 
-    if (!existingUser) return;
-    if (existingUser.role === USER_ROLES.ADMIN) return;
+  if (!existingUser) return;
+  if (existingUser.role === USER_ROLES.ADMIN) return;
 
-    const emailVerified = isCurrentlyVerified ? null : new Date();
+  const emailVerified = isCurrentlyVerified ? null : new Date();
 
-    await db
-        .update(users)
-        .set({ emailVerified })
-        .where(eq(users.id, existingUser.id));
+  await db
+    .update(users)
+    .set({ emailVerified })
+    .where(eq(users.id, existingUser.id));
 
-    revalidatePath("/dashboard");
+  revalidatePath("/dashboard");
 }

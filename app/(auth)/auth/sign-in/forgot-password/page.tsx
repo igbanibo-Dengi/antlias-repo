@@ -5,13 +5,10 @@ import { ResetPasswordForm } from "../../_components/reset-password-form";
 import { KeyRound, XCircle } from "lucide-react";
 import { ForgotPasswordForm } from "../../_components/forgot-password-form";
 
-
 export default async function Page() {
-
-    return (
-        <div>
-            <ForgotPasswordForm />
-        </div>
-
-    );
-};
+  return (
+    <div>
+      <ForgotPasswordForm />
+    </div>
+  );
+}

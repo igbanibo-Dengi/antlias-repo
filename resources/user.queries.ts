@@ -1,43 +1,40 @@
-import "server-only"
-import db from "@/database/drizzle"
-import { lower, users } from "@/database/drizzle/schema"
-import {
-    desc,
-    eq,
-    getTableColumns,
-} from "drizzle-orm"
-import { auth } from "@/auth"
-import { USER_ROLES } from "@/lib/constants"
+import "server-only";
+import db from "@/database/drizzle";
+import { lower, users } from "@/database/drizzle/schema";
+import { desc, eq, getTableColumns } from "drizzle-orm";
+import { auth } from "@/auth";
+import { USER_ROLES } from "@/lib/constants";
 
 /* ADMIN QUERIES - THESE QUERIES REQUIRE ADMIN ACCESS */
 export async function findAllUsers() {
-    const session = await auth();
+  const session = await auth();
 
-    if (session?.user?.role !== USER_ROLES.ADMIN) {
-        throw new Error("Unauthorized");
-    }
+  if (session?.user?.role !== USER_ROLES.ADMIN) {
+    throw new Error("Unauthorized");
+  }
 
-    const { password, ...rest } = getTableColumns(users);
+  const { password, ...rest } = getTableColumns(users);
 
-    const allUsers = await db
-        .select({ ...rest })
-        .from(users)
-        .orderBy(desc(users.role));
+  const allUsers = await db
+    .select({ ...rest })
+    .from(users)
+    .orderBy(desc(users.role));
 
-    return allUsers;
+  return allUsers;
 }
-
 
 // FIND USER BY EMAIL
-export const findUserByEmail = async (email: string): Promise<typeof users.$inferSelect | null> => {
-    const user = await db
-        .select()
-        .from(users)
-        .where(eq(lower(users.email), email.toLowerCase()))
-        .then(res => res[0] ?? null)
+export const findUserByEmail = async (
+  email: string,
+): Promise<typeof users.$inferSelect | null> => {
+  const user = await db
+    .select()
+    .from(users)
+    .where(eq(lower(users.email), email.toLowerCase()))
+    .then((res) => res[0] ?? null);
 
-    return user
-}
+  return user;
+};
 
 // FIND USER BY ID
 // type userWithoutPassword = Omit<typeof users.$inferSelect, "password">
@@ -57,24 +54,23 @@ export const findUserByEmail = async (email: string): Promise<typeof users.$infe
 //     return user
 // }
 
-
 // FIND USER BY AUTH
 
 export const findUserByAuth = async () => {
-    const session = await auth()
+  const session = await auth();
 
-    const sessionUserId = session?.user?.id;
-    if (!sessionUserId) throw new Error("Unauthorized")
+  const sessionUserId = session?.user?.id;
+  if (!sessionUserId) throw new Error("Unauthorized");
 
-    const { password, ...rest } = getTableColumns(users)
+  const { password, ...rest } = getTableColumns(users);
 
-    const user = await db
-        .select(rest)
-        .from(users)
-        .where(eq(users.id, sessionUserId))
-        .then((res) => res[0] ?? null)
+  const user = await db
+    .select(rest)
+    .from(users)
+    .where(eq(users.id, sessionUserId))
+    .then((res) => res[0] ?? null);
 
-    if (!user) throw new Error("User not foind");
+  if (!user) throw new Error("User not foind");
 
-    return user
-}
+  return user;
+};

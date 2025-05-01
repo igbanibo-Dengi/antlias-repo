@@ -94,15 +94,16 @@ export const SignupProvider = ({ children }: { children: ReactNode }) => {
   const clearData = () => setData(defaultFormData);
 
   // Helper functions to check completion status of different steps
-  const isAuthComplete = () => Boolean(data.email && data.password && data.confirmPassword);
+  const isAuthComplete = () =>
+    Boolean(data.email && data.password && data.confirmPassword);
 
   const isCompanyComplete = () =>
     Boolean(
       data.companyName &&
-      data.contactPhone &&
-      data.location &&
-      data.franchiseLicenseNo &&
-      data.numberOfStations > 0,
+        data.contactPhone &&
+        data.location &&
+        data.franchiseLicenseNo &&
+        data.numberOfStations > 0,
     );
 
   return (

@@ -5,7 +5,6 @@ import { ResetPasswordForm } from "../../_components/reset-password-form";
 import { KeyRound, XCircle } from "lucide-react";
 import Image from "next/image";
 
-
 type PageProps = { searchParams: Promise<{ token: string }> };
 
 export default async function Page(props: PageProps) {
@@ -32,10 +31,11 @@ export default async function Page(props: PageProps) {
             priority
           />
 
-          <div className="text-center mt-4">
-            <h2 className="text-lg w-6xl font-semibold">Set new password</h2>
-            <p className="text-muted-foreground text-sm">
-              Your new password must be different from the <br /> previously used password.
+          <div className="mt-4 text-center">
+            <h2 className="w-6xl text-lg font-semibold">Set new password</h2>
+            <p className="text-sm text-muted-foreground">
+              Your new password must be different from the <br /> previously
+              used password.
             </p>
           </div>
 
@@ -46,7 +46,7 @@ export default async function Page(props: PageProps) {
             />
           </div>
 
-          <div className="bg-muted h-px w-full max-w-md" />
+          <div className="h-px w-full max-w-md bg-muted" />
 
           <div className="text-center">
             <span className="text-sm text-muted-foreground">
@@ -66,8 +66,8 @@ const TokenIsInvalidState = () => {
   return (
     <main className="h-screen w-full">
       <div className="flex h-screen w-full items-center justify-center">
-        <div className="flex h-full w-full flex-col items-center justify-center md:border-r-2 gap-6 lg:w-1/2 p-8">
-          <div className="text-center space-y-4">
+        <div className="flex h-full w-full flex-col items-center justify-center gap-6 p-8 md:border-r-2 lg:w-1/2">
+          <div className="space-y-4 text-center">
             <Image
               src="/icons/antlias-logo.svg"
               alt="Antlias Logo"
@@ -78,29 +78,30 @@ const TokenIsInvalidState = () => {
             />
 
             <span className="flex items-center gap-2">
-              <XCircle className="w-10 h-10 text-red-500" />
-              <h1 className="text-3xl font-bold tracking-tight">Invalid Reset Token</h1>
+              <XCircle className="h-10 w-10 text-red-500" />
+              <h1 className="text-3xl font-bold tracking-tight">
+                Invalid Reset Token
+              </h1>
             </span>
           </div>
 
-          <div className="bg-muted h-px w-full max-w-md" />
+          <div className="h-px w-full max-w-md bg-muted" />
 
-          <div className="text-center space-y-2">
-            <p className="text-xl font-semibold">The password reset token is invalid or has expired.</p>
-            <p className="text-muted-foreground">Please request a new password reset email.
-
-              <Button
-                variant={'link'}
-                className="text-base px-2"
-                asChild>
+          <div className="space-y-2 text-center">
+            <p className="text-xl font-semibold">
+              The password reset token is invalid or has expired.
+            </p>
+            <p className="text-muted-foreground">
+              Please request a new password reset email.
+              <Button variant={"link"} className="px-2 text-base" asChild>
                 <Link href={"/auth/sign-in/forgot-password"}>Click here</Link>
               </Button>
             </p>
           </div>
 
-          <div className="bg-muted h-px w-full max-w-md" />
+          <div className="h-px w-full max-w-md bg-muted" />
         </div>
-        <div className="hidden h-screen lg:flex lg:w-1/2 bg-muted"></div>
+        <div className="hidden h-screen bg-muted lg:flex lg:w-1/2"></div>
       </div>
     </main>
   );

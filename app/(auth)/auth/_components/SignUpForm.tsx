@@ -43,7 +43,15 @@ export const SignupForm = () => {
     mode: "onChange", // Add this to validate on change
   });
 
-  const { handleSubmit, control, formState, setError, getValues, trigger, watch } = form;
+  const {
+    handleSubmit,
+    control,
+    formState,
+    setError,
+    getValues,
+    trigger,
+    watch,
+  } = form;
 
   // Watch all fields to trigger validation
   watch();
@@ -128,7 +136,9 @@ export const SignupForm = () => {
           setError("confirmPassword", { message: error });
       }
 
-      toast(typeof res.error === "string" ? res.error : "Internal Server Error");
+      toast(
+        typeof res.error === "string" ? res.error : "Internal Server Error",
+      );
     }
   };
 
@@ -147,9 +157,11 @@ export const SignupForm = () => {
   }
 
   return (
-    <div className={`w-screen h-screen overflow-hidden ${step === 1 ? "grid lg:grid-cols-5" : "grid-cols-1"}`}>
-      <div className="col-span-2 w-full hidden lg:flex justify-center items-center">
-        <div className="w-[70%] h-[90%] relative">
+    <div
+      className={`h-screen w-screen overflow-hidden ${step === 1 ? "grid lg:grid-cols-5" : "grid-cols-1"}`}
+    >
+      <div className="col-span-2 hidden w-full items-center justify-center lg:flex">
+        <div className="relative h-[90%] w-[70%]">
           <Image
             src="/images/auth_image.png"
             alt="Illustration"
@@ -159,10 +171,10 @@ export const SignupForm = () => {
         </div>
       </div>
 
-      <div className="relative flex flex-col items-center justify-center h-full col-span-3 w-full">
+      <div className="relative col-span-3 flex h-full w-full flex-col items-center justify-center">
         <div className="flex flex-col gap-4">
-          <div className="flex gap-4 items-center">
-            <div className="flex items-center gap-2 ml-4.5">
+          <div className="flex items-center gap-4">
+            <div className="ml-4.5 flex items-center gap-2">
               <Image
                 src="/icons/Logo.svg"
                 alt="logo"
@@ -174,7 +186,7 @@ export const SignupForm = () => {
             </div>
           </div>
 
-          <div className="flex flex-col justify-center w-full md:min-w-[400px]">
+          <div className="flex w-full flex-col justify-center md:min-w-[400px]">
             <Form {...form}>
               <form
                 onSubmit={handleSubmit(submit)}
@@ -190,7 +202,11 @@ export const SignupForm = () => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="e.g. john@example.com" {...field} />
+                            <Input
+                              type="email"
+                              placeholder="e.g. john@example.com"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -203,7 +219,11 @@ export const SignupForm = () => {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input type="password" placeholder="e.g. ********" {...field} />
+                            <Input
+                              type="password"
+                              placeholder="e.g. ********"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -216,7 +236,11 @@ export const SignupForm = () => {
                         <FormItem>
                           <FormLabel>Confirm Password</FormLabel>
                           <FormControl>
-                            <Input type="password" placeholder="e.g. ********" {...field} />
+                            <Input
+                              type="password"
+                              placeholder="e.g. ********"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -234,7 +258,11 @@ export const SignupForm = () => {
                         <FormItem>
                           <FormLabel>Company Name</FormLabel>
                           <FormControl>
-                            <Input type="text" placeholder="e.g. Entropy Ltd" {...field} />
+                            <Input
+                              type="text"
+                              placeholder="e.g. Entropy Ltd"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -247,7 +275,11 @@ export const SignupForm = () => {
                         <FormItem>
                           <FormLabel>Company Phone</FormLabel>
                           <FormControl>
-                            <Input type="tel" placeholder="e.g. 08012345678" {...field} />
+                            <Input
+                              type="tel"
+                              placeholder="e.g. 08012345678"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -303,7 +335,11 @@ export const SignupForm = () => {
                         <FormItem>
                           <FormLabel>Branch Name</FormLabel>
                           <FormControl>
-                            <Input type="text" placeholder="e.g. Entropy Lagos Branch" {...field} />
+                            <Input
+                              type="text"
+                              placeholder="e.g. Entropy Lagos Branch"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -316,7 +352,11 @@ export const SignupForm = () => {
                         <FormItem>
                           <FormLabel>Branch Address</FormLabel>
                           <FormControl>
-                            <Input type="text" placeholder="e.g. 23 Awolowo Rd" {...field} />
+                            <Input
+                              type="text"
+                              placeholder="e.g. 23 Awolowo Rd"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -329,7 +369,11 @@ export const SignupForm = () => {
                         <FormItem>
                           <FormLabel>Branch City</FormLabel>
                           <FormControl>
-                            <Input type="text" placeholder="e.g. Lagos" {...field} />
+                            <Input
+                              type="text"
+                              placeholder="e.g. Lagos"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -342,7 +386,11 @@ export const SignupForm = () => {
                         <FormItem>
                           <FormLabel>Branch State</FormLabel>
                           <FormControl>
-                            <Input type="text" placeholder="e.g. Lagos State" {...field} />
+                            <Input
+                              type="text"
+                              placeholder="e.g. Lagos State"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -383,13 +431,10 @@ export const SignupForm = () => {
                 </div>
               </form>
             </Form>
-            <Button
-              variant={"link"}
-              className="text-muted-foreground"
-              asChild
-            >
-              <Link href="/auth/sign-in" className="text-center w-full">
-                Already have an account?<span className="text-primary ml-1"> Sign in</span>
+            <Button variant={"link"} className="text-muted-foreground" asChild>
+              <Link href="/auth/sign-in" className="w-full text-center">
+                Already have an account?
+                <span className="ml-1 text-primary"> Sign in</span>
               </Link>
             </Button>
           </div>

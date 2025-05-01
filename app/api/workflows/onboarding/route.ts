@@ -44,26 +44,24 @@ const getUserState = async (email: string): Promise<UserState> => {
 export const { POST } = serve<InitialData>(async (context) => {
   const { email, companyName, token, productionUrl } = context.requestPayload;
 
-
   const verifyEmailData = {
     companyName,
     token,
     productionUrl,
-  }
+  };
 
   // Welcome Email
   await context.run("new-signup", async () => {
-
-    console.log(`Sending email to ${email} with token ${token}, name ${name}, productionUrl ${productionUrl}`);
-
+    console.log(
+      `Sending email to ${email} with token ${token}, name ${name}, productionUrl ${productionUrl}`,
+    );
 
     await sendEmail({
       email,
       subject: "Welcome to Antlias 🎉",
-      message: getWelcomeEmailHTML(verifyEmailData)
+      message: getWelcomeEmailHTML(verifyEmailData),
     });
   });
-
 
   await context.sleep("wait-for-3-days", 60 * 60 * 24 * 3);
 

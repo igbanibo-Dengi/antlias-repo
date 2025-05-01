@@ -33,6 +33,5 @@ export const sendEmail = async ({
       subject,
       html: message,
     },
-
   });
 };

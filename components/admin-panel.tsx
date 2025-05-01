@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import { auth } from "@/auth"
-import { Button } from "@/components/ui/button"
-import { USER_ROLES } from "@/lib/constants"
-import { cn } from "@/lib/utils"
-import { findAllUsers } from "@/resources/user.queries"
-import { ArrowLeftSquareIcon } from "lucide-react"
-import Link from "next/link"
-import { redirect } from "next/navigation"
+import { auth } from "@/auth";
+import { Button } from "@/components/ui/button";
+import { USER_ROLES } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { findAllUsers } from "@/resources/user.queries";
+import { ArrowLeftSquareIcon } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 // import { ToggleEmailVerifiedInput } from "./_componenets/toggle-verified-email-input"
 // import { ChangeUserRoleInput } from "./_componenets/change-user-role-input"
-import { useState } from "react"
+import { useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -22,7 +22,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 import {
   Table,
   TableBody,
@@ -30,24 +30,24 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { ChangeUserRoleInput } from "@/app/(Root)/dashboard/_componenets/change-user-role-input"
-import { ToggleEmailVerifiedInput } from "@/app/(Root)/dashboard/_componenets/toggle-verified-email-input"
+} from "@/components/ui/dropdown-menu";
+import { ChangeUserRoleInput } from "@/app/(Root)/dashboard/_componenets/change-user-role-input";
+import { ToggleEmailVerifiedInput } from "@/app/(Root)/dashboard/_componenets/toggle-verified-email-input";
 
 type User = {
-  id: string
-  name: string | null
-  email: string
-  emailVerified: boolean
-  role: string
-}
+  id: string;
+  name: string | null;
+  email: string;
+  emailVerified: boolean;
+  role: string;
+};
 
 const columns: ColumnDef<User>[] = [
   {
@@ -91,13 +91,13 @@ const columns: ColumnDef<User>[] = [
       />
     ),
   },
-]
+];
 
 export function AdminPanelComponent({ users }: any) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = useState({})
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
   // const users = await findAllUsers()
 
@@ -118,7 +118,7 @@ export function AdminPanelComponent({ users }: any) {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <main className="mt-4">
@@ -162,7 +162,7 @@ export function AdminPanelComponent({ users }: any) {
                     >
                       {column.id}
                     </DropdownMenuCheckboxItem>
-                  )
+                  );
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -178,11 +178,11 @@ export function AdminPanelComponent({ users }: any) {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
                       </TableHead>
-                    )
+                    );
                   })}
                 </TableRow>
               ))}
@@ -194,14 +194,15 @@ export function AdminPanelComponent({ users }: any) {
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     className={cn({
-                      "bg-primary/15": row.getValue("role") === USER_ROLES.ADMIN,
+                      "bg-primary/15":
+                        row.getValue("role") === USER_ROLES.ADMIN,
                     })}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
@@ -246,5 +247,5 @@ export function AdminPanelComponent({ users }: any) {
         </div>
       </div>
     </main>
-  )
+  );
 }

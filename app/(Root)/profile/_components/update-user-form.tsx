@@ -2,26 +2,26 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { updateUserInfoAction } from "@/lib/actions/auth/update-user.action";
 import {
-    type UpdateUserInfoInput,
-    UpdateUserInfoSchema,
+  type UpdateUserInfoInput,
+  UpdateUserInfoSchema,
 } from "@/validators/update-user-info-validator";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { PencilIcon } from "lucide-react";
@@ -34,113 +34,109 @@ import { useForm } from "react-hook-form";
 type UpdateUserFormProps = { user: User };
 
 export const UpdateUserForm = ({ user }: UpdateUserFormProps) => {
-    const [success, setSuccess] = useState("");
-    const { data: session, update } = useSession();
-    const router = useRouter();
+  const [success, setSuccess] = useState("");
+  const { data: session, update } = useSession();
+  const router = useRouter();
 
-    const { id, name: defaultName } = user;
+  const { id, name: defaultName } = user;
 
-    const form = useForm<UpdateUserInfoInput>({
-        resolver: valibotResolver(UpdateUserInfoSchema),
-        defaultValues: { id, name: defaultName || "" },
-    });
+  const form = useForm<UpdateUserInfoInput>({
+    resolver: valibotResolver(UpdateUserInfoSchema),
+    defaultValues: { id, name: defaultName || "" },
+  });
 
-    const { handleSubmit, control, formState, setError } = form;
+  const { handleSubmit, control, formState, setError } = form;
 
-    const submit = async (values: UpdateUserInfoInput) => {
-        // console.log(values);
+  const submit = async (values: UpdateUserInfoInput) => {
+    // console.log(values);
 
-        const res = await updateUserInfoAction(values);
+    const res = await updateUserInfoAction(values);
 
-        if (res.success) {
-            const updatedUser = res.data;
+    if (res.success) {
+      const updatedUser = res.data;
 
-            if (session?.user) {
-                await update({
-                    ...session,
-                    user: {
-                        ...session.user,
-                        name: updatedUser.name,
-                    },
-                });
-            }
+      if (session?.user) {
+        await update({
+          ...session,
+          user: {
+            ...session.user,
+            name: updatedUser.name,
+          },
+        });
+      }
 
-            router.refresh();
-            setSuccess("User information updated successfully.");
-        } else {
-            switch (res.statusCode) {
-                case 400:
-                    const nestedErrors = res.error.nested;
+      router.refresh();
+      setSuccess("User information updated successfully.");
+    } else {
+      switch (res.statusCode) {
+        case 400:
+          const nestedErrors = res.error.nested;
 
-                    for (const key in nestedErrors) {
-                        setError(key as keyof UpdateUserInfoInput, {
-                            message: nestedErrors[key]?.[0],
-                        });
-                    }
-                    break;
-                case 401:
-                case 500:
-                default:
-                    const error = res.error || "Internal Server Error";
-                    setError("name", { message: error });
-            }
-        }
+          for (const key in nestedErrors) {
+            setError(key as keyof UpdateUserInfoInput, {
+              message: nestedErrors[key]?.[0],
+            });
+          }
+          break;
+        case 401:
+        case 500:
+        default:
+          const error = res.error || "Internal Server Error";
+          setError("name", { message: error });
+      }
+    }
+  };
 
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button size="icon">
+          <PencilIcon />
+        </Button>
+      </DialogTrigger>
 
-    };
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit User Information</DialogTitle>
 
-    return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button
-                    size="icon"
-                >
-                    <PencilIcon />
-                </Button>
-            </DialogTrigger>
+          <DialogDescription>
+            Update your user information below.
+          </DialogDescription>
 
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Edit User Information</DialogTitle>
+          <div className="my-2 h-1 bg-muted" />
 
-                    <DialogDescription>
-                        Update your user information below.
-                    </DialogDescription>
+          <Form {...form}>
+            <form onSubmit={handleSubmit(submit)} className="space-y-4">
+              <FormField
+                control={control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {success && (
+                <p className="text-sm font-medium text-green-600">{success}</p>
+              )}
 
-                    <div className="my-2 h-1 bg-muted" />
+              <FormField name="id" render={() => <FormMessage />} />
 
-                    <Form {...form}>
-                        <form onSubmit={handleSubmit(submit)} className="space-y-4">
-                            <FormField
-                                control={control}
-                                name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Name</FormLabel>
-                                        <FormControl>
-                                            <Input type="text" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            {success && (
-                                <p className="text-sm font-medium text-green-600">{success}</p>
-                            )}
-
-                            <FormField name="id" render={() => <FormMessage />} />
-
-                            <Button
-                                type="submit"
-                                disabled={formState.isSubmitting}
-                                className="w-full"
-                            >
-                                Update
-                            </Button>
-                        </form>
-                    </Form>
-                </DialogHeader>
-            </DialogContent>
-        </Dialog>
-    );
+              <Button
+                type="submit"
+                disabled={formState.isSubmitting}
+                className="w-full"
+              >
+                Update
+              </Button>
+            </form>
+          </Form>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
 };

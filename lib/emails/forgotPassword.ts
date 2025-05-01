@@ -1,8 +1,6 @@
 import config from "../config";
 import { VERIFICATION_TOKEN_EXP_MIN } from "../constants";
 
-
-
 export const sendForgotPasswordEmail = (token: string) => {
   return `
     <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
@@ -23,4 +21,4 @@ export const sendForgotPasswordEmail = (token: string) => {
       <p style="text-align: center; font-size: 12px; color: #aaa;">&copy; 2024 Authy. All rights reserved.</p>
     </div>
   `;
-}; 
+};
