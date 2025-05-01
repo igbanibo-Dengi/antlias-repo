@@ -64,7 +64,7 @@ export const ResetPasswordForm = ({ email, token }: ResetPasswordFormProps) => {
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(submit)} className="max-w-[400px] space-y-6">
+            <form onSubmit={handleSubmit(submit)} className="space-y-6">
                 <FormField
                     control={control}
                     name="password"

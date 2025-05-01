@@ -17,6 +17,8 @@ import { useRouter } from "next/navigation";
 import { SigninInput, SigninSchema } from "@/validators/signin-validator";
 import { signInAction } from "@/lib/actions/auth/signIn.actions";
 import { ForgotPasswordForm } from "./forgot-password-form";
+import { toast } from "sonner";
+import Link from "next/link";
 
 export const SignInForm = () => {
   const [success, setSuccess] = useState(false);
@@ -40,7 +42,7 @@ export const SignInForm = () => {
 
     if (res.success) {
       // reset();
-      window.location.href = "/profile"
+      window.location.href = "/"
     } else {
       switch (res.statusCode) {
         case 401:
@@ -51,6 +53,7 @@ export const SignInForm = () => {
           const error = res.error || "Internal Server Error";
           setError("password", { message: error });
       }
+      toast(typeof res.error === "string" ? res.error : "Internal Server Error");
     }
   };
 
@@ -58,7 +61,7 @@ export const SignInForm = () => {
     <Form {...form}>
       <form
         onSubmit={handleSubmit(submit)}
-        className="w-full space-y-4 px-10 md:max-w-[600px] mx-auto md:px-20"
+        className="w-full space-y-4"
         autoComplete="false"
       >
         <FormField
@@ -92,7 +95,16 @@ export const SignInForm = () => {
             </FormItem>
           )}
         />
-        <ForgotPasswordForm />
+        <div className="w-full flex items-center justify-end">
+          <Button
+            variant={"link"}
+            className="ml-auto"
+          >
+            <Link href={"/auth/sign-in/forgot-password"}>
+              Forgot Password?
+            </Link>
+          </Button>
+        </div>
         <Button
           type="submit"
           size={"lg"}

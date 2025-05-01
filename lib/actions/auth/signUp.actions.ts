@@ -9,9 +9,8 @@ import { eq } from 'drizzle-orm'
 import { createVerificationTokenAction } from '../admin/create-verification-token-action'
 import { headers } from 'next/headers'
 import ratelimit from '@/lib/ratelimit'
-import { sendEmail, workflowClient } from '@/lib/workflow'
+import { sendEmail } from '@/lib/workflow'
 import config from '@/lib/config'
-import { sendForgotPasswordEmail } from '@/lib/emails/forgotPassword'
 import { getWelcomeEmailHTML } from '@/lib/emails/WelcomeEmail'
 
 type Res =

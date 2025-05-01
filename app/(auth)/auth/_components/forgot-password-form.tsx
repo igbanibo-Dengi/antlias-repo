@@ -2,14 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import {
     Form,
     FormControl,
     FormField,
@@ -21,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { forgotPasswordAction } from "@/lib/actions/auth/forgot-password-action";
 import { ForgotPasswordInput, ForgotPasswordSchema } from "@/validators/forgot-password-validator";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -64,54 +58,62 @@ export const ForgotPasswordForm = () => {
     };
 
     return (
-        <Dialog>
 
-            <DialogTrigger asChild>
-                <div className="px-0 text-sm text-muted-foreground  text-right cursor-pointer hover:underline hover:text-foreground">
-                    Forgot password?
-                </div>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Enter Your Email</DialogTitle>
+        <div className="flex flex-col items-center justify-center min-h-screen space-y-6">
+            <Image
+                src="/icons/antlias-logo.svg"
+                alt="Antlias Logo"
+                width={88}
+                height={88}
+                priority
+            />
 
-                    <DialogDescription>
-                        We will send you an email with a link to reset your password.
-                    </DialogDescription>
+            <div className="text-center space-y-2">
+                <h2 className="text-lg font-semibold">Forgot Password?</h2>
+                <p className="text-muted-foreground">
+                    No worries, we&apos;ll send you reset instructions.
+                </p>
+            </div>
 
-                    <div className="my-2 h-1 bg-muted" />
+            <Form {...form}>
+                <form onSubmit={handleSubmit(submit)} className="space-y-4 min-w-[300px]">
+                    <FormField
+                        control={control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="email"
+                                        {...field}
+                                        disabled={!!success}
+                                        className=""
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
-                    <Form {...form}>
-                        <form onSubmit={handleSubmit(submit)} className="space-y-4">
-                            <FormField
-                                control={control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Email</FormLabel>
-                                        <FormControl>
-                                            <Input type="email" {...field} disabled={!!success} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                    {success && (
+                        <p className="text-sm font-medium text-green-600">{success}</p>
+                    )}
 
-                            {success && (
-                                <p className="text-sm font-medium text-green-600">{success}</p>
-                            )}
-
-                            <Button
-                                type="submit"
-                                disabled={formState.isSubmitting || !!success}
-                                className="w-full"
-                            >
-                                Send Password Reset Email
-                            </Button>
-                        </form>
-                    </Form>
-                </DialogHeader>
-            </DialogContent>
-        </Dialog>
+                    <Button
+                        type="submit"
+                        disabled={formState.isSubmitting || !!success}
+                        className="w-full"
+                    >
+                        {formState.isSubmitting ? "Sending..." : "Send Reset Link"}
+                    </Button>
+                </form>
+            </Form>
+            <Link href="/auth/sign-up">
+                <span className="text-blue-600 text-sm hover:underline">
+                    &lt; Back to log in
+                </span>
+            </Link>
+        </div>
     );
 };

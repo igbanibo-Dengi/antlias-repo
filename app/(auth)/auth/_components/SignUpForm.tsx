@@ -17,6 +17,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signUpAction } from "@/lib/actions/auth/signUp.actions";
+import Image from "next/image";
 import { toast } from "sonner";
 
 export const SignupForm = () => {
@@ -39,21 +40,64 @@ export const SignupForm = () => {
       branchCity: "",
       branchState: "",
     },
+    mode: "onChange", // Add this to validate on change
   });
 
-  const { handleSubmit, control, formState, setError, getValues } = form;
+  const { handleSubmit, control, formState, setError, getValues, trigger, watch } = form;
 
-  const handleNext = () => {
+  // Watch all fields to trigger validation
+  watch();
+
+  const handleNext = async () => {
+    let isValid = false;
+
     if (step === 1) {
+      isValid = await trigger(["email", "password", "confirmPassword"]);
       const { password, confirmPassword } = getValues();
       if (password !== confirmPassword) {
         setError("confirmPassword", {
           message: "Passwords do not match",
         });
-        return;
+        isValid = false;
       }
+    } else if (step === 2) {
+      isValid = await trigger([
+        "companyName",
+        "companyPhone",
+        "franchiseNumber",
+        "numberOfStations",
+      ]);
     }
-    setStep((prev) => prev + 1);
+
+    if (isValid) {
+      setStep((prev) => prev + 1);
+    }
+  };
+
+  const isStepValid = () => {
+    if (step === 1) {
+      return (
+        !formState.errors.email &&
+        !formState.errors.password &&
+        !formState.errors.confirmPassword &&
+        getValues("password") === getValues("confirmPassword") &&
+        getValues("email") &&
+        getValues("password") &&
+        getValues("confirmPassword")
+      );
+    } else if (step === 2) {
+      return (
+        !formState.errors.companyName &&
+        !formState.errors.companyPhone &&
+        !formState.errors.franchiseNumber &&
+        !formState.errors.numberOfStations &&
+        getValues("companyName") &&
+        getValues("companyPhone") &&
+        getValues("franchiseNumber") &&
+        getValues("numberOfStations") !== undefined
+      );
+    }
+    return true;
   };
 
   const handleBack = () => setStep((prev) => prev - 1);
@@ -65,9 +109,6 @@ export const SignupForm = () => {
       router.push(res.redirectTo);
       return;
     }
-
-    console.log(res);
-
 
     if (res.success) {
       router.push("/auth/sign-up/success");
@@ -87,8 +128,7 @@ export const SignupForm = () => {
           setError("confirmPassword", { message: error });
       }
 
-      toast(typeof res.error === "string" ? res.error : "Internal Server Error")
-
+      toast(typeof res.error === "string" ? res.error : "Internal Server Error");
     }
   };
 
@@ -107,199 +147,254 @@ export const SignupForm = () => {
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={handleSubmit(submit)}
-        className="w-full space-y-4 px-10 md:max-w-[600px] mx-auto md:px-20"
-        autoComplete="false"
-      >
-        {step === 1 && (
-          <>
-            <FormField
-              control={control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="e.g. john@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="e.g. ********" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="e.g. ********" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        )}
-
-        {step === 2 && (
-          <>
-            <FormField
-              control={control}
-              name="companyName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Company Name</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="e.g. Entropy Ltd" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="companyPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Company Phone</FormLabel>
-                  <FormControl>
-                    <Input type="tel" placeholder="e.g. 08012345678" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="franchiseNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Franchise Number</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="e.g. 1234"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="numberOfStations"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Number of Stations</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="e.g. 5"
-                      value={isNaN(field.value) ? "" : field.value}
-                      onChange={(e) => {
-                        const val = e.target.valueAsNumber;
-                        field.onChange(isNaN(val) ? undefined : val);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        )}
-
-        {step === 3 && (
-          <>
-            <FormField
-              control={control}
-              name="branchName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Branch Name</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="e.g. Entropy Lagos Branch" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="branchAddress"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Branch Address</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="e.g. 23 Awolowo Rd" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="branchCity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Branch City</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="e.g. Lagos" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="branchState"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Branch State</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="e.g. Lagos State" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        )}
-
-        <div className="flex justify-between gap-4 pt-4">
-          {step > 1 && (
-            <Button type="button" onClick={handleBack} variant="outline">
-              Back
-            </Button>
-          )}
-          {step < 3 ? (
-            <Button type="button" onClick={handleNext}>
-              Next
-            </Button>
-          ) : (
-            <Button type="submit" disabled={formState.isSubmitting}>
-              Sign Up
-            </Button>
-          )}
+    <div className={`w-screen h-screen overflow-hidden ${step === 1 ? "grid lg:grid-cols-5" : "grid-cols-1"}`}>
+      <div className="col-span-2 w-full hidden lg:flex justify-center items-center">
+        <div className="w-[70%] h-[90%] relative">
+          <Image
+            src="/images/auth_image.png"
+            alt="Illustration"
+            fill
+            priority
+          />
         </div>
-      </form>
-    </Form>
+      </div>
+
+      <div className="relative flex flex-col items-center justify-center h-full col-span-3 w-full">
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-4 items-center">
+            <div className="flex items-center gap-2 ml-4.5">
+              <Image
+                src="/icons/Logo.svg"
+                alt="logo"
+                width={20}
+                height={20}
+                priority
+              />
+              <h2 className="text-xl font-semibold">Antlias</h2>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center w-full md:min-w-[400px]">
+            <Form {...form}>
+              <form
+                onSubmit={handleSubmit(submit)}
+                className="w-full space-y-4"
+                autoComplete="false"
+              >
+                {step === 1 && (
+                  <>
+                    <FormField
+                      control={control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="e.g. john@example.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" placeholder="e.g. ********" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" placeholder="e.g. ********" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+
+                {step === 2 && (
+                  <>
+                    <FormField
+                      control={control}
+                      name="companyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company Name</FormLabel>
+                          <FormControl>
+                            <Input type="text" placeholder="e.g. Entropy Ltd" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="companyPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company Phone</FormLabel>
+                          <FormControl>
+                            <Input type="tel" placeholder="e.g. 08012345678" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="franchiseNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Franchise Number</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="e.g. 1234"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="numberOfStations"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Number of Stations</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="e.g. 5"
+                              value={isNaN(field.value) ? "" : field.value}
+                              onChange={(e) => {
+                                const val = e.target.valueAsNumber;
+                                field.onChange(isNaN(val) ? undefined : val);
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+
+                {step === 3 && (
+                  <>
+                    <FormField
+                      control={control}
+                      name="branchName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Branch Name</FormLabel>
+                          <FormControl>
+                            <Input type="text" placeholder="e.g. Entropy Lagos Branch" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="branchAddress"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Branch Address</FormLabel>
+                          <FormControl>
+                            <Input type="text" placeholder="e.g. 23 Awolowo Rd" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="branchCity"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Branch City</FormLabel>
+                          <FormControl>
+                            <Input type="text" placeholder="e.g. Lagos" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="branchState"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Branch State</FormLabel>
+                          <FormControl>
+                            <Input type="text" placeholder="e.g. Lagos State" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+
+                <div className="flex justify-between gap-4 pt-4">
+                  {step > 1 && (
+                    <Button
+                      type="button"
+                      onClick={handleBack}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Back
+                    </Button>
+                  )}
+                  {step < 3 ? (
+                    <Button
+                      type="button"
+                      onClick={handleNext}
+                      className="w-full"
+                      disabled={!isStepValid()}
+                    >
+                      Next
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      disabled={formState.isSubmitting}
+                      className="w-full"
+                    >
+                      Sign Up
+                    </Button>
+                  )}
+                </div>
+              </form>
+            </Form>
+            <Button
+              variant={"link"}
+              className="text-muted-foreground"
+              asChild
+            >
+              <Link href="/auth/sign-in" className="text-center w-full">
+                Already have an account?<span className="text-primary ml-1"> Sign in</span>
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };

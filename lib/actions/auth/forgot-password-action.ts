@@ -6,11 +6,13 @@ import * as v from "valibot";
 import { createVerificationTokenAction } from "../admin/create-verification-token-action";
 import { sendEmail } from "@/lib/workflow";
 import { sendForgotPasswordEmail } from "@/lib/emails/forgotPassword";
+import { headers } from "next/headers";
+import ratelimit from "@/lib/ratelimit";
 
 type Res =
-    | { success: true }
-    | { success: false; error: v.FlatErrors<undefined>; statusCode: 400 }
-    | { success: false; error: string; statusCode: 401 | 500 };
+    | { success: true; redirectTo?: string }
+    | { success: false; error: v.FlatErrors<undefined>; statusCode: 400; redirectTo?: string }
+    | { success: false; error: string; statusCode: 401 | 500 | 409; redirectTo?: string };
 
 export async function forgotPasswordAction(values: unknown): Promise<Res> {
     const parsedValues = v.safeParse(ForgotPasswordSchema, values);
@@ -19,6 +21,20 @@ export async function forgotPasswordAction(values: unknown): Promise<Res> {
         const flatErrors = v.flatten(parsedValues.issues);
         return { success: false, error: flatErrors, statusCode: 400 };
     }
+
+
+    const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1";
+    const { success } = await ratelimit.limit(ip);
+
+    if (!success) {
+        return {
+            success: false,
+            redirectTo: "/too-fast",
+            error: "Too many requests",
+            statusCode: 409,
+        }
+    }
+
 
     const email = parsedValues.output.email;
 
@@ -49,7 +65,7 @@ export async function forgotPasswordAction(values: unknown): Promise<Res> {
 
         await sendEmail({
             email,
-            subject: "Welcome to Igbanibo's Platform 🎉",
+            subject: "Reset or password 🎉",
             message: sendForgotPasswordEmail(token),
         });
 
