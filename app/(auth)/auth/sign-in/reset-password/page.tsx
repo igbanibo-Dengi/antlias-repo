@@ -66,7 +66,7 @@ const TokenIsInvalidState = () => {
   return (
     <main className="h-screen w-full">
       <div className="flex h-screen w-full items-center justify-center">
-        <div className="flex h-full w-full flex-col items-center justify-center gap-6 p-8 md:border-r-2 lg:w-1/2">
+        <div className="flex h-full w-full flex-col items-center justify-center">
           <div className="space-y-4 text-center">
             <Image
               src="/icons/antlias-logo.svg"
@@ -102,7 +102,7 @@ const TokenIsInvalidState = () => {
           <div className="h-px w-full max-w-md bg-muted" />
         </div>
         <div className="hidden h-screen bg-muted lg:flex lg:w-1/2"></div>
-      </div>
-    </main>
+      </div >
+    </main >
   );
 };

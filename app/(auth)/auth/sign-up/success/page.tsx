@@ -1,43 +1,45 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Mail } from "lucide-react";
 
 export default function Page() {
   return (
-    <main className="h-full w-full">
-      <div className="flex h-screen w-full items-center justify-center">
-        <div className="flex h-full w-full flex-col items-center justify-center gap-6 p-8 md:border-r-2 lg:w-1/2">
-          <div className="space-y-4 text-center">
-            <CheckCircle className="mx-auto h-16 w-16 text-green-500" />
-            <h1 className="text-3xl font-bold tracking-tight">
-              Sign Up Successful
-            </h1>
+    <div className="flex items-center justify-center w-screen h-screen p-4 bg-blue-100">
+      <Card className="w-full text-center shadow-lg p-35 h-full m-2">
+        <CardContent className="flex flex-col justify-center items-center h-full w-full space-y-4">
+          <div className="flex items-center space-x-2">
+            <Image
+              src="/icons/antlias-logo.svg"
+              alt="Antlias Logo"
+              width={60}
+              height={60}
+              priority
+            />
+            <span className="text-lg font-semibold">Antlias</span>
           </div>
 
-          <div className="h-px w-full max-w-md bg-muted" />
-
-          <div className="space-y-2 text-center">
-            <p className="text-xl font-semibold">
-              Verification email has been sent!
-            </p>
-            <p className="text-muted-foreground">
-              Please check your email to verify your account.
-            </p>
+          <div className=" p-4 rounded-full bg-primary/10 text-primary">
+            <div className=" p-4 rounded-full bg-primary/10 text-primary">
+              <Mail className="size-10" />
+            </div>
           </div>
 
-          <div className="h-px w-full max-w-md bg-muted" />
-
-          <div className="w-full max-w-md space-y-4">
-            <Button variant="default" className="w-full" asChild>
-              <Link href="/auth/sign-in">Go to Sign In</Link>
-            </Button>
-            <Button variant="outline" className="w-full" asChild>
-              <Link href="/">Back to Home</Link>
-            </Button>
+          <div>
+            <h2 className="text-xl font-semibold">Check your email</h2>
+            <p className="text-gray-500">Welcome aboard!</p>
           </div>
-        </div>
-        <div className="hidden h-screen bg-muted lg:flex lg:w-1/2"></div>
-      </div>
-    </main>
+          <p className="text-muted-foreground">
+            Complete your sign-up by verifying your email.
+          </p>
+
+          <Link href="/auth/sign-up">
+            <span className="text-blue-600 text-sm hover:underline">
+              &lt; Back to log in
+            </span>
+          </Link>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
