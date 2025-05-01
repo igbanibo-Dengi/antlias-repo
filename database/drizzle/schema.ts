@@ -66,7 +66,8 @@ export const users = pgTable(
       .notNull()
       .references(() => tenants.id, { onDelete: "cascade" }),
     role: roleEnum("role").notNull(),
-    name: text("name"),
+    firstName: text("firstName"),
+    lastName: text("lastName"),
     email: text("email").notNull(),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
@@ -134,12 +135,16 @@ export const employees = pgTable(
     position: text("position"),
     hireDate: date("hire_date").notNull().defaultNow(),
     terminationDate: date("termination_date"),
+    contactNumber: text("phone_number"),
+    address: text("address"),
+    // bank info
     salary: integer("salary").default(0),
     commission: decimal("commission", { precision: 5, scale: 2 }),
     accountNumber: text("account_number"),
     accountName: text("account_name"),
     bankName: text("bank_name"),
     bvn: text("bvn"),
+    // guarantor info
     guarantorName: text("guarantor_name"),
     guarantorPhone: text("guarantor_phone"),
     guarantorAddress: text("guarantor_address"),

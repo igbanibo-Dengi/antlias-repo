@@ -31,145 +31,80 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-interface Transaction {
+interface Employee {
   id: number;
-  transactionId: string;
-  dateTime: string;
-  method: string;
-  amount: number;
-  fuel: string;
-  customerName: string;
-  status: "Successful" | "Declined" | "Failed";
-  terminalId: string;
+  Role: string;
+  Name: string;
+  Amount: number;
+  Status: "Paid" | "Pending";
+  Contact: string;
   employeeId: string;
+  src: string;
 }
 
-const data: Transaction[] = [
+const data: Employee[] = [
   {
     id: 1,
-    transactionId: "6693ac3ca6e0cdafbe89ab99",
-    dateTime: "Jun 10, 2024 10:30am",
-    method: "Transfer",
-    amount: 33560,
-    fuel: "Petrol",
-    customerName: "Ayinla Gbenga",
-    status: "Successful",
-    terminalId: "702791",
-    employeeId: "8782",
+    employeeId: "EMP-323",
+    Role: "Manager",
+    Amount: 33560,
+    Name: "Ayinla Gbenga",
+    Status: "Paid",
+    Contact: "07027999991",
+    src: "/icons/Avatar.svg",
   },
   {
     id: 2,
-    transactionId: "6693ac3ca6e0cdafbe89ab98",
-    dateTime: "Jun 10, 2024 11:45am",
-    method: "Card",
-    amount: 28750,
-    fuel: "Diesel",
-    customerName: "Okafor Chinedu",
-    status: "Successful",
-    terminalId: "702792",
-    employeeId: "8783",
+    employeeId: "EMP-4444",
+    Role: "Supervisor",
+    Amount: 28750,
+    Name: "Chinedu Okafor",
+    Status: "Paid",
+    Contact: "08012345678",
+    src: "/icons/Avatar.svg",
   },
   {
     id: 3,
-    transactionId: "6693ac3ca6e0cdafbe89ab97",
-    dateTime: "Jun 10, 2024 12:15pm",
-    method: "Cash",
-    amount: 42000,
-    fuel: "Petrol",
-    customerName: "Adeleke Femi",
-    status: "Declined",
-    terminalId: "702793",
-    employeeId: "8784",
+    employeeId: "EMP-1111",
+    Role: "Accountant",
+    Amount: 42000,
+    Name: "Femi Adeleke",
+    Status: "Pending",
+    Contact: "09098765432",
+    src: "/icons/Avatar.svg",
   },
   {
     id: 4,
-    transactionId: "6693ac3ca6e0cdafbe89ab96",
-    dateTime: "Jun 10, 2024 01:30pm",
-    method: "Transfer",
-    amount: 18900,
-    fuel: "Gas",
-    customerName: "Bello Yusuf",
-    status: "Successful",
-    terminalId: "702794",
-    employeeId: "8785",
+    employeeId: "EMP-12222",
+    Role: "Cashier",
+    Amount: 18900,
+    Name: "Yusuf Bello",
+    Status: "Paid",
+    Contact: "08123456789",
+    src: "/icons/Avatar.svg",
   },
   {
     id: 5,
-    transactionId: "6693ac3ca6e0cdafbe89ab95",
-    dateTime: "Jun 10, 2024 02:45pm",
-    method: "Card",
-    amount: 31500,
-    fuel: "Petrol",
-    customerName: "Chukwu Emeka",
-    status: "Failed",
-    terminalId: "702795",
-    employeeId: "8786",
-  },
-  {
-    id: 6,
-    transactionId: "6693ac3ca6e0cdafbe89ab94",
-    dateTime: "Jun 10, 2024 03:20pm",
-    method: "Cash",
-    amount: 27500,
-    fuel: "Diesel",
-    customerName: "Eze Chioma",
-    status: "Successful",
-    terminalId: "702796",
-    employeeId: "8787",
-  },
-  {
-    id: 7,
-    transactionId: "6693ac3ca6e0cdafbe89ab93",
-    dateTime: "Jun 10, 2024 04:10pm",
-    method: "Transfer",
-    amount: 38900,
-    fuel: "Petrol",
-    customerName: "Folarin Tunde",
-    status: "Successful",
-    terminalId: "702797",
-    employeeId: "8788",
-  },
-  {
-    id: 8,
-    transactionId: "6693ac3ca6e0cdafbe89ab92",
-    dateTime: "Jun 10, 2024 05:30pm",
-    method: "Card",
-    amount: 22500,
-    fuel: "Gas",
-    customerName: "Gambo Ibrahim",
-    status: "Declined",
-    terminalId: "702798",
-    employeeId: "8789",
-  },
-  {
-    id: 9,
-    transactionId: "6693ac3ca6e0cdafbe89ab91",
-    dateTime: "Jun 10, 2024 06:15pm",
-    method: "Cash",
-    amount: 31000,
-    fuel: "Petrol",
-    customerName: "Hassan Amina",
-    status: "Successful",
-    terminalId: "702799",
-    employeeId: "8790",
-  },
-  {
-    id: 10,
-    transactionId: "6693ac3ca6e0cdafbe89ab90",
-    dateTime: "Jun 10, 2024 07:05pm",
-    method: "Transfer",
-    amount: 28750,
-    fuel: "Diesel",
-    customerName: "Ibeh Kenechukwu",
-    status: "Successful",
-    terminalId: "702800",
-    employeeId: "8791",
+    employeeId: "EMP-3333",
+    Role: "Attendant",
+    Amount: 31500,
+    Name: "Emeka Chukwu",
+    Status: "Pending",
+    Contact: "07011223344",
+    src: "/icons/Avatar.svg",
   },
 ];
 
-export const columns: ColumnDef<Transaction>[] = [
+export const columns: ColumnDef<Employee>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -193,28 +128,49 @@ export const columns: ColumnDef<Transaction>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "transactionId",
-    header: "Transaction ID",
+    id: "avatar",
     cell: ({ row }) => (
-      <div className="flex flex-col">
-        <span className="text-sm font-medium text-foreground">
-          {row.getValue("transactionId")}
-        </span>
-        <span className="text-xs text-muted-foreground">
-          {row.original.dateTime}
-        </span>
-      </div>
+      <Avatar>
+        <AvatarImage src={row.original.src} alt={row.original.Name} />
+        <AvatarFallback>{row.original.Name[0]}</AvatarFallback>
+      </Avatar>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "employeeId",
+    header: "Employee ID",
+    cell: ({ row }) => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="cursor-pointer">{row.getValue("employeeId")}</span>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{row.getValue("employeeId")}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     ),
   },
   {
-    accessorKey: "method",
-    header: "Method",
+    accessorKey: "Name",
+    header: "Name",
   },
   {
-    accessorKey: "amount",
-    header: "Amount",
+    accessorKey: "Contact",
+    header: "Contact",
+  },
+  {
+    accessorKey: "Role",
+    header: "Role",
+  },
+  {
+    accessorKey: "Amount",
+    header: "Amount Due",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
+      const amount = parseFloat(row.getValue("Amount"));
       const formatted = new Intl.NumberFormat("en-NG", {
         style: "currency",
         currency: "NGN",
@@ -224,22 +180,13 @@ export const columns: ColumnDef<Transaction>[] = [
     },
   },
   {
-    accessorKey: "fuel",
-    header: "Fuel",
-  },
-  {
-    accessorKey: "customerName",
-    header: "Customer Name",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "Status",
+    header: "Payment Status",
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const status = row.getValue("Status") as string;
       const variant = {
-        Successful: "bg-green-100 text-green-800",
-        Declined: "bg-red-100 text-red-800",
-        Failed: "bg-yellow-100 text-yellow-800",
+        Paid: "bg-green-100 text-green-800",
+        Pending: "bg-yellow-100 text-yellow-800",
       }[status] || "bg-gray-100 text-gray-800";
 
       return <Badge className={`${variant} capitalize`}>{status}</Badge>;
@@ -248,17 +195,9 @@ export const columns: ColumnDef<Transaction>[] = [
       return value.includes(row.getValue(id));
     },
   },
-  // {
-  //   accessorKey: "terminalId",
-  //   header: "Terminal ID",
-  // },
-  {
-    accessorKey: "employeeId",
-    header: "Employee ID",
-  },
 ];
 
-export function DataTable() {
+export function EmployeesTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -285,23 +224,22 @@ export function DataTable() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4  bg-white rounded-lg shadow-sm p-4 mb-10">
-        <p className="font-semibold text-lg">Transactions</p>
-
+      <div className="flex items-center justify-between py-4 p-4 mb-4 border bg-white rounded-lg shadow-sm">
+        <p className="font-semibold text-lg">Employees</p>
         <div className="flex items-center gap-4">
           <Input
-            placeholder="Search by transaction ID..."
-            value={(table.getColumn("transactionId")?.getFilterValue() as string) ?? ""}
+            placeholder="Search by name..."
+            value={(table.getColumn("Name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("transactionId")?.setFilterValue(event.target.value)
+              table.getColumn("Name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
           <Input
-            placeholder="Search by customer name..."
-            value={(table.getColumn("customerName")?.getFilterValue() as string) ?? ""}
+            placeholder="Search by employee ID..."
+            value={(table.getColumn("employeeId")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("customerName")?.setFilterValue(event.target.value)
+              table.getColumn("employeeId")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -310,21 +248,23 @@ export function DataTable() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
-                Status <ChevronDown className="ml-2 h-4 w-4" />
+                <Filter className="mr-2 h-4 w-4" />
+                Status
+                <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {["Successful", "Declined", "Failed"].map((status) => (
+              {["Paid", "Pending"].map((status) => (
                 <DropdownMenuCheckboxItem
                   key={status}
                   className="capitalize"
-                  checked={(table.getColumn("status")?.getFilterValue() as string[] || []).includes(status)}
+                  checked={(table.getColumn("Status")?.getFilterValue() as string[] || []).includes(status)}
                   onCheckedChange={(checked) => {
-                    const currentFilters = (table.getColumn("status")?.getFilterValue() as string[]) || [];
+                    const currentFilters = (table.getColumn("Status")?.getFilterValue() as string[]) || [];
                     const newFilters = checked
                       ? [...currentFilters, status]
                       : currentFilters.filter((value) => value !== status);
-                    table.getColumn("status")?.setFilterValue(newFilters.length ? newFilters : undefined);
+                    table.getColumn("Status")?.setFilterValue(newFilters.length ? newFilters : undefined);
                   }}
                 >
                   {status}
@@ -362,7 +302,7 @@ export function DataTable() {
         </div>
       </div>
 
-      <div className="border bg-white rounded-lg shadow-sm p-4">
+      <div className="border bg-white rounded-lg shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -388,7 +328,6 @@ export function DataTable() {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="text-muted-foreground"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -466,6 +405,3 @@ export function DataTable() {
   );
 }
 
-export default function TableSection() {
-  return <DataTable />;
-}

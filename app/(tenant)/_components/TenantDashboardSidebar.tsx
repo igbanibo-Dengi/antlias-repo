@@ -38,52 +38,52 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     title: "Dashboard",
-    href: "/",
+    href: "/tenant",
     icon: LayoutDashboard,
   },
   {
     title: "Wallet",
-    href: "/wallet",
+    href: "/tenant/wallet",
     icon: Wallet,
   },
   {
     title: "Stations",
-    href: "/stations",
+    href: "/tenant/stations",
     icon: Grid,
   },
   {
     title: "Transactions",
-    href: "/transactions",
+    href: "/tenant/transactions",
     icon: BarChart2,
   },
   {
     title: "Expense",
-    href: "/expense",
+    href: "/tenant/expense",
     icon: ShoppingCart,
   },
   {
     title: "Fuel Inventory",
-    href: "/fuel-inventory",
+    href: "/tenant/fuel-inventory",
     icon: FileText,
   },
   {
     title: "Employees",
-    href: "/employees",
+    href: "/tenant/employees",
     icon: Users,
   },
   {
     title: "Pay Salary",
-    href: "/pay-salary",
+    href: "/tenant/pay-salary",
     icon: CreditCard,
   },
   {
     title: "Settings",
-    href: "/settings",
+    href: "/tenant/settings",
     icon: Settings,
   },
 ];
 
-export function DashboardSidebar() {
+export function TenantDashboardSidebar() {
   const pathname = usePathname();
 
   const {
@@ -128,7 +128,7 @@ export function DashboardSidebar() {
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
-                isActive={item.href === '/' ? pathname === '/' : pathname === item.href || pathname.startsWith(item.href)}
+                isActive={item.href === '/tenant' ? pathname === '/tenant' : pathname === item.href || pathname.startsWith(item.href)}
                 className={cn(
                   "h-10 gap-3 pl-4 pr-2 font-medium text-muted-foreground hover:text-white hover:bg-primary/40 data-[active=true]:bg-primary data-[active=true]:text-white",
                   // pathname === item.href && "bg-primary text-white hover:bg-blue-700 hover:text-white",

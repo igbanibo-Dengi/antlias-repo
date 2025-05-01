@@ -31,145 +31,96 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Filter, MoreHorizontal } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-interface Transaction {
-  id: number;
-  transactionId: string;
-  dateTime: string;
-  method: string;
-  amount: number;
-  fuel: string;
-  customerName: string;
-  status: "Successful" | "Declined" | "Failed";
-  terminalId: string;
-  employeeId: string;
+interface Expense {
+  id: string;
+  date: string;
+  category: string;
+  amount: string;
+  evidence: string;
+  description: string;
+  requestBy: string;
+  dateCode: string;
+  status: "Approved" | "Pending" | "Rejected";
 }
 
-const data: Transaction[] = [
+const data: Expense[] = [
   {
-    id: 1,
-    transactionId: "6693ac3ca6e0cdafbe89ab99",
-    dateTime: "Jun 10, 2024 10:30am",
-    method: "Transfer",
-    amount: 33560,
-    fuel: "Petrol",
-    customerName: "Ayinla Gbenga",
-    status: "Successful",
-    terminalId: "702791",
-    employeeId: "8782",
+    id: "6693ac3ca6e0ce2ef4csascae89a89",
+    date: "Jun 10, 2024 - 10:30am",
+    category: "Transfer",
+    amount: "₦33,560",
+    evidence: "Image.jpg",
+    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    requestBy: "Manager",
+    dateCode: "8782",
+    status: "Approved",
   },
   {
-    id: 2,
-    transactionId: "6693ac3ca6e0cdafbe89ab98",
-    dateTime: "Jun 10, 2024 11:45am",
-    method: "Card",
-    amount: 28750,
-    fuel: "Diesel",
-    customerName: "Okafor Chinedu",
-    status: "Successful",
-    terminalId: "702792",
-    employeeId: "8783",
+    id: "6693ac3ca6e0ce2efcacas4e89a90",
+    date: "Jun 10, 2024 - 10:30am",
+    category: "Transfer",
+    amount: "₦33,560",
+    evidence: "Image.jpg",
+    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    requestBy: "Manager",
+    dateCode: "8782",
+    status: "Pending",
   },
   {
-    id: 3,
-    transactionId: "6693ac3ca6e0cdafbe89ab97",
-    dateTime: "Jun 10, 2024 12:15pm",
-    method: "Cash",
-    amount: 42000,
-    fuel: "Petrol",
-    customerName: "Adeleke Femi",
-    status: "Declined",
-    terminalId: "702793",
-    employeeId: "8784",
+    id: "6693fwefwac3ca6e0ce2ef4e89a91",
+    date: "Jun 10, 2024 - 10:30am",
+    category: "Transfer",
+    amount: "₦33,560",
+    evidence: "Image.jpg",
+    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    requestBy: "Manager",
+    dateCode: "8782",
+    status: "Rejected",
   },
   {
-    id: 4,
-    transactionId: "6693ac3ca6e0cdafbe89ab96",
-    dateTime: "Jun 10, 2024 01:30pm",
-    method: "Transfer",
-    amount: 18900,
-    fuel: "Gas",
-    customerName: "Bello Yusuf",
-    status: "Successful",
-    terminalId: "702794",
-    employeeId: "8785",
+    id: "6693ac3ca6e0ce2efvasdvq4e89a89",
+    date: "Jun 10, 2024 - 10:30am",
+    category: "Transfer",
+    amount: "₦33,560",
+    evidence: "Image.jpg",
+    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    requestBy: "Manager",
+    dateCode: "8782",
+    status: "Approved",
   },
   {
-    id: 5,
-    transactionId: "6693ac3ca6e0cdafbe89ab95",
-    dateTime: "Jun 10, 2024 02:45pm",
-    method: "Card",
-    amount: 31500,
-    fuel: "Petrol",
-    customerName: "Chukwu Emeka",
-    status: "Failed",
-    terminalId: "702795",
-    employeeId: "8786",
+    id: "6693ac3ca6fwvsde0ce2ef4e89a89",
+    date: "Jun 10, 2024 - 10:30am",
+    category: "Transfer",
+    amount: "₦33,560",
+    evidence: "Image.jpg",
+    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    requestBy: "Manager",
+    dateCode: "8782",
+    status: "Approved",
   },
   {
-    id: 6,
-    transactionId: "6693ac3ca6e0cdafbe89ab94",
-    dateTime: "Jun 10, 2024 03:20pm",
-    method: "Cash",
-    amount: 27500,
-    fuel: "Diesel",
-    customerName: "Eze Chioma",
-    status: "Successful",
-    terminalId: "702796",
-    employeeId: "8787",
-  },
-  {
-    id: 7,
-    transactionId: "6693ac3ca6e0cdafbe89ab93",
-    dateTime: "Jun 10, 2024 04:10pm",
-    method: "Transfer",
-    amount: 38900,
-    fuel: "Petrol",
-    customerName: "Folarin Tunde",
-    status: "Successful",
-    terminalId: "702797",
-    employeeId: "8788",
-  },
-  {
-    id: 8,
-    transactionId: "6693ac3ca6e0cdafbe89ab92",
-    dateTime: "Jun 10, 2024 05:30pm",
-    method: "Card",
-    amount: 22500,
-    fuel: "Gas",
-    customerName: "Gambo Ibrahim",
-    status: "Declined",
-    terminalId: "702798",
-    employeeId: "8789",
-  },
-  {
-    id: 9,
-    transactionId: "6693ac3ca6e0cdafbe89ab91",
-    dateTime: "Jun 10, 2024 06:15pm",
-    method: "Cash",
-    amount: 31000,
-    fuel: "Petrol",
-    customerName: "Hassan Amina",
-    status: "Successful",
-    terminalId: "702799",
-    employeeId: "8790",
-  },
-  {
-    id: 10,
-    transactionId: "6693ac3ca6e0cdafbe89ab90",
-    dateTime: "Jun 10, 2024 07:05pm",
-    method: "Transfer",
-    amount: 28750,
-    fuel: "Diesel",
-    customerName: "Ibeh Kenechukwu",
-    status: "Successful",
-    terminalId: "702800",
-    employeeId: "8791",
+    id: "6693ac3ca6e0ce2evweaf4e89a89",
+    date: "Jun 10, 2024 - 10:30am",
+    category: "Transfer",
+    amount: "₦33,560",
+    evidence: "Image.jpg",
+    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    requestBy: "Manager",
+    dateCode: "8782",
+    status: "Approved",
   },
 ];
 
-export const columns: ColumnDef<Transaction>[] = [
+export const columns: ColumnDef<Expense>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -193,43 +144,68 @@ export const columns: ColumnDef<Transaction>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "transactionId",
-    header: "Transaction ID",
+    accessorKey: "id",
+    header: "Expense ID",
     cell: ({ row }) => (
-      <div className="flex flex-col">
-        <span className="text-sm font-medium text-foreground">
-          {row.getValue("transactionId")}
-        </span>
-        <span className="text-xs text-muted-foreground">
-          {row.original.dateTime}
-        </span>
-      </div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex flex-col cursor-pointer">
+              <div className="truncate max-w-[120px]">{row.getValue("id")}</div>
+              <div className="text-xs text-muted-foreground">
+                {row.original.date}
+              </div>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{row.getValue("id")}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     ),
   },
   {
-    accessorKey: "method",
-    header: "Method",
+    accessorKey: "category",
+    header: "Category",
   },
   {
     accessorKey: "amount",
     header: "Amount",
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-NG", {
-        style: "currency",
-        currency: "NGN",
-      }).format(amount);
-
-      return <div className="font-medium">{formatted}</div>;
-    },
   },
   {
-    accessorKey: "fuel",
-    header: "Fuel",
+    accessorKey: "evidence",
+    header: "Evidence",
+    cell: ({ row }) => (
+      <a href="#" className="text-blue-500 hover:underline">
+        {row.getValue("evidence")}
+      </a>
+    ),
   },
   {
-    accessorKey: "customerName",
-    header: "Customer Name",
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="max-w-[120px] truncate cursor-pointer">
+              {row.getValue("description")}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-[300px]">
+            <p>{row.getValue("description")}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+  },
+  {
+    accessorKey: "requestBy",
+    header: "Request By",
+  },
+  {
+    accessorKey: "dateCode",
+    header: "Date",
   },
   {
     accessorKey: "status",
@@ -237,9 +213,9 @@ export const columns: ColumnDef<Transaction>[] = [
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       const variant = {
-        Successful: "bg-green-100 text-green-800",
-        Declined: "bg-red-100 text-red-800",
-        Failed: "bg-yellow-100 text-yellow-800",
+        Approved: "bg-green-100 text-green-800",
+        Pending: "bg-yellow-100 text-yellow-800",
+        Rejected: "bg-red-100 text-red-800",
       }[status] || "bg-gray-100 text-gray-800";
 
       return <Badge className={`${variant} capitalize`}>{status}</Badge>;
@@ -248,17 +224,17 @@ export const columns: ColumnDef<Transaction>[] = [
       return value.includes(row.getValue(id));
     },
   },
-  // {
-  //   accessorKey: "terminalId",
-  //   header: "Terminal ID",
-  // },
   {
-    accessorKey: "employeeId",
-    header: "Employee ID",
+    id: "actions",
+    cell: () => (
+      <Button variant="ghost" size="icon" className="h-8 w-8">
+        <MoreHorizontal className="h-4 w-4" />
+      </Button>
+    ),
   },
 ];
 
-export function DataTable() {
+export function ExpenseTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -285,23 +261,22 @@ export function DataTable() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4  bg-white rounded-lg shadow-sm p-4 mb-10">
-        <p className="font-semibold text-lg">Transactions</p>
-
+      <div className="flex items-center justify-between py-4 bg-white rounded-lg shadow-sm p-4 mb-10">
+        <p className="font-semibold text-lg">Expense</p>
         <div className="flex items-center gap-4">
           <Input
-            placeholder="Search by transaction ID..."
-            value={(table.getColumn("transactionId")?.getFilterValue() as string) ?? ""}
+            placeholder="Search by expense ID..."
+            value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("transactionId")?.setFilterValue(event.target.value)
+              table.getColumn("id")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
           <Input
-            placeholder="Search by customer name..."
-            value={(table.getColumn("customerName")?.getFilterValue() as string) ?? ""}
+            placeholder="Search by requester..."
+            value={(table.getColumn("requestBy")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("customerName")?.setFilterValue(event.target.value)
+              table.getColumn("requestBy")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -310,11 +285,13 @@ export function DataTable() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
-                Status <ChevronDown className="ml-2 h-4 w-4" />
+                <Filter className="mr-2 h-4 w-4" />
+                Status
+                <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {["Successful", "Declined", "Failed"].map((status) => (
+              {["Approved", "Pending", "Rejected"].map((status) => (
                 <DropdownMenuCheckboxItem
                   key={status}
                   className="capitalize"
@@ -466,6 +443,10 @@ export function DataTable() {
   );
 }
 
-export default function TableSection() {
-  return <DataTable />;
+export default function ExpenseManagement() {
+  return (
+    <div className="bg-gray-50 min-h-screen mt-5">
+      <ExpenseTable />
+    </div>
+  );
 }
