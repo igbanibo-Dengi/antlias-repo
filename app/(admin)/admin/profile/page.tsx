@@ -57,7 +57,7 @@ const SignedIn = async ({ user }: { user: User }) => {
         </thead>
         <tbody>
           <tr className="divide-x">
-            <td className="px-6 py-3">{dbUser.name || null}</td>
+            <td className="px-6 py-3">{dbUser.firstName || null}</td>
             <td className="px-6 py-3">{dbUser.email}</td>
             <td className="px-6 py-3">{dbUser.role}</td>
             <td className="px-6 py-3">{dbUser.id || null}</td>

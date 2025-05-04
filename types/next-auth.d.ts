@@ -4,6 +4,8 @@ import { users } from "@drizzle/schema";
 
 declare module "next-auth" {
   interface User extends DefaultUser {
+    firstName: (typeof users.$inferSelect)["firstName"];
+    lastName: (typeof users.$inferSelect)["lastName"];
     role: (typeof users.$inferSelect)["role"];
     tenantId: (typeof users.$inferSelect)["tenantId"];
     emailVerified: (typeof users.$inferSelect)["emailVerified"];
@@ -19,12 +21,14 @@ declare module "next-auth/jwt" {
 }
 
 declare module "@auth/core/adapters" {
-  interface AdapterUser {
-    role: "tenant" | "admin" | "user";
+  interface AdapterUser extends DefaultAdapterUser {
+    firstName: (typeof users.$inferSelect)["firstName"];
+    lastName: (typeof users.$inferSelect)["lastName"];
+    role: (typeof users.$inferSelect)["role"];
     tenantId: (typeof users.$inferSelect)["tenantId"];
+    emailVerified: (typeof users.$inferSelect)["emailVerified"];
   }
 }
-
 export interface ExtendedAdapterUser extends CoreAdapterUser {
   role: "tenant" | "admin" | "user";
   tenantId: (typeof users.$inferSelect)["tenantId"];

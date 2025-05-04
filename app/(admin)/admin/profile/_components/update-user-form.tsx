@@ -38,11 +38,15 @@ export const UpdateUserForm = ({ user }: UpdateUserFormProps) => {
   const { data: session, update } = useSession();
   const router = useRouter();
 
-  const { id, name: defaultName } = user;
+  const { id, firstName: defaultFirstName, lastName: defaultLastName } = user;
 
   const form = useForm<UpdateUserInfoInput>({
     resolver: valibotResolver(UpdateUserInfoSchema),
-    defaultValues: { id, name: defaultName || "" },
+    defaultValues: {
+      id,
+      firstName: defaultFirstName || "",
+      lastName: defaultLastName || ""
+    },
   });
 
   const { handleSubmit, control, formState, setError } = form;
@@ -60,7 +64,8 @@ export const UpdateUserForm = ({ user }: UpdateUserFormProps) => {
           ...session,
           user: {
             ...session.user,
-            name: updatedUser.name,
+            firstName: updatedUser.firstName,
+            lastName: updatedUser.firstName,
           },
         });
       }
@@ -82,7 +87,7 @@ export const UpdateUserForm = ({ user }: UpdateUserFormProps) => {
         case 500:
         default:
           const error = res.error || "Internal Server Error";
-          setError("name", { message: error });
+          setError("lastName", { message: error });
       }
     }
   };
@@ -109,10 +114,24 @@ export const UpdateUserForm = ({ user }: UpdateUserFormProps) => {
             <form onSubmit={handleSubmit(submit)} className="space-y-4">
               <FormField
                 control={control}
-                name="name"
+                name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
                     <FormControl>
                       <Input type="text" {...field} />
                     </FormControl>

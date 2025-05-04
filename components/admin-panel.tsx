@@ -38,8 +38,10 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChangeUserRoleInput } from "@/app/(Root)/dashboard/_componenets/change-user-role-input";
-import { ToggleEmailVerifiedInput } from "@/app/(Root)/dashboard/_componenets/toggle-verified-email-input";
+import { ToggleEmailVerifiedInput } from "@/app/(dashboard)/_componenets/toggle-verified-email-input";
+import { ChangeUserRoleInput } from "@/app/(dashboard)/_componenets/change-user-role-input";
+// import { ChangeUserRoleInput } from "@/app/(Root)/dashboard/_componenets/change-user-role-input";
+// import { ToggleEmailVerifiedInput } from "@/app/(Root)/dashboard/_componenets/toggle-verified-email-input";
 
 type User = {
   id: string;
@@ -178,9 +180,9 @@ export function AdminPanelComponent({ users }: any) {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                       </TableHead>
                     );
                   })}

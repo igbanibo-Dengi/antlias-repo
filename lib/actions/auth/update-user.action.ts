@@ -1,20 +1,21 @@
 "use server";
 
-import * as v from "valibot";
-import { UpdateUserInfoSchema } from "@/validators/update-user-info-validator";
 import { auth } from "@/auth";
-import { users } from "@/database/drizzle/schema";
 import db from "@/database/drizzle";
+import { users } from "@/database/drizzle/schema";
+import { UpdateUserInfoSchema } from "@/validators/update-user-info-validator";
 import { eq } from "drizzle-orm";
+import * as v from "valibot";
+
 
 type Res =
   | {
-      success: true;
-      data: {
-        id: (typeof users.$inferSelect)["id"];
-        name: (typeof users.$inferSelect)["name"];
-      };
-    }
+    success: true;
+    data: {
+      id: (typeof users.$inferSelect)["id"];
+      firstName: (typeof users.$inferSelect)["firstName"];
+    };
+  }
   | { success: false; error: v.FlatErrors<undefined>; statusCode: 400 }
   | { success: false; error: string; statusCode: 401 | 500 };
 
@@ -26,7 +27,7 @@ export async function updateUserInfoAction(values: unknown): Promise<Res> {
     return { success: false, error: flatErrors, statusCode: 400 };
   }
 
-  const { id, name } = parsedValues.output;
+  const { id, firstName, lastName } = parsedValues.output;
 
   const session = await auth();
 
@@ -34,16 +35,16 @@ export async function updateUserInfoAction(values: unknown): Promise<Res> {
     return { success: false, error: "Unauthorized", statusCode: 401 };
   }
 
-  if (session.user.name === name) {
-    return { success: true, data: { id, name } };
+  if (session.user.firstName === firstName || session.user.lastName === lastName) {
+    return { success: false, error: { root: ["No changes made"] }, statusCode: 400 };
   }
 
   try {
     const updatedUser = await db
       .update(users)
-      .set({ name })
+      .set({ firstName })
       .where(eq(users.id, id))
-      .returning({ id: users.id, name: users.name })
+      .returning({ id: users.id, firstName: users.firstName })
       .then((res) => res[0]);
 
     return { success: true, data: updatedUser };

@@ -24,7 +24,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import ExpenseForm from "@/app/(Root)/expense/_components/expenseform";
 import { ExpenseDialog } from "./_components/ExpenseDialog";
 import { ExpenseTable } from "./_components/ExpenseTable";
 
