@@ -66,8 +66,7 @@ export const users = pgTable(
       .notNull()
       .references(() => tenants.id, { onDelete: "cascade" }),
     role: roleEnum("role").notNull(),
-    firstName: text("firstName"),
-    lastName: text("lastName"),
+    name: text("name"),
     email: text("email").notNull(),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
@@ -132,6 +131,8 @@ export const employees = pgTable(
     branchId: uuid("branch_id")
       .notNull()
       .references(() => branches.id),
+    firstName: text("first_name").notNull(),
+    lastName: text("last_name").notNull(),
     position: text("position"),
     hireDate: date("hire_date").notNull().defaultNow(),
     terminationDate: date("termination_date"),

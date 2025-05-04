@@ -1,5 +1,5 @@
 {
-  "id": "6f716e50-f617-4bc6-8189-32e142db5f58",
+  "id": "a41ee268-d736-433c-9796-8fd7b281bb4b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -610,6 +610,18 @@
         "branch_id": {
           "name": "branch_id",
           "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -1596,14 +1608,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "firstName": {
-          "name": "firstName",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "lastName": {
-          "name": "lastName",
+        "name": {
+          "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": false

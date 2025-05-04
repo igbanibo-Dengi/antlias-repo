@@ -33,7 +33,7 @@ export default function Page() {
             Complete your sign-up by verifying your email.
           </p>
 
-          <Link href="/auth/sign-up">
+          <Link href="/auth/sign-in">
             <span className="text-blue-600 text-sm hover:underline">
               &lt; Back to log in
             </span>
