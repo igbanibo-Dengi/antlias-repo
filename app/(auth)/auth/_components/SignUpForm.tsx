@@ -20,6 +20,7 @@ import { signUpAction } from "@/lib/actions/auth/signUp.actions";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import heroImage from "../../../../public/images/auth_Image.webp"
 
 export const SignupForm = () => {
   const [success, setSuccess] = useState(false);
@@ -163,9 +164,11 @@ export const SignupForm = () => {
     >
       <div className="col-span-2 hidden w-full items-center justify-center lg:flex">
         <div className="relative h-[90%] w-[70%]">
-          <img
-            src="/images/auth_image.webp"
+          <Image
+            src={heroImage}
             alt="Illustration"
+            fill
+            priority
           />
         </div>
       </div>

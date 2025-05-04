@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { SignInForm } from "../_components/SignInForm";
 import Link from "next/link";
 import Image from "next/image";
+import heroImage from "../../../../public/images/auth_Image.webp"
+
 
 
 const SignInPage = () => {
@@ -9,9 +11,11 @@ const SignInPage = () => {
     <div className="grid h-screen w-screen overflow-hidden lg:grid-cols-5">
       <div className="col-span-2 hidden w-full items-center justify-center lg:flex">
         <div className="relative h-[90%] w-[70%]">
-          <img
-            src="/images/auth_image.webp"
+          <Image
+            src={heroImage}
             alt="Illustration"
+            fill
+            priority
           />
         </div>
       </div>
