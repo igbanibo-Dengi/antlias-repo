@@ -9,7 +9,7 @@ const SignInPage = () => {
       <div className="col-span-2 hidden w-full items-center justify-center lg:flex">
         <div className="relative h-[90%] w-[70%]">
           <Image
-            src="/images/auth_image.png"
+            src="/images/auth_image.webp"
             alt="Illustration"
             // width={600}
             // height={600}
@@ -28,7 +28,7 @@ const SignInPage = () => {
                 alt="logo"
                 width={20}
                 height={20}
-                priority
+              // priority
               />
               <h2 className="text-xl font-semibold">Antlias</h2>
             </div>
