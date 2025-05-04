@@ -3,18 +3,15 @@ import { SignInForm } from "../_components/SignInForm";
 import Link from "next/link";
 import Image from "next/image";
 
+
 const SignInPage = () => {
   return (
     <div className="grid h-screen w-screen overflow-hidden lg:grid-cols-5">
       <div className="col-span-2 hidden w-full items-center justify-center lg:flex">
         <div className="relative h-[90%] w-[70%]">
-          <Image
+          <img
             src="/images/auth_image.webp"
             alt="Illustration"
-            // width={600}
-            // height={600}
-            fill
-            priority
           />
         </div>
       </div>
