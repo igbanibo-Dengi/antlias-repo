@@ -24,12 +24,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { employeeFormSchema, EmployeeFormValues } from "@/validators/employee";
+import { employeeFormSchema, EmployeeFormValues } from "@/validators/employee-form-validator";
 import { useRouter } from "next/navigation";
+import { createEmployee } from "@/lib/actions/employee/employee";
 
+type Branch = {
+  id: string;
+  tenantId: string;
+  name: string;
+};
 
+interface NewEmployeeFormProps {
+  branches: Branch[];
+}
 
-export function NewEmployeeForm() {
+export function NewEmployeeForm({ branches }: NewEmployeeFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [activeSection, setActiveSection] = useState<'personal' | 'account' | 'guarantor'>('personal');
   const router = useRouter();
@@ -42,8 +51,10 @@ export function NewEmployeeForm() {
       email: "",
       contactNumber: "",
       address: "",
+      hireDate: undefined,
       position: "",
       salary: undefined,
+      commission: undefined,
       bankName: "",
       accountNumber: "",
       accountName: "",
@@ -55,28 +66,77 @@ export function NewEmployeeForm() {
     }
   });
 
+  // Function to validate current section before proceeding
+  const validateAndProceed = async (nextSection: 'personal' | 'account') => {
+    let fieldsToValidate: (keyof EmployeeFormValues)[] = [];
+
+    // Determine which fields to validate based on current section
+    if (activeSection === 'personal') {
+      fieldsToValidate = ['firstName', 'lastName', 'email', 'contactNumber', 'position', 'branchId'];
+    } else if (activeSection === 'account') {
+      fieldsToValidate = ['bankName', 'accountNumber', 'accountName', 'bvn'];
+    } else if (activeSection === 'guarantor') {
+      fieldsToValidate = [];
+    }
+
+    // Trigger validation for the current section
+    const isValid = await form.trigger(fieldsToValidate);
+
+    if (isValid) {
+      setActiveSection(nextSection);
+      // Scroll to top of next section for better UX
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Find the first error and scroll to it
+      const errorFields = fieldsToValidate.filter(field => form.formState.errors[field]);
+      if (errorFields.length > 0) {
+        const firstError = errorFields[0];
+        const element = document.querySelector(`[name="${firstError}"]`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      toast.error("Please fill all required fields correctly before proceeding.");
+    }
+  };
+
   async function onSubmit(data: EmployeeFormValues) {
     setIsLoading(true);
+
+    if (!data.branchId) {
+      toast.error("Please select a branch");
+      setIsLoading(false);
+      return;
+    }
+
+    const newData = {
+      ...data,
+      branchId: data.branchId,
+    }
+
     try {
-      // Simulate API call
-      console.log(data);
+      const response = await createEmployee(newData)
 
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      if (!response.success) {
+        toast.error(response.error || "An unknown error occurred.");
+        throw new Error("Failed to create employee")
+      }
 
-      toast.success(`${data.firstName} ${data.lastName} has been added to your staff.`, {
-        action: {
-          label: "View",
-          onClick: () => console.log("View employee"),
-        },
-      });
+      if (response.success) {
+        toast.success(`${data.firstName} ${data.lastName} has been added to your staff.`, {
+          action: {
+            label: "View",
+            onClick: () => console.log("View employee"),
+          },
+        });
+      }
 
-      // router.push("/employees");
-      // form.reset();
+      router.push("/employees");
+      form.reset();
     } catch (error) {
-      toast.error("Error adding employee", {
-        description: "An error occurred while adding the employee. Please try again.",
-      });
-    } finally {
+      return { success: false, error: "Internal Server Error", statusCode: 500 };
+    }
+    finally {
       setIsLoading(false);
     }
   }
@@ -106,7 +166,14 @@ export function NewEmployeeForm() {
                   ? 'border-b-2 border-primary text-primary'
                   : 'text-muted-foreground'
                   }`}
-                onClick={() => setActiveSection(section.id as any)}
+                onClick={() => {
+                  // Only allow clicking on tabs that are before the current active section
+                  const currentIndex = sections.findIndex(s => s.id === activeSection);
+                  const clickedIndex = sections.findIndex(s => s.id === section.id);
+                  if (clickedIndex <= currentIndex) {
+                    setActiveSection(section.id as any);
+                  }
+                }}
               >
                 {section.label}
               </button>
@@ -246,6 +313,70 @@ export function NewEmployeeForm() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="commission"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>commission (%)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="0-100"
+                        max={100}
+                        value={isNaN(field.value ?? NaN) ? "" : field.value}
+                        onChange={(e) => {
+                          const val = e.target.valueAsNumber;
+                          field.onChange(isNaN(val) ? undefined : val);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="hireDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>HireDate</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        value={field.value ? field.value.toISOString().split('T')[0] : ""}
+                        onChange={(e) => field.onChange(new Date(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="branchId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>branch <span className="text-red-500">*</span></FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select branch" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {branches.map((branch) => (
+                          <SelectItem key={branch.id} value={branch.id}>
+                            {branch.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <FormField
@@ -278,7 +409,7 @@ export function NewEmployeeForm() {
               </Button>
               <Button
                 type="button"
-                onClick={() => setActiveSection('account')}
+                onClick={() => validateAndProceed('account')}
               >
                 Next: Account Details
               </Button>
@@ -297,7 +428,7 @@ export function NewEmployeeForm() {
                 name="bankName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bank Name</FormLabel>
+                    <FormLabel>Bank Name <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input placeholder="Access Bank" {...field} />
                     </FormControl>
@@ -311,7 +442,7 @@ export function NewEmployeeForm() {
                 name="accountNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Account Number</FormLabel>
+                    <FormLabel>Account Number <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder="1234567890"
@@ -331,7 +462,7 @@ export function NewEmployeeForm() {
                 name="accountName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Account Name</FormLabel>
+                    <FormLabel>Account Name <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input placeholder="John Doe" {...field} />
                     </FormControl>
@@ -345,7 +476,7 @@ export function NewEmployeeForm() {
                 name="bvn"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>BVN</FormLabel>
+                    <FormLabel>BVN <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder="12345678901"
@@ -472,7 +603,7 @@ export function NewEmployeeForm() {
               </Button>
               <Button
                 type="submit"
-                disabled={isLoading || !form.formState.isDirty}
+                disabled={isLoading}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">

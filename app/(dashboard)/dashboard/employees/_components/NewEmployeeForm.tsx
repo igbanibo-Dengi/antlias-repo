@@ -24,7 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { employeeFormSchema, EmployeeFormValues } from "@/validators/employee";
+import { employeeFormSchema, EmployeeFormValues } from "@/validators/employee-form-validator";
 import { useRouter } from "next/navigation";
 
 

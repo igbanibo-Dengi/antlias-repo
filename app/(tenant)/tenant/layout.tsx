@@ -19,6 +19,7 @@ export default async function RootLayout({
 }) {
   const session = await auth();
 
+
   after(async () => {
     if (!session?.user?.id) return;
 
