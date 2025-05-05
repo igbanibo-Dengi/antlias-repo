@@ -134,7 +134,7 @@ export const employees = pgTable(
     firstName: text("first_name").notNull(),
     lastName: text("last_name").notNull(),
     position: text("position"),
-    hireDate: date("hire_date").notNull().defaultNow(),
+    hireDate: date("hire_date"),
     terminationDate: date("termination_date"),
     contactNumber: text("phone_number"),
     address: text("address"),

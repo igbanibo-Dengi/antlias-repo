@@ -8,6 +8,13 @@
       "when": 1746369853336,
       "tag": "0000_careless_night_thrasher",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1746410850992,
+      "tag": "0001_stale_vermin",
+      "breakpoints": true
     }
   ]
 }
