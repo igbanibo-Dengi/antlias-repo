@@ -327,7 +327,7 @@ export async function deleteEmployeeAction(values: z.infer<typeof deleteEmployee
     console.error("Error in employee deletion:", error)
     return {
       success: false,
-      error: error.message || "Internal Server Error",
+      error: error instanceof Error ? error.message : "Internal Server Error",
       statusCode: 500,
     }
   }
