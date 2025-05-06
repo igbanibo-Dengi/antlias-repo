@@ -3,7 +3,7 @@
 import db from "@/database/drizzle";
 import { employees, lower, users } from "@/database/drizzle/schema";
 import { eq } from "drizzle-orm";
-import { getTenantId } from "../tenant/tenant.action";
+import { getBranchById, getEmployeeById, getTenantById, getTenantId } from "../tenant/tenant.action";
 import bcrypt from "bcrypt";
 import { createVerificationTokenAction } from "../admin/create-verification-token-action";
 import { sendEmail } from "@/lib/workflow";
@@ -12,28 +12,7 @@ import { USER_ROLES } from "@/lib/constants";
 import { auth } from "@/auth";
 import { employeeFormSchema } from "@/validators/employee-form-validator";
 import { z } from "zod";
-
-
-// interface Employee {
-//   branchId: string;
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   position: string;
-//   hireDate: Date;
-//   contactNumber: string;
-//   address: string;
-//   salary: number;
-//   commission: number;
-//   accountNumber: string;
-//   accountName: string;
-//   bankName: string;
-//   bvn: string;
-//   guarantorName: string;
-//   guarantorPhone: string;
-//   guarantorAddress: string;
-//   guarantorRelationship: string;
-// }
+import { sendStationInvitationEmail } from "@/lib/emails/invitationEmail";
 
 
 /**
@@ -69,9 +48,9 @@ export const createEmployee = async (values: z.infer<typeof employeeFormSchema>)
     contactNumber,
     address,
     position,
+    role,
     hireDate,
     salary,
-    commission,
     bankName,
     accountNumber,
     accountName,
@@ -144,13 +123,18 @@ export const createEmployee = async (values: z.infer<typeof employeeFormSchema>)
       throw new Error("Invalid tenantId");
     }
 
+    // Ensure role is valid
+    if (!["tenant", "admin", "user"].includes(role)) {
+      throw new Error("Invalid role");
+    }
+
     const newUser = await db
       .insert(users)
       .values({
         name: `${firstName} ${lastName}`,
         email,
         password: hashedPassword,
-        role: "user",
+        role: role as "tenant" | "admin" | "user",
         isActive: true,
         emailVerified: new Date(),
         tenantId: tenantId,
@@ -174,11 +158,11 @@ export const createEmployee = async (values: z.infer<typeof employeeFormSchema>)
           firstName: firstName,
           lastName: lastName,
           contactNumber: contactNumber,
+          email: email,
           address: address,
           hireDate: hireDate ? hireDate.toISOString() : null,
           position: position,
           salary: salary,
-          commission: (commission ?? 0).toString(),
           bankName: bankName,
           accountNumber: accountNumber,
           accountName: accountName,
@@ -199,10 +183,36 @@ export const createEmployee = async (values: z.infer<typeof employeeFormSchema>)
       const verificationToken = await createVerificationTokenAction(newUser.email)
       const token = verificationToken.token
 
+      const branch = await getBranchById(branchId)
+
+      if (!branch || "success" in branch) {
+        throw new Error(branch?.error || "Failed to fetch branch details");
+      }
+
+      const sationName = branch.name
+
+
+
+      const tenant = await getTenantById(tenantId)
+
+      if (!tenant || "success" in tenant) {
+        throw new Error(tenant?.error || "Failed to fetch tenant details");
+      }
+
+      const tenantName = tenant.name
+
+
+      const invitationEmailData = {
+        recipientName: firstName + " " + lastName,
+        tenantName: tenantName,
+        stationName: sationName,
+        token: token,
+      }
+
       await sendEmail({
         email,
-        subject: "Reset or password 🎉",
-        message: sendForgotPasswordEmail(token),
+        subject: `Welcome to Antlias,  ${tenantName} 🎉`,
+        message: sendStationInvitationEmail(invitationEmailData),
       });
 
       return {
@@ -331,4 +341,39 @@ export async function deleteEmployeeAction(values: z.infer<typeof deleteEmployee
       statusCode: 500,
     }
   }
+}
+
+
+export async function getEmployeeByBranchId(branchId: string) {
+
+  const session = await auth()
+
+  if (!session) {
+    return { success: false, error: "No session found", statusCode: 401 };
+  }
+
+  if (session.user?.role !== USER_ROLES.TENANT && session.user?.role !== USER_ROLES.ADMIN) {
+    return { success: false, error: "You are not authorized to perform this action", statusCode: 403 };
+  }
+
+  try {
+
+    const response = await db
+      .select()
+      .from(employees)
+      .where(eq(employees.branchId, branchId))
+      .then((res) => res ?? []);
+
+    return response
+
+  } catch (error) {
+    console.error(error)
+    return {
+      success: false,
+      error: "Error in getEmpoyeeByBranch action",
+      statusCode: 409
+    }
+  }
+
+
 }

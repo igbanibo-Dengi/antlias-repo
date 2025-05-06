@@ -137,6 +137,7 @@ export const employees = pgTable(
     hireDate: date("hire_date"),
     terminationDate: date("termination_date"),
     contactNumber: text("phone_number"),
+    email: text("email"),
     address: text("address"),
     // bank info
     salary: integer("salary").default(0),

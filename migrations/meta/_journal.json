@@ -15,6 +15,13 @@
       "when": 1746410850992,
       "tag": "0001_stale_vermin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1746524501012,
+      "tag": "0002_daffy_johnny_storm",
+      "breakpoints": true
     }
   ]
 }

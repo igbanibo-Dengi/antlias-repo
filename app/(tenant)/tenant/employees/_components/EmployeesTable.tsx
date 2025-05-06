@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -28,81 +28,30 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronLeft, ChevronRight, Filter } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChevronDown, ChevronLeft, ChevronRight, Filter, MoreHorizontal } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-interface Employee {
-  id: number;
-  Role: string;
-  Name: string;
-  Amount: number;
-  Status: "Paid" | "Pending";
-  Contact: string;
-  employeeId: string;
-  src: string;
-}
-
-const data: Employee[] = [
-  {
-    id: 1,
-    employeeId: "EMP-323",
-    Role: "Manager",
-    Amount: 33560,
-    Name: "Ayinla Gbenga",
-    Status: "Paid",
-    Contact: "07027999991",
-    src: "/icons/Avatar.svg",
-  },
-  {
-    id: 2,
-    employeeId: "EMP-4444",
-    Role: "Supervisor",
-    Amount: 28750,
-    Name: "Chinedu Okafor",
-    Status: "Paid",
-    Contact: "08012345678",
-    src: "/icons/Avatar.svg",
-  },
-  {
-    id: 3,
-    employeeId: "EMP-1111",
-    Role: "Accountant",
-    Amount: 42000,
-    Name: "Femi Adeleke",
-    Status: "Pending",
-    Contact: "09098765432",
-    src: "/icons/Avatar.svg",
-  },
-  {
-    id: 4,
-    employeeId: "EMP-12222",
-    Role: "Cashier",
-    Amount: 18900,
-    Name: "Yusuf Bello",
-    Status: "Paid",
-    Contact: "08123456789",
-    src: "/icons/Avatar.svg",
-  },
-  {
-    id: 5,
-    employeeId: "EMP-3333",
-    Role: "Attendant",
-    Amount: 31500,
-    Name: "Emeka Chukwu",
-    Status: "Pending",
-    Contact: "07011223344",
-    src: "/icons/Avatar.svg",
-  },
-];
+import { BranchProps, Employee } from "@/types";
+import { getEmployeeByBranchId } from "@/lib/actions/employee/employee";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { DeleteEmployeeButton } from "@/components/DeleteEmployeeButton";
+import { useRouter } from "next/navigation";
 
 export const columns: ColumnDef<Employee>[] = [
   {
@@ -128,49 +77,48 @@ export const columns: ColumnDef<Employee>[] = [
     enableHiding: false,
   },
   {
-    id: "avatar",
-    cell: ({ row }) => (
-      <Avatar>
-        <AvatarImage src={row.original.src} alt={row.original.Name} />
-        <AvatarFallback>{row.original.Name[0]}</AvatarFallback>
-      </Avatar>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "employeeId",
+    accessorKey: "id",
     header: "Employee ID",
     cell: ({ row }) => (
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="cursor-pointer">{row.getValue("employeeId")}</span>
+            <div className="flex flex-col cursor-pointer">
+              <div className="truncate max-w-[82px]">{row.getValue("id")}</div>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{row.getValue("employeeId")}</p>
+            <p>{row.getValue("id")}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
     ),
   },
   {
-    accessorKey: "Name",
-    header: "Name",
+    accessorKey: "firstName",
+    header: "first Name",
   },
   {
-    accessorKey: "Contact",
-    header: "Contact",
+    accessorKey: "lastName",
+    header: "Last Name",
   },
   {
-    accessorKey: "Role",
-    header: "Role",
+    accessorKey: "contactNumber",
+    header: "Contact Number",
   },
   {
-    accessorKey: "Amount",
-    header: "Amount Due",
+    accessorKey: "email",
+    header: "Email",
+  },
+  {
+    accessorKey: "position",
+    header: "Position",
+  },
+  {
+    accessorKey: "salary",
+    header: "Salary",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("Amount"));
+      const amount = parseFloat(row.getValue("salary"));
       const formatted = new Intl.NumberFormat("en-NG", {
         style: "currency",
         currency: "NGN",
@@ -180,31 +128,106 @@ export const columns: ColumnDef<Employee>[] = [
     },
   },
   {
-    accessorKey: "Status",
-    header: "Payment Status",
+    accessorKey: "isActive",
+    header: "Status",
     cell: ({ row }) => {
-      const status = row.getValue("Status") as string;
-      const variant = {
-        Paid: "bg-green-100 text-green-800",
-        Pending: "bg-yellow-100 text-yellow-800",
-      }[status] || "bg-gray-100 text-gray-800";
+      const isActive = row.getValue("isActive");
 
-      return <Badge className={`${variant} capitalize`}>{status}</Badge>;
+      const activeStatus = String(isActive).toLowerCase() === "true";
+
+      const variant = activeStatus
+        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+
+      return (
+        <Badge className={`${variant} capitalize`}>
+          {activeStatus ? "Active" : "Inactive"}
+        </Badge>
+      );
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
+      return value.includes(String(row.getValue(id)));
+    },
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const id = String(row.getValue("id"));
+      const firstName = String(row.getValue("firstName"));
+      const lastName = String(row.getValue("lastName"));
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(id)}
+            >
+              Copy payment ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>View customer</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <DeleteEmployeeButton
+                employeeId={id}
+                employeeName={`${firstName} ${lastName}`}
+              />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
     },
   },
 ];
 
-export function EmployeesTable() {
+
+
+
+export function EmployeesTable({ branches }: BranchProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [selectedBranch, setSelectedBranch] = useState<string>(branches[0]?.id || "");
+  const [isLoading, setIsLoading] = useState(false);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [error, setError] = useState("");
+
+
+  const router = useRouter()
+  const handleBranchChange = async (branchId: string) => {
+    setIsLoading(true);
+    setSelectedBranch(branchId);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    const loadEmployees = async () => {
+      try {
+        const response = await getEmployeeByBranchId(selectedBranch);
+        if ("error" in response) {
+          setError(response.error);
+          setEmployees([]);
+        } else {
+          setEmployees(response as Employee[]);
+        }
+      } catch (err) {
+        setError("Failed to load employees");
+      }
+    };
+
+    loadEmployees();
+  }, [selectedBranch]);
 
   const table = useReactTable({
-    data,
+    data: employees,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -222,24 +245,47 @@ export function EmployeesTable() {
     },
   });
 
+
+
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4 p-4 mb-4 border bg-white rounded-lg shadow-sm">
         <p className="font-semibold text-lg">Employees</p>
-        <div className="flex items-center gap-4">
+        <div className="grid grid-cols-3 gap-4">
+          <Select
+            value={selectedBranch}
+            onValueChange={handleBranchChange}
+            disabled={isLoading}
+          >
+            <SelectTrigger className="w-[180px]">
+              {isLoading ? (
+                <p>Loading...</p>
+              ) : (
+                <SelectValue placeholder="Select branch" />
+              )}
+            </SelectTrigger>
+            <SelectContent>
+              {branches.map((branch) => (
+                <SelectItem key={branch.id} value={branch.id}>
+                  {branch.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Input
-            placeholder="Search by name..."
-            value={(table.getColumn("Name")?.getFilterValue() as string) ?? ""}
+            placeholder="Search by first name..."
+            value={(table.getColumn("firstName")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("Name")?.setFilterValue(event.target.value)
+              table.getColumn("firstName")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
           <Input
             placeholder="Search by employee ID..."
-            value={(table.getColumn("employeeId")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("employeeId")?.setFilterValue(event.target.value)
+              table.getColumn("id")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -247,24 +293,24 @@ export function EmployeesTable() {
         <div className="flex items-center space-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+              <Button variant="outline" className="ml-auto w-full">
                 <Filter className="mr-2 h-4 w-4" />
                 Status
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {["Paid", "Pending"].map((status) => (
+              {["Active", "InActive"].map((status) => (
                 <DropdownMenuCheckboxItem
                   key={status}
                   className="capitalize"
-                  checked={(table.getColumn("Status")?.getFilterValue() as string[] || []).includes(status)}
+                  checked={(table.getColumn("isActive")?.getFilterValue() as string[] || []).includes(status)}
                   onCheckedChange={(checked) => {
-                    const currentFilters = (table.getColumn("Status")?.getFilterValue() as string[]) || [];
+                    const currentFilters = (table.getColumn("isActive")?.getFilterValue() as string[]) || [];
                     const newFilters = checked
                       ? [...currentFilters, status]
                       : currentFilters.filter((value) => value !== status);
-                    table.getColumn("Status")?.setFilterValue(newFilters.length ? newFilters : undefined);
+                    table.getColumn("isActive")?.setFilterValue(newFilters.length ? newFilters : undefined);
                   }}
                 >
                   {status}

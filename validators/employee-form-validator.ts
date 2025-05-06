@@ -28,14 +28,17 @@ export const employeeFormSchema = z.object({
   branchId: z.string()
     .min(1, "Please select a branch"),
 
+  role: z.string()
+    .min(1, "Please select a role"),
+
   salary: z.number()
     .min(0, "Salary must be a positive number")
     .max(10000000, "Salary must be less than ₦10,000,000"),
 
-  commission: z.number()
-    .min(0, "Salary must be a positive number")
-    .max(100, "commission must be between 0& and 100%")
-    .optional(),
+  // commission: z.number()
+  //   .min(0, "Salary must be a positive number")
+  //   .max(100, "commission must be between 0& and 100%")
+  //   .optional(),
 
   bankName: z.string()
     .min(2, "Bank name must be at least 2 characters"),
@@ -54,9 +57,11 @@ export const employeeFormSchema = z.object({
   guarantorName: z.string()
     .optional(),
 
-  guarantorPhone: z.string()
-    .regex(/^(?:\+234|234|0)?(7[0-9]|8[0-9]|9[0-9])[0-9]{8}$/, "Invalid Nigerian phone number")
-    .optional(),
+  guarantorPhone: z.union([
+    z.string()
+      .regex(/^(?:\+234|234|0)?(7[0-9]|8[0-9]|9[0-9])[0-9]{8}$/, "Invalid Nigerian phone number"),
+    z.literal("") // Allows empty string
+  ]).optional(),
 
   guarantorAddress: z.string()
     .optional(),

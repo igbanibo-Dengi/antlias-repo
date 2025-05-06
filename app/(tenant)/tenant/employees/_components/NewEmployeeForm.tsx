@@ -27,18 +27,10 @@ import { Loader2 } from "lucide-react";
 import { employeeFormSchema, EmployeeFormValues } from "@/validators/employee-form-validator";
 import { useRouter } from "next/navigation";
 import { createEmployee } from "@/lib/actions/employee/employee";
+import { BranchProps } from "@/types";
 
-type Branch = {
-  id: string;
-  tenantId: string;
-  name: string;
-};
 
-interface NewEmployeeFormProps {
-  branches: Branch[];
-}
-
-export function NewEmployeeForm({ branches }: NewEmployeeFormProps) {
+export function NewEmployeeForm({ branches }: BranchProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [activeSection, setActiveSection] = useState<'personal' | 'account' | 'guarantor'>('personal');
   const router = useRouter();
@@ -53,8 +45,9 @@ export function NewEmployeeForm({ branches }: NewEmployeeFormProps) {
       address: "",
       hireDate: undefined,
       position: "",
+      role: "",
       salary: undefined,
-      commission: undefined,
+      // commission: undefined,
       bankName: "",
       accountNumber: "",
       accountName: "",
@@ -72,7 +65,7 @@ export function NewEmployeeForm({ branches }: NewEmployeeFormProps) {
 
     // Determine which fields to validate based on current section
     if (activeSection === 'personal') {
-      fieldsToValidate = ['firstName', 'lastName', 'email', 'contactNumber', 'position', 'branchId'];
+      fieldsToValidate = ['firstName', 'lastName', 'email', 'contactNumber', 'position', 'role', 'branchId', 'salary'];
     } else if (activeSection === 'account') {
       fieldsToValidate = ['bankName', 'accountNumber', 'accountName', 'bvn'];
     } else if (activeSection === 'guarantor') {
@@ -131,7 +124,7 @@ export function NewEmployeeForm({ branches }: NewEmployeeFormProps) {
         });
       }
 
-      router.push("/employees");
+      router.push("/tenant/employees");
       form.reset();
     } catch (error) {
       return { success: false, error: "Internal Server Error", statusCode: 500 };
@@ -150,11 +143,8 @@ export function NewEmployeeForm({ branches }: NewEmployeeFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="bg-white rounded-lg shadow-lg p-6 w-full">
+        <div className="bg-white rounded-lg shadow-lg p-6 w-full flex items-end justify-between">
           <div className="text-2xl font-semibold">New Employee Form</div>
-          <p className="text-sm text-muted-foreground">
-            All fields are required
-          </p>
 
           {/* Navigation Tabs */}
           <div className="flex border-b mt-4">
@@ -294,6 +284,54 @@ export function NewEmployeeForm({ branches }: NewEmployeeFormProps) {
 
               <FormField
                 control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role <span className="text-red-500">*</span></FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select position" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="admin">Administrative Staff</SelectItem>
+                        <SelectItem value="user">Non-Administrative Staff</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+
+              <FormField
+                control={form.control}
+                name="branchId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Station <span className="text-red-500">*</span></FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select station" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {branches.map((branch) => (
+                          <SelectItem key={branch.id} value={branch.id}>
+                            {branch.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="salary"
                 render={({ field }) => (
                   <FormItem>
@@ -313,7 +351,7 @@ export function NewEmployeeForm({ branches }: NewEmployeeFormProps) {
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="commission"
                 render={({ field }) => (
@@ -334,7 +372,7 @@ export function NewEmployeeForm({ branches }: NewEmployeeFormProps) {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="hireDate"
@@ -348,31 +386,6 @@ export function NewEmployeeForm({ branches }: NewEmployeeFormProps) {
                         onChange={(e) => field.onChange(new Date(e.target.value))}
                       />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="branchId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>branch <span className="text-red-500">*</span></FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select branch" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {branches.map((branch) => (
-                          <SelectItem key={branch.id} value={branch.id}>
-                            {branch.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
