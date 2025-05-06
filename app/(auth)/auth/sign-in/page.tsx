@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { SignInForm } from "../_components/SignInForm";
 import Link from "next/link";
