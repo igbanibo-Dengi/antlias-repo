@@ -2,23 +2,12 @@ import { Button } from "@/components/ui/button";
 import { EmployeesTable } from "./_components/EmployeesTable";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { getAllTenantBranches, getManagerById, getEmployeeById, getTenantById } from "@/lib/actions/tenant/tenant.action";
+import { getAllTenantBranches, } from "@/lib/actions/tenant/tenant.action";
 
 
 const Page = async () => {
 
   const branches = await getAllTenantBranches();
-
-  // const managerInfo = await getEmployeeById("26ab3135-b98f-4312-aa38-bcc68282e2e8")
-  // const managerInfo = await getManagerById("50476621-7ca6-49d7-accc-408b862b193c")
-
-  // console.log(managerInfo);
-
-  // const tenant = await getTenantById("67bc4587-8802-4d93-9bcd-d3982194791b")
-
-  // console.log(tenant);
-
-
 
   if (!Array.isArray(branches)) {
     console.error('Failed to load branches:');
@@ -53,7 +42,6 @@ const Page = async () => {
 
   return (
     <div className="">
-      <div className="flex items-center gap-4"></div>
       <Button size={"lg"} className="mb-30 absolute left-5 -top-2 -translate-y-6">
         <Link href={"/tenant/employees/new"} className="flex items-center">
           <Plus className="h-4 w-4 bg-gray-100/40 rounded-full mr-2" />

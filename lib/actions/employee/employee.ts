@@ -5,7 +5,7 @@ import { employees, lower, users } from "@/database/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { getBranchById, getEmployeeById, getTenantById, getTenantId } from "../tenant/tenant.action";
 import bcrypt from "bcrypt";
-import { createVerificationTokenAction } from "../admin/create-verification-token-action";
+import { createPasswordResetTokenAction, createVerificationTokenAction } from "../admin/create-verification-token-action";
 import { sendEmail } from "@/lib/workflow";
 import { sendForgotPasswordEmail } from "@/lib/emails/forgotPassword";
 import { USER_ROLES } from "@/lib/constants";
@@ -180,7 +180,7 @@ export const createEmployee = async (values: z.infer<typeof employeeFormSchema>)
       }
 
       // send password reset email
-      const verificationToken = await createVerificationTokenAction(newUser.email)
+      const verificationToken = await createPasswordResetTokenAction(newUser.email)
       const token = verificationToken.token
 
       const branch = await getBranchById(branchId)
@@ -211,7 +211,7 @@ export const createEmployee = async (values: z.infer<typeof employeeFormSchema>)
 
       await sendEmail({
         email,
-        subject: `Welcome to Antlias,  ${tenantName} 🎉`,
+        subject: `Welcome to Antlias 🎉`,
         message: sendStationInvitationEmail(invitationEmailData),
       });
 

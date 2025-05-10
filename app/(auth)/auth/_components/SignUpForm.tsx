@@ -407,6 +407,7 @@ export const SignupForm = () => {
                       onClick={handleBack}
                       variant="outline"
                       className="w-full"
+                      disabled={formState.isSubmitting}
                     >
                       Back
                     </Button>
