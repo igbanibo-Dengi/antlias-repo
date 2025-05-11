@@ -1,3 +1,12 @@
+// Define a consistent return type
+export type ActionResponse<T> = {
+  success: boolean;
+  data?: T;
+  error?: string;
+  statusCode?: number;
+};
+
+
 export interface Branch {
   id: string;
   tenantId: string;

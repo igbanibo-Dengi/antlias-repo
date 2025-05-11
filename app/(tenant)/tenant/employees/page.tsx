@@ -1,16 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { EmployeesTable } from "./_components/EmployeesTable";
-import { Plus } from "lucide-react";
+import { AlertTriangle, Plus } from "lucide-react";
 import Link from "next/link";
 import { getAllTenantBranches, } from "@/lib/actions/tenant/tenant.action";
+import { getAllEmployees } from "@/lib/actions/employee/employee";
+import { get } from "http";
 
 
 const Page = async () => {
 
-  const branches = await getAllTenantBranches();
+  const getBranches = await getAllTenantBranches();
 
-  if (!Array.isArray(branches)) {
-    console.error('Failed to load branches:');
+
+
+  if (!getBranches.success) {
+    console.error('Failed to load branches:', getBranches.error);
 
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px] h-full gap-4 p-6 bg-white rounded-lg shadow">
@@ -39,16 +43,34 @@ const Page = async () => {
     );
   }
 
+  const branches = getBranches.data;
+
+
+
 
   return (
-    <div className="">
+    <div className="h-full">
       <Button size={"lg"} className="mb-30 absolute left-5 -top-2 -translate-y-6">
         <Link href={"/tenant/employees/new"} className="flex items-center">
           <Plus className="h-4 w-4 bg-gray-100/40 rounded-full mr-2" />
           New Employee
         </Link>
       </Button>
-      <EmployeesTable branches={branches} />
+
+      {branches === undefined ? (
+        <div className="flex flex-col items-center justify-center min-h-[300px] h-full gap-4 p-6 bg-white rounded-lg shadow">
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="h-10 w-10 text-red-500" />
+            <h3 className="text-xl font-semibold text-gray-800">Failed to Load Branches</h3>
+          </div>
+
+          <p className="text-gray-600 text-center max-w-md">
+            {getBranches.error || 'An unexpected error occurred while loading branch data.'}
+          </p>
+        </div>
+      ) : (
+        <EmployeesTable branches={branches} />
+      )}
     </div>
   );
 };

@@ -4,20 +4,34 @@ import { Footer } from "@/components/Footer";
 import { auth } from "@/auth";
 import { after } from "next/server";
 import db from "@/database/drizzle";
-import { users } from "@/database/drizzle/schema";
+import { tenants, users } from "@/database/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import Image from "next/image";
 import { cookies } from "next/headers";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { TenantDashboardSidebar } from "../_components/TenantDashboardSidebar";
+import { getEmployeeByUserId } from "@/lib/actions/employee/employee";
+import { Employee } from "@/types";
+import { getTenantById, getTenantId } from "@/lib/actions/tenant/tenant.action";
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
   const session = await auth();
+  const tenantId = await getTenantId();
+
+  if (typeof tenantId !== "string") {
+    console.error("Invalid tenant ID:", tenantId);
+    return null; // or handle the error appropriately
+  }
+
+  const tenant = await getTenantById(tenantId);
+
+
 
 
   after(async () => {
@@ -47,7 +61,11 @@ export default async function RootLayout({
         <TenantDashboardSidebar />
         <SidebarInset className="flex min-h-screen flex-col">
           <Header
-            user={{ name: "Austin Robertson", role: "Marketing Administrator" }}
+            user={
+              "name" in tenant
+                ? { name: tenant.name }
+                : { name: "Unknown" }
+            }
           />
           <main className="flex-1 flex flex-col bg-muted">
             <div className="h-[90px] w-full rounded-b-2xl overflow-hidden">

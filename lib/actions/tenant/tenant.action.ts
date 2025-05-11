@@ -4,8 +4,10 @@ import { auth } from "@/auth"
 import db from "@/database/drizzle"
 import { branches, employees, tenants, users } from "@/database/drizzle/schema"
 import { USER_ROLES } from "@/lib/constants"
-import { Branch, DbUser, Employee } from "@/types"
+import { ActionResponse, Branch, DbUser, Employee } from "@/types"
+import { newStationSchema } from "@/validators/branch-validator"
 import { eq } from "drizzle-orm"
+import { z } from "zod"
 
 export const getTenantId = async () => {
   try {
@@ -24,8 +26,12 @@ export const getTenantId = async () => {
       .where(eq(users.id, userId!))
       .then((res) => res[0]?.tenantId);
 
+    if (!tenantId) {
+      return { success: false, error: "Tenant not found", statusCode: 404 };
+    }
 
     return tenantId;
+
   } catch (error) {
     console.error(error);
     return { success: false, error: "An error occurred while fetching the tenant id", statusCode: 500 };
@@ -63,22 +69,36 @@ export const getTenantById = async (tenantId: string) => {
 }
 
 
-export const getAllTenantBranches = async () => {
+export async function getAllTenantBranches(): Promise<ActionResponse<Branch[]>> {
   const session = await auth();
 
+  // Authentication check
   if (!session) {
-    return { success: false, error: "No session found", statusCode: 401 };
+    return {
+      success: false,
+      error: "No session found",
+      statusCode: 401
+    };
   }
 
-  if (session.user?.role !== USER_ROLES.TENANT) {
-    return { success: false, error: "You are not authorized to perform this action", statusCode: 403 };
+  // Authorization check
+  if (session.user?.role !== USER_ROLES.TENANT && session.user?.role !== USER_ROLES.ADMIN) {
+    return {
+      success: false,
+      error: "You are not authorized to perform this action",
+      statusCode: 403
+    };
   }
 
   try {
     const tenantIdResult = await getTenantId();
 
     if (!tenantIdResult || typeof tenantIdResult !== "string") {
-      return { success: false, error: "Tenant not found", statusCode: 404 };
+      return {
+        success: false,
+        error: "Tenant ID not found",
+        statusCode: 404
+      };
     }
 
     const branch = await db
@@ -87,7 +107,11 @@ export const getAllTenantBranches = async () => {
       .where(eq(branches.tenantId, tenantIdResult))
       .then((res) => res ?? []);
 
-    return branch;
+    return {
+      success: true,
+      data: branch,
+      statusCode: 200
+    };
   } catch (error) {
     console.error(error);
     return { success: false, error: "An error occurred while fetching the tenant branches", statusCode: 500 };
@@ -176,4 +200,83 @@ export const getManagerById = async (managerId: string,): Promise<DbUser | { suc
     return { success: false, error: "An error occurred while fetching the manager", statusCode: 500 };
   }
 
+}
+
+
+export async function createBranch(values: z.infer<typeof newStationSchema>)
+  : Promise<ActionResponse<Branch>> {
+
+  const validatedFields = newStationSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      error: "Invalid input data",
+      statusCode: 400
+    };
+  }
+
+  const {
+    branchName,
+    city,
+    state,
+    address,
+    phone,
+    managerId
+  } = validatedFields.data;
+
+  const session = await auth();
+
+  // Authentication check
+  if (!session) {
+    return {
+      success: false,
+      error: "No session found",
+      statusCode: 401
+    };
+  }
+
+  // Authorization check
+  if (session.user?.role !== USER_ROLES.TENANT && session.user?.role !== USER_ROLES.ADMIN) {
+    return {
+      success: false,
+      error: "You are not authorized to perform this action",
+      statusCode: 403
+    };
+  }
+
+  try {
+    const tenantIdResult = await getTenantId();
+
+    if (!tenantIdResult || typeof tenantIdResult !== "string") {
+      return {
+        success: false,
+        error: "Tenant ID not found",
+        statusCode: 404
+      };
+    }
+
+    const newBranch = await db
+      .insert(branches)
+      .values({
+        tenantId: tenantIdResult,
+        name: branchName,
+        address: address,
+        city: city,
+        state: state,
+        contactPhone: phone,
+        managerId: managerId
+      })
+      .returning()
+      .then((res) => res[0]);
+
+    return {
+      success: true,
+      data: newBranch,
+      statusCode: 201
+    };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "An error occurred while creating the branch", statusCode: 500 };
+  }
 }

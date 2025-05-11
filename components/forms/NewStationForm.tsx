@@ -30,246 +30,257 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { Label } from "@/components/ui/label";
+import { Textarea } from "../ui/textarea";
+import { Branch, BranchProps, Employee } from "@/types";
+import { NewEmployeeForm } from "@/app/(tenant)/tenant/employees/_components/NewEmployeeForm";
+import { createBranch } from "@/lib/actions/tenant/tenant.action";
+import { newStationSchema } from "@/validators/branch-validator";
 import { toast } from "sonner";
+import { format } from "path";
 
-// Sample manager list (you'll probably fetch this from a backend)
-const managers = [
-  { id: "1", name: "John Doe", email: "johndoe@gmail.com" },
-  { id: "2", name: "Jane Smith", email: "janesmith@gmail.com" },
-  { id: "3", name: "Michael Johnson", email: "michaelj@gmail.com" },
-];
 
-// Schemas
-const newStationSchema = z.object({
-  branchName: z.string().min(2, { message: "Station name is required" }),
-  location: z.string().min(2, { message: "Location is required" }),
-  manager: z.string().optional(),
-  phone: z
-    .string()
-    .regex(
-      /^(?:\+234|234|0)?(7[0-9]|8[0-9]|9[0-9])[0-9]{8}$/,
-      "Invalid phone number"
-    ),
-});
-
-interface NewStationFormModalProps {
-  onClose?: () => void;
+interface NewStationFormProps {
+  branches: Branch[];
+  employees: Employee[];
 }
 
-const NewStationForm: React.FC<NewStationFormModalProps> = ({ onClose }) => {
-  const [open, setOpen] = React.useState(false);
-  const [searchValue, setSearchValue] = React.useState("");
-  const [selectedManager, setSelectedManager] = React.useState<{
-    id: string;
-    name: string;
-    email: string;
-  } | null>(null);
-  const [loadingNewManager, setLoadingNewManager] = React.useState(false);
 
+
+const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("")
+  const [submitting, setSubmitting] = React.useState(false);
+
+  console.log(value)
   const stationForm = useForm<z.infer<typeof newStationSchema>>({
     resolver: zodResolver(newStationSchema),
     defaultValues: {
       branchName: "",
-      location: "",
-      manager: "",
+      city: "",
+      state: "",
+      address: "",
+      managerId: "",
       phone: "",
     },
   });
 
-  const filteredManagers = React.useMemo(() => {
-    const search = searchValue.toLowerCase();
-    return search === ""
-      ? managers
-      : managers.filter(
-        (m) =>
-          m.name.toLowerCase().includes(search) ||
-          m.email.toLowerCase().includes(search)
-      );
-  }, [searchValue]);
-
-  const handleCreateManager = async (email: string) => {
-    if (!email || !email.includes("@")) {
-      toast.error("Please enter a valid email.");
-      return;
-    }
-
-    setLoadingNewManager(true);
-    try {
-      // Simulate an API call to create a new manager
-      const newManager = {
-        id: Date.now().toString(),
-        name: email.split("@")[0],
-        email,
-      };
-      // Update the managers list
-      // setManagers([...managers, newManager]);
-      setSelectedManager(newManager);
-      setSearchValue("");
-      toast.success("Manager created successfully!");
-    } catch (error) {
-      toast.error("Failed to create manager.");
-    } finally {
-      setLoadingNewManager(false);
-    }
-  };
-
   async function onSubmitStation(values: z.infer<typeof newStationSchema>) {
-    console.log(values);
+    setSubmitting(true);
+    const response = await createBranch(values)
 
+    if (!response.success) {
+      toast.error("error creating station", {
+        description: response.error ?? "error creating station"
+      })
+      setSubmitting(false);
+    } else {
+      toast.success("station created successfully")
+      stationForm.reset();
+      setSubmitting(false);
+    }
   }
 
   return (
-    <div>
+    <div className="w-full mx-auto  border rounded-lg bg-white shadow-md p-6">
+
+      <div className="space-y-6 p-6 pt-2">
+        <h2 className="text-2xl font-semibold" >Create new station</h2>
+      </div>
+
       <Form {...stationForm}>
         <form
           onSubmit={stationForm.handleSubmit(onSubmitStation)}
           className="space-y-6 p-6 pt-2"
         >
-          <FormField
-            control={stationForm.control}
-            name="branchName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-base text-gray-500 font-normal">
-                  Station Name
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Suggest a name to this station"
-                    className="bg-white border-gray-200"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
-          <FormField
-            control={stationForm.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-base text-gray-500 font-normal">
-                  Location
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Address of the station"
-                    className="bg-white border-gray-200"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={stationForm.control}
+              name="branchName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel >
+                    Station Name
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter station name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={stationForm.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Station Phone</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="Enter station phone number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
-          <div className="space-y-2">
-            <Label className="text-base text-gray-500 font-normal">
-              Station Manager
-            </Label>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-full justify-between bg-white border-gray-200 text-gray-500 font-normal"
-                >
-                  {selectedManager
-                    ? selectedManager.name
-                    : "Please select or create manager"}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0">
-                <Command shouldFilter={false}>
-                  <CommandInput
-                    placeholder="Search manager..."
-                    value={searchValue}
-                    onValueChange={(val) => {
-                      setSearchValue(val);
-                      setSelectedManager(null);
-                    }}
-                  />
-                  <CommandList>
-                    <CommandEmpty>
-                      {searchValue && !filteredManagers.length ? (
-                        <div className="p-4 text-center space-y-2">
-                          <p className="text-sm text-gray-500">
-                            No existing manager found.
-                          </p>
-                          <Button
-                            onClick={() => handleCreateManager(searchValue)}
-                            className="bg-blue-600 hover:bg-blue-700 w-full"
-                            disabled={loadingNewManager}
-                          >
-                            {loadingNewManager
-                              ? "Adding..."
-                              : `Add "${searchValue}" as new manager`}
-                          </Button>
-                        </div>
-                      ) : (
-                        <p className="py-6 text-center text-sm">
-                          No manager found.
-                        </p>
-                      )}
-                    </CommandEmpty>
-                    <CommandGroup>
-                      {filteredManagers.map((manager) => (
-                        <CommandItem
-                          key={manager.id}
-                          onSelect={() => {
-                            setSelectedManager(manager);
-                            setOpen(false);
-                            setSearchValue("");
-                          }}
-                        >
-                          <div className="flex flex-col">
-                            <span>{manager.name}</span>
-                            <span className="text-sm text-muted-foreground">
-                              {manager.email}
-                            </span>
-                          </div>
-                          <Check
-                            className={cn(
-                              "ml-auto h-4 w-4",
-                              selectedManager?.id === manager.id
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
+            <FormField
+              control={stationForm.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel >
+                    City
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter city"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={stationForm.control}
+              name="state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel >
+                    State
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter state"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={stationForm.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Station Phone</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Enter station phone number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={stationForm.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormLabel>Station Address</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter station address"
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+
+          <div className="flex items-end gap-6">
+
+
+            <FormField
+              control={stationForm.control}
+              name="managerId"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel>Manager</FormLabel>
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="w-full justify-between"
+                      >
+                        {field.value
+                          ? `${employees.find((employee) => employee.userId === field.value)?.firstName} ${employees.find((employee) => employee.userId === field.value)?.lastName}`
+                          : "Select employee..."}
+                        <ChevronsUpDown className="opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[400px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search employee..." />
+                        <CommandList>
+                          <CommandEmpty>No employee found.</CommandEmpty>
+                          <CommandGroup>
+                            {employees.map((employee) => (
+                              <CommandItem
+                                value={employee.userId}
+                                key={employee.userId}
+                                onSelect={() => {
+                                  stationForm.setValue("managerId", employee.userId);
+                                  setOpen(false)
+                                }}
+                              >
+                                <div className="flex items-center gap-2 w-full justify-between">
+                                  <p className="">{`${employee.firstName} ${employee.lastName} `}</p>
+                                  <p className="text-xs  text-muted-foreground">{`${employee.position}`}</p>
+                                </div>
+                                <Check
+                                  className={cn(
+                                    "ml-auto",
+                                    field.value === employee.userId ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button>
+                    Add new employee
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="min-w-[800px] overflow-y-scroll">
+                  <SheetHeader>
+                    <SheetTitle className="sr-only">New employee form</SheetTitle>
+                    <SheetDescription className="sr-only">
+                      new employee form
+                    </SheetDescription>
+                  </SheetHeader>
+
+                  <div>
+                    <NewEmployeeForm branches={branches} />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
 
           <Button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700"
-            disabled={!selectedManager || stationForm.formState.isSubmitting}
           >
-            Submit
+            {submitting ? "Creating..." : "Create Station"}
           </Button>
         </form>
       </Form>

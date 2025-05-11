@@ -13,6 +13,7 @@ import { auth } from "@/auth";
 import { employeeFormSchema } from "@/validators/employee-form-validator";
 import { z } from "zod";
 import { sendStationInvitationEmail } from "@/lib/emails/invitationEmail";
+import { ActionResponse, Employee } from "@/types";
 
 
 /**
@@ -344,17 +345,28 @@ export async function deleteEmployeeAction(values: z.infer<typeof deleteEmployee
 }
 
 
-export async function getEmployeeByBranchId(branchId: string) {
+export async function getEmployeeByBranchId(branchId: string): Promise<ActionResponse<Employee[]>> {
 
   const session = await auth()
 
+  // Authentication check
   if (!session) {
-    return { success: false, error: "No session found", statusCode: 401 };
+    return {
+      success: false,
+      error: "No session found",
+      statusCode: 401
+    };
   }
 
+  // Authorization check
   if (session.user?.role !== USER_ROLES.TENANT && session.user?.role !== USER_ROLES.ADMIN) {
-    return { success: false, error: "You are not authorized to perform this action", statusCode: 403 };
+    return {
+      success: false,
+      error: "You are not authorized to perform this action",
+      statusCode: 403
+    };
   }
+
 
   try {
 
@@ -364,16 +376,126 @@ export async function getEmployeeByBranchId(branchId: string) {
       .where(eq(employees.branchId, branchId))
       .then((res) => res ?? []);
 
-    return response
+    // Return success with data in a consistent format
+    return {
+      success: true,
+      data: response,
+      statusCode: 200
+    };
 
   } catch (error) {
     console.error(error)
     return {
       success: false,
-      error: "Error in getEmpoyeeByBranch action",
-      statusCode: 409
-    }
+      error: error instanceof Error ? error.message : "Error in getAllEmployees action",
+      statusCode: 500,
+    };
+  }
+}
+
+
+export async function getAllEmployees(): Promise<ActionResponse<Employee[]>> {
+  const session = await auth();
+
+  // Authentication check
+  if (!session) {
+    return {
+      success: false,
+      error: "No session found",
+      statusCode: 401
+    };
   }
 
+  // Authorization check
+  if (session.user?.role !== USER_ROLES.TENANT && session.user?.role !== USER_ROLES.ADMIN) {
+    return {
+      success: false,
+      error: "You are not authorized to perform this action",
+      statusCode: 403
+    };
+  }
 
+  try {
+    const tenantIdResult = await getTenantId();
+
+    if (!tenantIdResult || typeof tenantIdResult !== "string") {
+      return {
+        success: false,
+        error: "Tenant ID not found",
+        statusCode: 404
+      };
+    }
+
+    const employeeData = await db
+      .select()
+      .from(employees)
+      .where(eq(employees.tenantId, tenantIdResult))
+      .then((res) => res ?? []);
+
+    return {
+      success: true,
+      data: employeeData,
+      statusCode: 200
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Error in getAllEmployees action",
+      statusCode: 500,
+    };
+  }
+}
+
+export async function getEmployeeByUserId(): Promise<ActionResponse<Employee>> {
+
+  const session = await auth()
+  const userId = session?.user?.id
+
+  // Authentication check
+  if (!session) {
+    return {
+      success: false,
+      error: "No session found",
+      statusCode: 401
+    };
+  }
+
+  if (!userId) {
+    return {
+      success: false,
+      error: "User ID is required",
+      statusCode: 400
+    };
+  }
+
+  try {
+    const employeeData = await db
+      .select()
+      .from(employees)
+      .where(eq(employees.userId, userId))
+      .then((res) => res[0] ?? null);
+
+    if (!employeeData) {
+      return {
+        success: false,
+        error: "Employee not found",
+        statusCode: 404
+      };
+    }
+
+    return {
+      success: true,
+      data: employeeData,
+      statusCode: 200
+    };
+  } catch (error) {
+    console.error(error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Error in getEmployeeByUserId action",
+      statusCode: 500,
+    };
+  }
 }

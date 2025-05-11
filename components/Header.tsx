@@ -22,13 +22,12 @@ import { signoutAction } from "@/lib/actions/auth/signout.actions";
 interface HeaderProps {
   user?: {
     name: string;
-    role: string;
     avatar?: string;
   };
 }
 
 export function Header({
-  user = { name: "Austin Robertson", role: "Marketing Administrator" },
+  user = { name: "Austin Robertson" },
 }: HeaderProps) {
   const { open, toggleSidebar } = useSidebar();
   const router = useRouter()
@@ -117,8 +116,8 @@ export function Header({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="ghost"
-              className="relative flex items-center gap-4 h-8 rounded-full"
+              variant="outline"
+              className="relative flex items-center gap-2 pl-1 h-10 rounded-full"
             >
               <Avatar className="h-8 w-8">
                 <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
@@ -127,9 +126,6 @@ export function Header({
                 <p className="text-sm leading-none font-semibold">
                   {user.name}
                 </p>
-                <p className="text-xs font-normal leading-none text-muted-foreground">
-                  {user.role}
-                </p>
               </div>
             </Button>
           </DropdownMenuTrigger>
@@ -137,9 +133,6 @@ export function Header({
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">{user.name}</p>
-                <p className="text-xs leading-none text-muted-foreground">
-                  {user.role}
-                </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />

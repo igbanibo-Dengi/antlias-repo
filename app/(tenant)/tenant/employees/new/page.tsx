@@ -4,9 +4,12 @@ import { getAllTenantBranches } from '@/lib/actions/tenant/tenant.action'
 
 
 const page = async () => {
-  const branches = await getAllTenantBranches();
+  const getBranches = await getAllTenantBranches();
+  // const employees = await getAllEmployees();
 
-  if (!Array.isArray(branches)) {
+
+
+  if (!getBranches.success) {
     console.error('Failed to load branches:');
 
     return (
@@ -36,10 +39,11 @@ const page = async () => {
     );
   }
 
+  const branches = getBranches.data;
 
   return (
     <div>
-      <NewEmployeeForm branches={branches} />
+      <NewEmployeeForm branches={branches!} />
     </div>
   );
 };

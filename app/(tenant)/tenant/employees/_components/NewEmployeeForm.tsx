@@ -142,8 +142,8 @@ export function NewEmployeeForm({ branches }: BranchProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="bg-white rounded-lg shadow-lg p-6 w-full flex items-end justify-between">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 @container">
+        <div className="bg-white rounded-lg shadow-lg p-6 w-full flex flex-col @2xl:flex-row items-end justify-between">
           <div className="text-2xl font-semibold">New Employee Form</div>
 
           {/* Navigation Tabs */}
