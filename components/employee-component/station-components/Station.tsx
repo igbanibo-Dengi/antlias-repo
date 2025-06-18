@@ -1,12 +1,20 @@
 import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { SellingPrices } from "@/types";
 
 // Types
-export type FuelPrice = {
-  petrol: string;
-  diesel: string;
-  gas: string;
-  kerosene: string;
-};
+// export type FuelPrice = {
+//   petrol: string;
+//   diesel: string;
+//   gas: string;
+//   kerosene: string;
+// };
 
 export type Tank = {
   name: string;
@@ -21,63 +29,97 @@ export type Station = {
   city: string;
   state: string;
   managerId: string | null;
-  // employees: number;
+  employees: number | undefined;
   totalSalaries: number | undefined;
-  // prices: FuelPrice;
+  prices: SellingPrices[];
   // tanks: Tank[];
 };
 
 // Components
 export const StationInfoSection = ({ station }: { station: Station }) => (
-  <div className="mb-4 w-full">
-    <h3 className="text-sm text-muted-foreground mb-2">Station Information</h3>
-    <div className="flex justify-between mb-1">
-      <div className="space-y-8">
+
+  <div className="w-full">
+    <h3 className="text-sm font-semibold text-muted-foreground mb-4">
+      Station Information
+    </h3>
+
+    <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
+      {/* Station ID */}
+      <div className="flex flex-col space-y-1">
         <p className="text-xs text-muted-foreground">Station ID</p>
-        <p className="text-xs font-semibold text-gray-700">{station.id}</p>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="cursor-pointer truncate max-w-[120px] text-xs text-foreground">
+                {station.id}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{station.id}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
-      <div className="text-right">
+
+      {/* Manager */}
+      <div className="flex flex-col space-y-1">
         <p className="text-xs text-muted-foreground">Manager</p>
-        <p className="text-xs font-semibold text-gray-700">{station.managerId}</p>
+        <p className="text-xs">
+          {station.managerId === null ? (
+            <span className="text-red-500">not assigned</span>
+          ) : (
+            station.managerId
+          )}
+        </p>
       </div>
-    </div>
-    <div className="flex justify-between mb-1">
-      <div className="space-y-8">
+
+      {/* Station Name */}
+      <div className="flex flex-col space-y-1">
         <p className="text-xs text-muted-foreground">Station Name</p>
-        <p className="text-xs font-semibold text-gray-700">{station.name}</p>
+        <p className="text-xs text-foreground">{station.name}</p>
       </div>
-      <div className="text-right">
+
+      {/* Number of Employees */}
+      <div className="flex flex-col space-y-1">
         <p className="text-xs text-muted-foreground">No. of Employees</p>
-        {/* <p className="text-xs font-semibold text-gray-700">{station.employees}</p> */}
+        <p className="text-xs text-foreground">{station.employees}</p>
       </div>
-    </div>
-    <div className="flex justify-between mb-1">
-      <div className="space-y-8">
+
+      {/* Location */}
+      <div className="flex flex-col space-y-1">
         <p className="text-xs text-muted-foreground">Location</p>
-        <p className="text-xs font-semibold text-gray-700">{station.address}</p>
+        <p className="text-xs text-foreground">{station.address}</p>
       </div>
-      <div className="text-right">
+
+      {/* Total Salaries */}
+      <div className="flex flex-col space-y-1">
         <p className="text-xs text-muted-foreground">Total Salaries</p>
-        <p className="text-xs font-semibold text-gray-700">{station.totalSalaries}</p>
+        <p className="text-xs text-foreground">{station.totalSalaries}</p>
       </div>
     </div>
-    <div className="border-t border-gray-200 my-4"></div>
   </div>
+
 );
 
-export const FuelPricesSection = ({ prices }: { prices: FuelPrice }) => (
-  <div className="mb-4 w-full">
-    <h3 className="text-sm text-muted-foreground mb-4">Latest Selling Price</h3>
-    <div className="grid grid-cols-4 gap-2">
-      {Object.entries(prices).map(([fuelType, price]) => (
-        <div key={fuelType} className="space-y-2">
-          <p className="text-xs text-muted-foreground capitalize">{fuelType}</p>
-          <p className="text-xs font-semibold text-gray-700">{price}</p>
-        </div>
-      ))}
+export const FuelPricesSection = ({ prices }: { prices: SellingPrices[] }) => (
+  prices.length === 0 ? (
+    <div>
+      empty
     </div>
-    <div className="border-t border-gray-200 my-4"></div>
-  </div>
+  ) : (
+    <div className="w-full">
+      <h3 className="text-sm text-muted-foreground mb-4">Selling Prices</h3>
+      <div className="grid grid-cols-4 gap-2">
+        {prices.map((fuel) => (
+          <div key={fuel.id} className="space-y-2">
+            <p className="text-xs text-muted-foreground capitalize">{fuel.fuelType}</p>
+            <p className="text-xs">{fuel.price}</p>
+          </div>
+        ))}
+      </div>
+      <div className="border-t border-gray-200 my-4"></div>
+    </div>
+  )
 );
 
 export const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
@@ -102,9 +144,11 @@ export const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
 );
 
 export const StationCard = ({ station }: { station: Station }) => (
-  <Card className="bg-white p-6 space-y-6 shadow-lg">
+  <Card className="bg-white pl-6 pr-2 py-6 space-y-6 shadow-lg">
     <StationInfoSection station={station} />
-    {/* <FuelPricesSection prices={station.prices} /> */}
+    <Separator />
+    <FuelPricesSection prices={station.prices} />
+    <Separator />
     {/* <TankStatusSection tanks={station.tanks} /> */}
   </Card>
 );

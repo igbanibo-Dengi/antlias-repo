@@ -40,6 +40,8 @@ export default async function FuelStationDashboard() {
     (branches ?? []).map(async (branch) => {
       const employees = await getEmployeeByBranchId(branch.id);
       const sellingPrices = await getSellingPrices(branch.id);
+      console.log(sellingPrices.data);
+
 
       if (employees.success === false) {
         // Return a consistent error object or null
@@ -51,9 +53,9 @@ export default async function FuelStationDashboard() {
           city: branch.city,
           state: branch.state,
           managerId: branch.managerId,
-          employees: undefined,
+          employees: 0,
           totalSalaries: 0,
-          prices: undefined,
+          prices: sellingPrices.data ?? [],
           error: employees.error, // Add an error field
         };
       }
@@ -67,12 +69,15 @@ export default async function FuelStationDashboard() {
         city: branch.city,
         state: branch.state,
         managerId: branch.managerId,
-        // employees: employees.data?.length,
+        employees: employees.data?.length,
         totalSalaries: employees.data?.reduce((sum, emp) => sum + (emp.salary || 0), 0),
-        // prices: sellingPrices.data,
+        prices: sellingPrices.data ?? [],
       };
     })
   );
+
+  console.log(stations);
+
 
 
 
@@ -90,12 +95,15 @@ export default async function FuelStationDashboard() {
         <span className="text-xs text-gray-400">Total Salaries</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-12 bg-white rounded-lg">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {stations.map(station =>
           station.error ? (
             <div key={station.id} className="error">{station.error}</div>
           ) : (
-            <StationCard key={station.id} station={station} />
+            <StationCard
+              key={station.id}
+              station={station}
+            />
           )
         )}
       </div>

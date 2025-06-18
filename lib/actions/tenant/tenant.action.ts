@@ -282,7 +282,7 @@ export async function createBranch(values: z.infer<typeof newStationSchema>)
 }
 
 
-export async function getSellingPrices(branchId: string): Promise<ActionResponse<SellingPrices>> {
+export async function getSellingPrices(branchId: string): Promise<ActionResponse<SellingPrices[]>> {
 
 
   const session = await auth();
@@ -310,7 +310,7 @@ export async function getSellingPrices(branchId: string): Promise<ActionResponse
       .select()
       .from(sellingPrices)
       .where(eq(sellingPrices.branchId, branchId))
-      .then((res) => res[0] ?? null);
+      .then((res) => res ?? []);
 
     return {
       success: true,
