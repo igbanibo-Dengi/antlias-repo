@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useActionState, useCallback, useEffect, useState } from "react"
+import { useActionState, useCallback, useEffect, useState } from "react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -12,11 +12,18 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+} from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -25,22 +32,42 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronLeft, ChevronRight, Filter, MoreHorizontal } from "lucide-react"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import type { ActionResponse, BranchProps, Employee } from "@/types"
-import { getEmployeeByBranchId } from "@/lib/actions/employee/employee"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { DeleteEmployeeButton } from "@/components/DeleteEmployeeButton"
-import { useRouter } from "next/navigation"
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  MoreHorizontal,
+} from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import type { ActionResponse, BranchProps, Employee } from "@/types";
+import { getEmployeeByBranchId } from "@/lib/actions/employee/employee";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { DeleteEmployeeButton } from "@/components/DeleteEmployeeButton";
+import { useRouter } from "next/navigation";
 
 export const columns: ColumnDef<Employee>[] = [
   {
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
@@ -62,8 +89,8 @@ export const columns: ColumnDef<Employee>[] = [
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex flex-col cursor-pointer">
-              <div className="truncate max-w-[82px]">{row.getValue("id")}</div>
+            <div className="flex cursor-pointer flex-col">
+              <div className="max-w-[82px] truncate">{row.getValue("id")}</div>
             </div>
           </TooltipTrigger>
           <TooltipContent>
@@ -97,40 +124,44 @@ export const columns: ColumnDef<Employee>[] = [
     accessorKey: "salary",
     header: "Salary",
     cell: ({ row }) => {
-      const amount = Number.parseFloat(row.getValue("salary"))
+      const amount = Number.parseFloat(row.getValue("salary"));
       const formatted = new Intl.NumberFormat("en-NG", {
         style: "currency",
         currency: "NGN",
-      }).format(amount)
+      }).format(amount);
 
-      return <div className="font-medium">{formatted}</div>
+      return <div className="font-medium">{formatted}</div>;
     },
   },
   {
     accessorKey: "isActive",
     header: "Status",
     cell: ({ row }) => {
-      const isActive = row.getValue("isActive")
+      const isActive = row.getValue("isActive");
 
-      const activeStatus = String(isActive).toLowerCase() === "true"
+      const activeStatus = String(isActive).toLowerCase() === "true";
 
       const variant = activeStatus
         ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
 
-      return <Badge className={`${variant} capitalize`}>{activeStatus ? "Active" : "Inactive"}</Badge>
+      return (
+        <Badge className={`${variant} capitalize`}>
+          {activeStatus ? "Active" : "Inactive"}
+        </Badge>
+      );
     },
     filterFn: (row, id, value) => {
-      return value.includes(String(row.getValue(id)))
+      return value.includes(String(row.getValue(id)));
     },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const id = String(row.getValue("id"))
-      const firstName = String(row.getValue("firstName"))
-      const lastName = String(row.getValue("lastName"))
+      const id = String(row.getValue("id"));
+      const firstName = String(row.getValue("firstName"));
+      const lastName = String(row.getValue("lastName"));
 
       return (
         <DropdownMenu>
@@ -142,64 +173,72 @@ export const columns: ColumnDef<Employee>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(id)}>Copy payment ID</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(id)}>
+              Copy payment ID
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <DeleteEmployeeButton employeeId={id} employeeName={`${firstName} ${lastName}`} />
+              <DeleteEmployeeButton
+                employeeId={id}
+                employeeName={`${firstName} ${lastName}`}
+              />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
 
 export function EmployeesTable({ branches }: BranchProps) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = useState({})
-  const [selectedBranch, setSelectedBranch] = useState<string>(branches[0]?.id || "")
-  const [isLoading, setIsLoading] = useState(false)
-  const [employees, setEmployees] = useState<Employee[]>([])
-  const [error, setError] = useState("")
-  const [initialLoad, setInitialLoad] = useState(true)
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+  const [selectedBranch, setSelectedBranch] = useState<string>(
+    branches[0]?.id || "",
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [error, setError] = useState("");
+  const [initialLoad, setInitialLoad] = useState(true);
 
   // Create a fetch function
   const fetchEmployees = useCallback(async (branchId: string) => {
-    setIsLoading(true)
-    setError("")
+    setIsLoading(true);
+    setError("");
 
     try {
-      const response: ActionResponse<Employee[]> = await getEmployeeByBranchId(branchId)
+      const response: ActionResponse<Employee[]> =
+        await getEmployeeByBranchId(branchId);
 
       if (response.success && response.data) {
-        setEmployees(response.data)
+        setEmployees(response.data);
       } else {
-        setError(response.error || "Failed to fetch employees")
-        setEmployees([])
+        setError(response.error || "Failed to fetch employees");
+        setEmployees([]);
       }
     } catch (err) {
-      setError("An unexpected error occurred")
-      setEmployees([])
+      setError("An unexpected error occurred");
+      setEmployees([]);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }, [])
+  }, []);
 
   // Handle branch selection
   const handleBranchChange = (branchId: string) => {
-    setSelectedBranch(branchId)
-    fetchEmployees(branchId)
-  }
+    setSelectedBranch(branchId);
+    fetchEmployees(branchId);
+  };
 
   // Initial fetch
   useEffect(() => {
     if (selectedBranch) {
-      fetchEmployees(selectedBranch)
+      fetchEmployees(selectedBranch);
     }
-  }, [])
+  }, []);
 
   const table = useReactTable({
     data: employees,
@@ -218,16 +257,24 @@ export function EmployeesTable({ branches }: BranchProps) {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4 p-4 mb-4 border bg-white rounded-lg shadow-sm">
-        <p className="font-semibold text-lg">Employees</p>
+      <div className="mb-4 flex items-center justify-between rounded-lg border bg-white p-4 py-4 shadow-sm">
+        <p className="text-lg font-semibold">Employees</p>
         <div className="grid grid-cols-3 gap-4">
-          <Select value={selectedBranch} onValueChange={handleBranchChange} disabled={isLoading}>
+          <Select
+            value={selectedBranch}
+            onValueChange={handleBranchChange}
+            disabled={isLoading}
+          >
             <SelectTrigger className="w-[180px]">
-              {isLoading ? <p>Loading...</p> : <SelectValue placeholder="Select branch" />}
+              {isLoading ? (
+                <p>Loading...</p>
+              ) : (
+                <SelectValue placeholder="Select branch" />
+              )}
             </SelectTrigger>
             <SelectContent>
               {branches.map((branch) => (
@@ -239,14 +286,20 @@ export function EmployeesTable({ branches }: BranchProps) {
           </Select>
           <Input
             placeholder="Search by first name..."
-            value={(table.getColumn("firstName")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("firstName")?.setFilterValue(event.target.value)}
+            value={
+              (table.getColumn("firstName")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("firstName")?.setFilterValue(event.target.value)
+            }
             className="max-w-sm"
           />
           <Input
             placeholder="Search by employee ID..."
             value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("id")?.setFilterValue(event.target.value)}
+            onChange={(event) =>
+              table.getColumn("id")?.setFilterValue(event.target.value)
+            }
             className="max-w-sm"
           />
         </div>
@@ -264,13 +317,24 @@ export function EmployeesTable({ branches }: BranchProps) {
                 <DropdownMenuCheckboxItem
                   key={status}
                   className="capitalize"
-                  checked={((table.getColumn("isActive")?.getFilterValue() as string[]) || []).includes(status)}
+                  checked={(
+                    (table
+                      .getColumn("isActive")
+                      ?.getFilterValue() as string[]) || []
+                  ).includes(status)}
                   onCheckedChange={(checked) => {
-                    const currentFilters = (table.getColumn("isActive")?.getFilterValue() as string[]) || []
+                    const currentFilters =
+                      (table
+                        .getColumn("isActive")
+                        ?.getFilterValue() as string[]) || [];
                     const newFilters = checked
                       ? [...currentFilters, status]
-                      : currentFilters.filter((value) => value !== status)
-                    table.getColumn("isActive")?.setFilterValue(newFilters.length ? newFilters : undefined)
+                      : currentFilters.filter((value) => value !== status);
+                    table
+                      .getColumn("isActive")
+                      ?.setFilterValue(
+                        newFilters.length ? newFilters : undefined,
+                      );
                   }}
                 >
                   {status}
@@ -295,18 +359,20 @@ export function EmployeesTable({ branches }: BranchProps) {
                       key={column.id}
                       className="capitalize"
                       checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
                     >
                       {column.id}
                     </DropdownMenuCheckboxItem>
-                  )
+                  );
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
 
-      <div className="border bg-white rounded-lg shadow-sm">
+      <div className="rounded-lg border bg-white shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -314,9 +380,14 @@ export function EmployeesTable({ branches }: BranchProps) {
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -324,15 +395,26 @@ export function EmployeesTable({ branches }: BranchProps) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -343,8 +425,8 @@ export function EmployeesTable({ branches }: BranchProps) {
 
       <div className="flex items-center justify-between px-2 py-4">
         <div className="text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-          selected.
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
 
         <div className="flex items-center space-x-6 lg:space-x-8">
@@ -354,7 +436,7 @@ export function EmployeesTable({ branches }: BranchProps) {
               className="h-8 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               value={table.getState().pagination.pageSize}
               onChange={(e) => {
-                table.setPageSize(Number(e.target.value))
+                table.setPageSize(Number(e.target.value));
               }}
             >
               {[5, 10, 20, 30, 40, 50].map((pageSize) => (
@@ -375,7 +457,8 @@ export function EmployeesTable({ branches }: BranchProps) {
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
             </div>
             <Button
               variant="outline"
@@ -389,5 +472,5 @@ export function EmployeesTable({ branches }: BranchProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

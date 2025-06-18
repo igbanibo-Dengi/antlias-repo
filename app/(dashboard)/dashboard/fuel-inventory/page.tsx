@@ -63,7 +63,6 @@ const inventoryData = [
 
 // ProgressBar Component
 const ProgressBar = ({ percentage }: { percentage: number }) => {
-
   const getColor = () => {
     if (percentage > 50) return "bg-green-500";
     if (percentage > 20) return "bg-orange-200";
@@ -71,12 +70,12 @@ const ProgressBar = ({ percentage }: { percentage: number }) => {
   };
 
   return (
-    <div className="relative flex-1 h-8 w-27 p-1 text-6xs rounded-[6px] bg-black overflow-hidden">
+    <div className="w-27 text-6xs relative h-8 flex-1 overflow-hidden rounded-[6px] bg-black p-1">
       <div
-        className={`h-full transition-all duration-300 rounded-[2px] ${getColor()}`}
+        className={`h-full rounded-[2px] transition-all duration-300 ${getColor()}`}
         style={{ width: `${percentage}% ` }}
       ></div>
-      <span className="absolute inset-0 flex items-center  text-white px-18">
+      <span className="px-18 absolute inset-0 flex items-center text-white">
         {percentage}%
       </span>
     </div>
@@ -100,7 +99,7 @@ export default function InventoryTable() {
     <div className="">
       {/* Header Controls */}
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <Dialog open={isDialogOpen} onOpenChange={handleDialogToggle}>
           <DialogTrigger asChild>
             <Button className="flex items-center space-x-2">
@@ -127,20 +126,20 @@ export default function InventoryTable() {
         </Dialog>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm gap-14 p-4 mb-6 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between gap-14 rounded-lg bg-white p-4 shadow-sm">
         <div className="text-lg font-medium">Inventory</div>
-        <div className="flex items-center flex-1 gap-50 space-x-34 mx-4">
-          <div className="relative flex items-center flex-1 max-w-md">
+        <div className="gap-50 space-x-34 mx-4 flex flex-1 items-center">
+          <div className="relative flex max-w-md flex-1 items-center">
             <Filter className="absolute left-3 h-4 w-4 text-gray-400" />
             <Input
-              className="pl-10 border-gray-200 text-sm"
+              className="border-gray-200 pl-10 text-sm"
               placeholder="Branches"
             />
           </div>
-          <div className="relative flex items-center flex-1 max-w-md">
+          <div className="relative flex max-w-md flex-1 items-center">
             <Search className="absolute left-3 h-4 w-4 text-gray-400" />
             <Input
-              className="pl-10 border-gray-200 text-sm"
+              className="border-gray-200 pl-10 text-sm"
               placeholder="Type here..."
             />
           </div>
@@ -166,7 +165,7 @@ export default function InventoryTable() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg shadow-sm p-4">
+      <div className="rounded-lg bg-white p-4 shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
@@ -208,7 +207,7 @@ export default function InventoryTable() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between mt-4">
+      <div className="mt-4 flex justify-between">
         <div className="flex space-x-2">
           {[1, 2, 3, "...", 10].map((num, index) => (
             <Button key={index} variant={num === 1 ? "default" : "outline"}>
@@ -229,7 +228,7 @@ export default function InventoryTable() {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="h-4 w-4 mr-2"
+            className="mr-2 h-4 w-4"
           >
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
             <line x1="3" y1="9" x2="21" y2="9" />

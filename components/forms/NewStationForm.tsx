@@ -37,7 +37,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "../ui/textarea";
 import { Branch, BranchProps, Employee } from "@/types";
@@ -47,20 +47,17 @@ import { newStationSchema } from "@/validators/branch-validator";
 import { toast } from "sonner";
 import { format } from "path";
 
-
 interface NewStationFormProps {
   branches: Branch[];
   employees: Employee[];
 }
 
-
-
 const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("")
+  const [value, setValue] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
 
-  console.log(value)
+  console.log(value);
   const stationForm = useForm<z.infer<typeof newStationSchema>>({
     resolver: zodResolver(newStationSchema),
     defaultValues: {
@@ -75,25 +72,24 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
 
   async function onSubmitStation(values: z.infer<typeof newStationSchema>) {
     setSubmitting(true);
-    const response = await createBranch(values)
+    const response = await createBranch(values);
 
     if (!response.success) {
       toast.error("error creating station", {
-        description: response.error ?? "error creating station"
-      })
+        description: response.error ?? "error creating station",
+      });
       setSubmitting(false);
     } else {
-      toast.success("station created successfully")
+      toast.success("station created successfully");
       stationForm.reset();
       setSubmitting(false);
     }
   }
 
   return (
-    <div className="w-full mx-auto  border rounded-lg bg-white shadow-md p-6">
-
+    <div className="mx-auto w-full rounded-lg border bg-white p-6 shadow-md">
       <div className="space-y-6 p-6 pt-2">
-        <h2 className="text-2xl font-semibold" >Create new station</h2>
+        <h2 className="text-2xl font-semibold">Create new station</h2>
       </div>
 
       <Form {...stationForm}>
@@ -101,41 +97,29 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
           onSubmit={stationForm.handleSubmit(onSubmitStation)}
           className="space-y-6 p-6 pt-2"
         >
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={stationForm.control}
               name="branchName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel >
-                    Station Name
-                  </FormLabel>
+                  <FormLabel>Station Name</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter station name"
-                      {...field}
-                    />
+                    <Input placeholder="Enter station name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-
             <FormField
               control={stationForm.control}
               name="city"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel >
-                    City
-                  </FormLabel>
+                  <FormLabel>City</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter city"
-                      {...field}
-                    />
+                    <Input placeholder="Enter city" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -146,14 +130,9 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
               name="state"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel >
-                    State
-                  </FormLabel>
+                  <FormLabel>State</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter state"
-                      {...field}
-                    />
+                    <Input placeholder="Enter state" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -167,7 +146,11 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
                 <FormItem>
                   <FormLabel>Station Phone</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Enter station phone number" {...field} />
+                    <Input
+                      type="text"
+                      placeholder="Enter station phone number"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -192,15 +175,12 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
             />
           </div>
 
-
           <div className="flex items-end gap-6">
-
-
             <FormField
               control={stationForm.control}
               name="managerId"
               render={({ field }) => (
-                <FormItem className="flex flex-col w-full">
+                <FormItem className="flex w-full flex-col">
                   <FormLabel>Manager</FormLabel>
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
@@ -227,21 +207,25 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
                                 value={employee.userId}
                                 key={employee.userId}
                                 onSelect={() => {
-                                  stationForm.setValue("managerId", employee.userId);
-                                  setOpen(false)
+                                  stationForm.setValue(
+                                    "managerId",
+                                    employee.userId,
+                                  );
+                                  setOpen(false);
                                 }}
                               >
-                                <div className="flex items-center gap-2 w-full justify-between">
+                                <div className="flex w-full items-center justify-between gap-2">
                                   <p className="">{`${employee.firstName} ${employee.lastName} `}</p>
-                                  <p className="text-xs  text-muted-foreground">{`${employee.position}`}</p>
+                                  <p className="text-xs text-muted-foreground">{`${employee.position}`}</p>
                                 </div>
                                 <Check
                                   className={cn(
                                     "ml-auto",
-                                    field.value === employee.userId ? "opacity-100" : "opacity-0"
+                                    field.value === employee.userId
+                                      ? "opacity-100"
+                                      : "opacity-0",
                                   )}
                                 />
-
                               </CommandItem>
                             ))}
                           </CommandGroup>
@@ -256,13 +240,13 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
             <div>
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button>
-                    Add new employee
-                  </Button>
+                  <Button>Add new employee</Button>
                 </SheetTrigger>
                 <SheetContent className="min-w-[800px] overflow-y-scroll">
                   <SheetHeader>
-                    <SheetTitle className="sr-only">New employee form</SheetTitle>
+                    <SheetTitle className="sr-only">
+                      New employee form
+                    </SheetTitle>
                     <SheetDescription className="sr-only">
                       new employee form
                     </SheetDescription>

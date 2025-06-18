@@ -47,18 +47,18 @@ export default async function RootLayout({
           <Header
             user={{ name: "Austin Robertson", role: "Marketing Administrator" }}
           />
-          <main className="flex-1 flex flex-col bg-muted">
-            <div className="h-[90px] w-full rounded-b-2xl overflow-hidden">
+          <main className="flex flex-1 flex-col bg-muted">
+            <div className="h-[90px] w-full overflow-hidden rounded-b-2xl">
               <Image
                 src="/icons/Graphic-Side.svg"
                 alt="Ant-lias Logo"
                 width={100}
                 height={100}
-                className="w-full h-full object-cover rounded-b-2xl"
+                className="h-full w-full rounded-b-2xl object-cover"
                 priority
               />
             </div>
-            <div className="px-4 pt-4 md:px-6 md:pt-6 -translate-y-[40px] flex-1">
+            <div className="flex-1 -translate-y-[40px] px-4 pt-4 md:px-6 md:pt-6">
               {children}
             </div>
           </main>

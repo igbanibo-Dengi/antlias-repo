@@ -83,7 +83,7 @@ function FileUpload({
       <div
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
-        className="flex border-2 border-dashed rounded-lg p-6 cursor-pointer"
+        className="flex cursor-pointer rounded-lg border-2 border-dashed p-6"
       >
         <input
           type="file"
@@ -94,14 +94,14 @@ function FileUpload({
         />
         <label
           htmlFor={`${type}-upload`}
-          className="cursor-pointer flex flex-col items-center gap-2 w-full"
+          className="flex w-full cursor-pointer flex-col items-center gap-2"
         >
-          <div className="flex space-x-4 justify-between items-center w-full">
-            <FolderOpen strokeWidth={1.5} className="w-6 h-6 text-primary" />
+          <div className="flex w-full items-center justify-between space-x-4">
+            <FolderOpen strokeWidth={1.5} className="h-6 w-6 text-primary" />
             <div className="text-semiblack">
               {file ? file.name : "Drag and drop the file."}
             </div>
-            <div className="text-primary hover:text-primary-hover px-4 py-1 hover:bg-primary hover:text-white rounded-lg border border-primary">
+            <div className="hover:text-primary-hover rounded-lg border border-primary px-4 py-1 text-primary hover:bg-primary hover:text-white">
               File upload
             </div>
           </div>
@@ -152,10 +152,10 @@ export default function FuelDeliveryForm() {
   }
 
   return (
-    <div className="overflow-y-auto max-h-[550px] px-4">
+    <div className="max-h-[550px] overflow-y-auto px-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-muted-foreground">
             Create new log fuel delivery form
           </p>
 

@@ -12,28 +12,28 @@ import {
 
 const General = () => {
   return (
-    <div className="relative p-4 mx-auto">
+    <div className="relative mx-auto p-4">
       {/* Close Button */}
       {/* <button className="absolute right-4 top-4">
         <X className="h-5 w-5 text-muted-foreground" />
       </button> */}
 
       {/* Three Column Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+      <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Company Information */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-lg font-medium  mb-2">Company Information</h2>
-          <p className="text-sm text-muted-foreground mb-4">
+        <div className="rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-2 text-lg font-medium">Company Information</h2>
+          <p className="mb-4 text-sm text-muted-foreground">
             Configure system-wide preferences and defaults
           </p>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="mb-1 block text-sm font-medium text-gray-700">
                 Logo
               </label>
-              <div className="flex border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center">
-                <div className="flex items-center mb-2">
-                  <FileIcon className="h-5 w-5 text-blue-600 mr-2" />
+              <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6">
+                <div className="mb-2 flex items-center">
+                  <FileIcon className="mr-2 h-5 w-5 text-blue-600" />
                   <span className="text-sm text-gray-600">
                     Drag and drop the file.
                   </span>
@@ -42,7 +42,7 @@ const General = () => {
                   File upload
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Maximum size: 20 MB, file format: JPG, PNG
               </p>
             </div>
@@ -50,7 +50,7 @@ const General = () => {
             <div>
               <label
                 htmlFor="company-id"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="mb-1 block text-sm font-medium text-gray-700"
               >
                 Company ID
               </label>
@@ -65,7 +65,7 @@ const General = () => {
             <div>
               <label
                 htmlFor="station-name"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="mb-1 block text-sm font-medium text-gray-700"
               >
                 Station Name
               </label>
@@ -75,7 +75,7 @@ const General = () => {
             <div>
               <label
                 htmlFor="address"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="mb-1 block text-sm font-medium text-gray-700"
               >
                 Address
               </label>
@@ -85,7 +85,7 @@ const General = () => {
             <div>
               <label
                 htmlFor="contact-phone"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="mb-1 block text-sm font-medium text-gray-700"
               >
                 Contact Phone
               </label>
@@ -95,7 +95,7 @@ const General = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="mb-1 block text-sm font-medium text-gray-700"
               >
                 Email
               </label>
@@ -105,13 +105,13 @@ const General = () => {
         </div>
 
         {/* Payroll Settings */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-lg font-medium  mb-6">Payroll Settings</h2>
+        <div className="rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-6 text-lg font-medium">Payroll Settings</h2>
           <div className="space-y-4">
             <div>
               <label
                 htmlFor="pay-period"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="mb-1 block text-sm font-medium text-gray-700"
               >
                 Default Pay Period
               </label>
@@ -130,7 +130,7 @@ const General = () => {
             <div>
               <label
                 htmlFor="payday"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="mb-1 block text-sm font-medium text-gray-700"
               >
                 PayDay
               </label>
@@ -140,17 +140,17 @@ const General = () => {
         </div>
 
         {/* Roles */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-lg font-medium  mb-6">Roles</h2>
+        <div className="rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-6 text-lg font-medium">Roles</h2>
           <div className="space-y-4">
             {["Station Manager", "Admin", "Attendant"].map((role) => (
               <div
                 key={role}
-                className="flex justify-between items-center py-2 border-b"
+                className="flex items-center justify-between border-b py-2"
               >
                 <div>
                   <h3 className="font-medium">{role}</h3>
-                  <button className="text-blue-600 text-sm">Edit</button>
+                  <button className="text-sm text-blue-600">Edit</button>
                 </div>
                 <div className="text-right">
                   <span className="font-medium">₦164,120</span>
@@ -162,7 +162,7 @@ const General = () => {
       </div>
 
       {/* Submit Button */}
-      <div className="flex justify-end mt-6">
+      <div className="mt-6 flex justify-end">
         <Button size={"lg"}>Submit</Button>
       </div>
     </div>

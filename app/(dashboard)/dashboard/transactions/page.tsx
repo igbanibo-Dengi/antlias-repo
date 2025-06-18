@@ -19,7 +19,6 @@ import {
 import TransactionFormModal from "@/components/forms/TransactionFormModal";
 
 const Page = () => {
-
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleDialogToggle = (open: boolean) => {
@@ -36,13 +35,13 @@ const Page = () => {
         <DialogTrigger asChild>
           <Button
             size={"lg"}
-            className="mb-10 absolute left-5 -top-7 cursor-pointer"
+            className="absolute -top-7 left-5 mb-10 cursor-pointer"
           >
-            <Plus className="h-4 w-4 bg-gray-100/40 rounded-full" />
+            <Plus className="h-4 w-4 rounded-full bg-gray-100/40" />
             New Transactions
           </Button>
         </DialogTrigger>
-        <DialogContent className=" pl-6 pr-2 ">
+        <DialogContent className="pl-6 pr-2">
           <DialogTitle className="sr-only">New transactions</DialogTitle>
           <TransactionFormModal onClose={closeDialog} />
         </DialogContent>

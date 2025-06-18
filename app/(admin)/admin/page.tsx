@@ -109,7 +109,7 @@ const Page = () => {
       {/* Background Image */}
       <div>
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <StatCard
             title="Total Sales"
             value="₦20,220"
@@ -119,7 +119,7 @@ const Page = () => {
                 alt="arrow"
                 width={100}
                 height={100}
-                className="w-4 h-4  fill-current object-cover"
+                className="h-4 w-4 fill-current object-cover"
                 priority
               />
             }
@@ -134,7 +134,7 @@ const Page = () => {
                 alt="arrow"
                 width={100}
                 height={100}
-                className="w-4 h-4  object-cover"
+                className="h-4 w-4 object-cover"
                 priority
               />
             }
@@ -149,7 +149,7 @@ const Page = () => {
                 alt="petrol"
                 width={100}
                 height={100}
-                className="w-5 h-5 object-cover"
+                className="h-5 w-5 object-cover"
                 priority
               />
             }
@@ -164,7 +164,7 @@ const Page = () => {
                 alt="arrow"
                 width={100}
                 height={100}
-                className="w-6 h-6  object-cover"
+                className="h-6 w-6 object-cover"
                 priority
               />
             }
@@ -179,7 +179,7 @@ const Page = () => {
                 alt="arrow"
                 width={100}
                 height={100}
-                className="w-7 h-7  object-cover"
+                className="h-7 w-7 object-cover"
                 priority
               />
             }
@@ -189,11 +189,11 @@ const Page = () => {
       </div>
 
       {/* Charts & Activity Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 py-6">
+      <div className="grid grid-cols-1 gap-4 py-6 lg:grid-cols-3">
         {/* Left Section: Sales & Transactions */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="space-y-4 lg:col-span-2">
           <SalesChart title="Sales Overview" data={salesData} />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <TransactionsCard title="Transactions" data={recentTransactions} />
             <InventoryChart
               data={inventoryData}
@@ -203,7 +203,7 @@ const Page = () => {
         </div>
 
         {/* Right Section: Activity Overview */}
-        <div className="lg:col-span-1 ">
+        <div className="lg:col-span-1">
           <ActivityOverview
             totalSales="₦350,000"
             totalTransactions={5867}

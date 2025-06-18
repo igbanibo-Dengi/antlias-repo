@@ -6,7 +6,7 @@ import TableSection from "@/components/Wallet-Components/TableSection";
 
 const Page = () => {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <WalletSection />
       <TableSection />
     </div>

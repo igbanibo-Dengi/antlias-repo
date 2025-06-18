@@ -4,20 +4,20 @@ import { Filter, Search } from "lucide-react";
 import Image from "next/image";
 
 const StationSearchAndFilterBar = () => (
-  <div className="bg-white rounded-lg shadow-sm gap-24 p-4 mb-6 flex items-center justify-between">
+  <div className="mb-6 flex items-center justify-between gap-24 rounded-lg bg-white p-4 shadow-sm">
     <div className="text-base font-medium">Stations</div>
-    <div className="flex items-center flex-1 gap-50 justify-between">
-      <div className="relative flex items-center flex-1">
+    <div className="gap-50 flex flex-1 items-center justify-between">
+      <div className="relative flex flex-1 items-center">
         <Filter className="absolute left-3 h-4 w-4 text-muted-foreground" />
         <Input
-          className="pl-10 border-gray-200 text-sm"
+          className="border-gray-200 pl-10 text-sm"
           placeholder="Filter by Terminal, Customer name, Employee ID..."
         />
       </div>
-      <div className="relative flex items-center flex-1 max-w-md">
+      <div className="relative flex max-w-md flex-1 items-center">
         <Search className="absolute left-3 h-4 w-4 text-gray-400" />
         <Input
-          className="pl-10 border-gray-200 text-sm"
+          className="border-gray-200 pl-10 text-sm"
           placeholder="Type here..."
         />
       </div>
@@ -42,6 +42,5 @@ const StationSearchAndFilterBar = () => (
     </div>
   </div>
 );
-
 
 export default StationSearchAndFilterBar;

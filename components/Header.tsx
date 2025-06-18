@@ -26,11 +26,9 @@ interface HeaderProps {
   };
 }
 
-export function Header({
-  user = { name: "Austin Robertson" },
-}: HeaderProps) {
+export function Header({ user = { name: "Austin Robertson" } }: HeaderProps) {
   const { open, toggleSidebar } = useSidebar();
-  const router = useRouter()
+  const router = useRouter();
 
   const onClickHandler = async () => {
     await signoutAction();
@@ -38,7 +36,7 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-30 flex justify-between h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 lg:px-6">
       <div className="flex items-center gap-4">
         <Button
           variant="outline"
@@ -46,7 +44,7 @@ export function Header({
           onClick={() => {
             toggleSidebar();
           }}
-        // className="rounded-full bg-primary hover:bg-primary hover:text-white text-white"
+          // className="rounded-full bg-primary hover:bg-primary hover:text-white text-white"
         >
           <ArrowRight
             className={cn(
@@ -56,7 +54,7 @@ export function Header({
           />
           <span className="sr-only">Go back</span>
         </Button>
-        <div className="relative flex-1 max-w-md mx-auto">
+        <div className="relative mx-auto max-w-md flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
@@ -117,13 +115,13 @@ export function Header({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="relative flex items-center gap-2 pl-1 h-10 rounded-full"
+              className="relative flex h-10 items-center gap-2 rounded-full pl-1"
             >
               <Avatar className="h-8 w-8">
                 <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="flex flex-col space-y-1 text-left">
-                <p className="text-sm leading-none font-semibold">
+                <p className="text-sm font-semibold leading-none">
                   {user.name}
                 </p>
               </div>
@@ -136,21 +134,11 @@ export function Header({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="cursor-pointer"
-              asChild
-            >
-              <Link href={'/profile'}>
-                Profile
-              </Link>
+            <DropdownMenuItem className="cursor-pointer" asChild>
+              <Link href={"/profile"}>Profile</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              asChild
-            >
-              <Link href={'/settings'}>
-                Settings
-              </Link>
+            <DropdownMenuItem className="cursor-pointer" asChild>
+              <Link href={"/settings"}>Settings</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

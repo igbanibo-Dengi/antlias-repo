@@ -102,7 +102,7 @@ const TokenIsInvalidState = () => {
           <div className="h-px w-full max-w-md bg-muted" />
         </div>
         <div className="hidden h-screen bg-muted lg:flex lg:w-1/2"></div>
-      </div >
-    </main >
+      </div>
+    </main>
   );
 };

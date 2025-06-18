@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import SendFundsForm from "../forms/SendFundsForm";
 interface StationData {
   name: string;
@@ -40,11 +40,10 @@ const WalletSection: React.FC = () => {
     setIsDialogOpen(false);
   };
 
-
   return (
-    <div className="mb-10 flex flex-col md:flex-row  items-center gap-6">
+    <div className="mb-10 flex flex-col items-center gap-6 md:flex-row">
       {/* Wallet Balance Section */}
-      <div className=" bg-gradient-to-r w-1/3 h-[130px] w-full from-blue-500 to-blue-700 text-white p-3 rounded-lg flex flex-col justify-between">
+      <div className="flex h-[130px] w-1/3 w-full flex-col justify-between rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 p-3 text-white">
         <div className="w-full">
           <Image
             src="/icons/summaryHeading.svg"
@@ -56,9 +55,9 @@ const WalletSection: React.FC = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-2 lg:flex-row justify-between w-full items-end mt-auto">
+        <div className="mt-auto flex w-full flex-col items-end justify-between gap-2 lg:flex-row">
           <div>
-            <p className="text-sm text-background-800 font-small">
+            <p className="text-background-800 font-small text-sm">
               Wallet Balance
             </p>
             <p className="text-10xl font-bold">₦{formatNumber(totalBalance)}</p>
@@ -75,25 +74,24 @@ const WalletSection: React.FC = () => {
                 <DialogTitle className="text-left">Send Funds</DialogTitle>
                 <DialogDescription className="text-left">
                   Send funds to a station
-                </DialogDescription >
+                </DialogDescription>
               </DialogHeader>
               <DialogTitle className="sr-only">Send Funds</DialogTitle>
               <SendFundsForm onClose={closeDialog} />
             </DialogContent>
           </Dialog>
-
         </div>
       </div>
 
       {/* Salary by Station Section */}
-      <div className="flex-1 w-full md:w-2/3 h-[130px] bg-white p-3 rounded-lg shadow-sm flex flex-col justify-between">
+      <div className="flex h-[130px] w-full flex-1 flex-col justify-between rounded-lg bg-white p-3 shadow-sm md:w-2/3">
         <div className="flex items-center gap-2">
           <Image
             src="/icons/pump.svg"
             alt="Salary by Station Icon"
             width={20}
             height={20}
-            className="w-5 h-5 object-contain"
+            className="h-5 w-5 object-contain"
             priority
           />
           <h3 className="text-lg font-semibold">Salary by Station</h3>

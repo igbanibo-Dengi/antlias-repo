@@ -6,11 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { X, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -41,9 +37,7 @@ interface ExpenseFormProps {
   onClose?: () => void;
 }
 
-const ExpenseForm: React.FC<ExpenseFormProps> = ({
-  onClose,
-}) => {
+const ExpenseForm: React.FC<ExpenseFormProps> = ({ onClose }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,8 +51,8 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
   } = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseSchema),
     defaultValues: {
-      permission: false
-    }
+      permission: false,
+    },
   });
 
   const handleClearFile = () => {
@@ -114,7 +108,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
     }
   };
   return (
-    <Card className="w-full overflow-y-auto shadow-none border-none">
+    <Card className="w-full overflow-y-auto border-none shadow-none">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <div>
           <h2 className="text-lg font-medium">New Expense Form</h2>
@@ -142,7 +136,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
               </SelectContent>
             </Select>
             {errors.category && (
-              <p className="text-red-500 text-sm">{errors.category.message}</p>
+              <p className="text-sm text-red-500">{errors.category.message}</p>
             )}
           </div>
 
@@ -156,7 +150,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
               className=""
             />
             {errors.amount && (
-              <p className="text-red-500 text-sm">{errors.amount.message}</p>
+              <p className="text-sm text-red-500">{errors.amount.message}</p>
             )}
           </div>
 
@@ -170,7 +164,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
               maxLength={2000}
             />
             {errors.description && (
-              <p className="text-red-500 text-sm">
+              <p className="text-sm text-red-500">
                 {errors.description.message}
               </p>
             )}
@@ -181,8 +175,9 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
             <div
               onDrop={handleDrop}
               onDragOver={(e) => e.preventDefault()}
-              className={`flex border-2 border-dashed rounded-lg p-6 ${errors.file ? "border-red-500" : "border-gray-200"
-                }`}
+              className={`flex rounded-lg border-2 border-dashed p-6 ${
+                errors.file ? "border-red-500" : "border-gray-200"
+              }`}
               role="button"
               aria-label="File upload drop zone"
               tabIndex={0}
@@ -195,10 +190,10 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
                 onChange={handleFileChange}
                 accept=".jpg,.jpeg,.png,.pdf"
               />
-              <label htmlFor="file-upload" className="cursor-pointer w-full">
-                <div className="flex justify-between items-center">
-                  <FolderOpen className="w-6 h-6 text-primary" />
-                  <div className="text-semiblack truncate max-w-[200px]">
+              <label htmlFor="file-upload" className="w-full cursor-pointer">
+                <div className="flex items-center justify-between">
+                  <FolderOpen className="h-6 w-6 text-primary" />
+                  <div className="text-semiblack max-w-[200px] truncate">
                     {file ? (
                       <div className="flex items-center gap-2">
                         {file.name}
@@ -211,7 +206,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
                           className="text-muted-foreground hover:text-red-500"
                           aria-label="Remove file"
                         >
-                          <X className="w-4 h-4" />
+                          <X className="h-4 w-4" />
                         </button>
                       </div>
                     ) : (
@@ -230,9 +225,9 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
               </label>
             </div>
             {errors.file && (
-              <p className="text-red-500 text-sm">{errors.file.message}</p>
+              <p className="text-sm text-red-500">{errors.file.message}</p>
             )}
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="mt-2 text-xs text-muted-foreground">
               Maximum size: 700 MB, file format: JPG, PNG, PDF
             </p>
           </div>
@@ -251,7 +246,6 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
       </CardContent>
     </Card>
   );
-}
-
+};
 
 export default ExpenseForm;

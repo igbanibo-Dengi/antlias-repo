@@ -98,11 +98,11 @@ export function TenantDashboardSidebar() {
 
   return (
     <Sidebar className="border-r bg-red-400" collapsible="icon">
-      <SidebarHeader className="p-0 bg-white">
+      <SidebarHeader className="bg-white p-0">
         <div className="flex h-14 items-center px-4">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 font-bold whitespace-nowrap"
+            className="flex items-center gap-2 whitespace-nowrap font-bold"
           >
             <Image
               src="/icons/antlias-logo.svg"
@@ -112,8 +112,9 @@ export function TenantDashboardSidebar() {
               priority
             />
             <p
-              className={`text-2xl font-semibold transition-all duration-200 ease-in-out ${open ? "opacity-100 w-auto" : "opacity-0 w-0"
-                }`}
+              className={`text-2xl font-semibold transition-all duration-200 ease-in-out ${
+                open ? "w-auto opacity-100" : "w-0 opacity-0"
+              }`}
             >
               Ant-lía
             </p>
@@ -121,16 +122,19 @@ export function TenantDashboardSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="p-2 bg-white">
+      <SidebarContent className="bg-white p-2">
         <SidebarMenu>
           {navItems.map((item) => (
-
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
-                isActive={item.href === '/tenant' ? pathname === '/tenant' : pathname === item.href || pathname.startsWith(item.href)}
+                isActive={
+                  item.href === "/tenant"
+                    ? pathname === "/tenant"
+                    : pathname === item.href || pathname.startsWith(item.href)
+                }
                 className={cn(
-                  "h-10 gap-3 pl-4 pr-2 font-medium text-muted-foreground hover:text-white hover:bg-primary/40 data-[active=true]:bg-primary data-[active=true]:text-white",
+                  "h-10 gap-3 pl-4 pr-2 font-medium text-muted-foreground hover:bg-primary/40 hover:text-white data-[active=true]:bg-primary data-[active=true]:text-white",
                   // pathname === item.href && "bg-primary text-white hover:bg-blue-700 hover:text-white",
                 )}
                 tooltip={item.title}

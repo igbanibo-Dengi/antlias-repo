@@ -17,12 +17,15 @@ export function ExpenseDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button size={"lg"} className="mb-30 absolute left-5 -top-2 -translate-y-6">
-          <Plus className="h-4 w-4 bg-gray-100/40 rounded-full mr-2" />
+        <Button
+          size={"lg"}
+          className="mb-30 absolute -top-2 left-5 -translate-y-6"
+        >
+          <Plus className="mr-2 h-4 w-4 rounded-full bg-gray-100/40" />
           New Expense
         </Button>
       </DialogTrigger>
-      <DialogContent className="h-[90vh] 2xl:h-fit overflow-hidden px-0">
+      <DialogContent className="h-[90vh] overflow-hidden px-0 2xl:h-fit">
         <DialogTitle className="sr-only">Expense Form</DialogTitle>
         <ExpenseForm onClose={() => setIsOpen(false)} />
       </DialogContent>

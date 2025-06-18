@@ -34,7 +34,7 @@ export default function UserManagement() {
   ];
 
   return (
-    <div className="flex flex-col w-full bg-gray-100">
+    <div className="flex w-full flex-col bg-gray-100">
       <div className="flex-1">
         {/* Tabs */}
 
@@ -42,7 +42,7 @@ export default function UserManagement() {
           <button className="px-6 py-4 text-gray-500 hover:text-gray-700">
             General
           </button>
-          <button className="px-6 py-4 text-indigo-600 border-b-2 border-indigo-600 font-medium">
+          <button className="border-b-2 border-indigo-600 px-6 py-4 font-medium text-indigo-600">
             User Management
           </button>
           <button className="px-6 py-4 text-gray-500 hover:text-gray-700">
@@ -51,24 +51,24 @@ export default function UserManagement() {
         </div>
 
         {/* User Table */}
-        <div className="w-full mx-auto my-8 bg-white rounded-lg shadow">
-          <table className="w-full mb-6">
+        <div className="mx-auto my-8 w-full rounded-lg bg-white shadow">
+          <table className="mb-6 w-full">
             <thead>
-              <tr className="text-left text-sm text-gray-500 border-b">
-                <th className="pl-6 py-4 font-normal w-12"></th>
-                <th className="py-4 font-normal w-12"></th>
+              <tr className="border-b text-left text-sm text-gray-500">
+                <th className="w-12 py-4 pl-6 font-normal"></th>
+                <th className="w-12 py-4 font-normal"></th>
                 <th className="py-4 font-normal">Employee ID</th>
                 <th className="py-4 font-normal">Name</th>
                 <th className="py-4 font-normal">Contact Number</th>
                 <th className="py-4 font-normal">Email</th>
                 <th className="py-4 font-normal">Password</th>
-                <th className="py-4 font-normal w-12"></th>
+                <th className="w-12 py-4 font-normal"></th>
               </tr>
             </thead>
             <tbody>
               {users.map((user, index) => (
                 <tr key={index} className="border-b">
-                  <td className="pl-6 py-4">
+                  <td className="py-4 pl-6">
                     <Checkbox />
                   </td>
                   <td className="py-4">
@@ -99,7 +99,7 @@ export default function UserManagement() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between px-6 py-4 border-t">
+        <div className="flex items-center justify-between border-t px-6 py-4">
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -198,7 +198,7 @@ export default function UserManagement() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-4 w-4 mr-2"
+              className="mr-2 h-4 w-4"
             >
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
               <line x1="3" y1="9" x2="21" y2="9" />

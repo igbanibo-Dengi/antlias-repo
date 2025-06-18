@@ -5,9 +5,9 @@ import { Mail } from "lucide-react";
 
 export default function Page() {
   return (
-    <div className="flex items-center justify-center w-screen h-screen p-4 bg-blue-100">
-      <Card className="w-full text-center shadow-lg p-35 h-full m-2">
-        <CardContent className="flex flex-col justify-center items-center h-full w-full space-y-4">
+    <div className="flex h-screen w-screen items-center justify-center bg-blue-100 p-4">
+      <Card className="p-35 m-2 h-full w-full text-center shadow-lg">
+        <CardContent className="flex h-full w-full flex-col items-center justify-center space-y-4">
           <div className="flex items-center space-x-2">
             <Image
               src="/icons/antlias-logo.svg"
@@ -19,8 +19,8 @@ export default function Page() {
             <span className="text-lg font-semibold">Antlias</span>
           </div>
 
-          <div className=" p-4 rounded-full bg-primary/10 text-primary">
-            <div className=" p-4 rounded-full bg-primary/10 text-primary">
+          <div className="rounded-full bg-primary/10 p-4 text-primary">
+            <div className="rounded-full bg-primary/10 p-4 text-primary">
               <Mail className="size-10" />
             </div>
           </div>
@@ -34,7 +34,7 @@ export default function Page() {
           </p>
 
           <Link href="/auth/sign-in">
-            <span className="text-blue-600 text-sm hover:underline">
+            <span className="text-sm text-blue-600 hover:underline">
               &lt; Back to log in
             </span>
           </Link>

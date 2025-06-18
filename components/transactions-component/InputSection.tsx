@@ -34,7 +34,7 @@ const InputSection = () => {
   };
 
   return (
-    <div className="w-full bg-white p-6 flex items-center justify-between rounded-lg shadow-sm">
+    <div className="flex w-full items-center justify-between rounded-lg bg-white p-6 shadow-sm">
       {/* Left Section: Title and Filter */}
       <div className="flex items-center gap-4">
         <h2 className="text-lg font-semibold text-gray-800">Transactions</h2>
@@ -42,7 +42,7 @@ const InputSection = () => {
           <select
             value={selectedFilter}
             onChange={handleFilterChange}
-            className="appearance-none bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 pr-8"
+            className="appearance-none rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-8 text-sm text-gray-500 focus:border-blue-500 focus:ring-blue-500"
           >
             <option value="" disabled>
               Filter by Terminal, Customer name, Employee ID...
@@ -55,7 +55,7 @@ const InputSection = () => {
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
             <svg
-              className="w-4 h-4 text-gray-500"
+              className="h-4 w-4 text-gray-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -79,30 +79,30 @@ const InputSection = () => {
           value={searchQuery}
           onChange={handleSearchChange}
           placeholder="Type here..."
-          className="bg-gray-50 border border-gray-300 lg:w-[350px]  text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 w-62 overflow-hidden"
+          className="w-62 overflow-hidden rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-500 focus:border-blue-500 focus:ring-blue-500 lg:w-[350px]"
         />
         <button
           onClick={handleExportExcel}
-          className="flex items-center gap-1  text-white text-sm font-medium rounded-lg px-3 py-2 "
+          className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-white"
         >
           <Image
             src="/icons/excel.svg"
             alt="Export to Excel"
             width={16}
             height={16}
-            className="w-4 h-4 hidden lg:block"
+            className="hidden h-4 w-4 lg:block"
           />
         </button>
         <button
           onClick={handleExportPDF}
-          className="flex items-center gap-1 0 text-white text-sm font-medium rounded-lg px-3 py-2 "
+          className="0 flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-white"
         >
           <Image
             src="/icons/pdf.svg"
             alt="Export to PDF"
             width={16}
             height={16}
-            className="w-6 h-6 hidden lg:block"
+            className="hidden h-6 w-6 lg:block"
           />
         </button>
       </div>

@@ -24,15 +24,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { employeeFormSchema, EmployeeFormValues } from "@/validators/employee-form-validator";
+import {
+  employeeFormSchema,
+  EmployeeFormValues,
+} from "@/validators/employee-form-validator";
 import { useRouter } from "next/navigation";
 import { createEmployee } from "@/lib/actions/employee/employee";
 import { BranchProps } from "@/types";
 
-
 export function NewEmployeeForm({ branches }: BranchProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [activeSection, setActiveSection] = useState<'personal' | 'account' | 'guarantor'>('personal');
+  const [activeSection, setActiveSection] = useState<
+    "personal" | "account" | "guarantor"
+  >("personal");
   const router = useRouter();
 
   const form = useForm<EmployeeFormValues>({
@@ -56,19 +60,28 @@ export function NewEmployeeForm({ branches }: BranchProps) {
       guarantorPhone: "",
       guarantorAddress: "",
       guarantorRelationship: "",
-    }
+    },
   });
 
   // Function to validate current section before proceeding
-  const validateAndProceed = async (nextSection: 'personal' | 'account') => {
+  const validateAndProceed = async (nextSection: "personal" | "account") => {
     let fieldsToValidate: (keyof EmployeeFormValues)[] = [];
 
     // Determine which fields to validate based on current section
-    if (activeSection === 'personal') {
-      fieldsToValidate = ['firstName', 'lastName', 'email', 'contactNumber', 'position', 'role', 'branchId', 'salary'];
-    } else if (activeSection === 'account') {
-      fieldsToValidate = ['bankName', 'accountNumber', 'accountName', 'bvn'];
-    } else if (activeSection === 'guarantor') {
+    if (activeSection === "personal") {
+      fieldsToValidate = [
+        "firstName",
+        "lastName",
+        "email",
+        "contactNumber",
+        "position",
+        "role",
+        "branchId",
+        "salary",
+      ];
+    } else if (activeSection === "account") {
+      fieldsToValidate = ["bankName", "accountNumber", "accountName", "bvn"];
+    } else if (activeSection === "guarantor") {
       fieldsToValidate = [];
     }
 
@@ -78,18 +91,22 @@ export function NewEmployeeForm({ branches }: BranchProps) {
     if (isValid) {
       setActiveSection(nextSection);
       // Scroll to top of next section for better UX
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       // Find the first error and scroll to it
-      const errorFields = fieldsToValidate.filter(field => form.formState.errors[field]);
+      const errorFields = fieldsToValidate.filter(
+        (field) => form.formState.errors[field],
+      );
       if (errorFields.length > 0) {
         const firstError = errorFields[0];
         const element = document.querySelector(`[name="${firstError}"]`);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       }
-      toast.error("Please fill all required fields correctly before proceeding.");
+      toast.error(
+        "Please fill all required fields correctly before proceeding.",
+      );
     }
   };
 
@@ -105,61 +122,75 @@ export function NewEmployeeForm({ branches }: BranchProps) {
     const newData = {
       ...data,
       branchId: data.branchId,
-    }
+    };
 
     try {
-      const response = await createEmployee(newData)
+      const response = await createEmployee(newData);
 
       if (!response.success) {
         toast.error(response.error || "An unknown error occurred.");
-        throw new Error("Failed to create employee")
+        throw new Error("Failed to create employee");
       }
 
       if (response.success) {
-        toast.success(`${data.firstName} ${data.lastName} has been added to your staff.`, {
-          action: {
-            label: "View",
-            onClick: () => console.log("View employee"),
+        toast.success(
+          `${data.firstName} ${data.lastName} has been added to your staff.`,
+          {
+            action: {
+              label: "View",
+              onClick: () => console.log("View employee"),
+            },
           },
-        });
+        );
       }
 
       router.push("/tenant/employees");
       form.reset();
     } catch (error) {
-      return { success: false, error: "Internal Server Error", statusCode: 500 };
-    }
-    finally {
+      return {
+        success: false,
+        error: "Internal Server Error",
+        statusCode: 500,
+      };
+    } finally {
       setIsLoading(false);
     }
   }
 
   const sections = [
-    { id: 'personal', label: 'Personal Info' },
-    { id: 'account', label: 'Account Details' },
-    { id: 'guarantor', label: 'Guarantor' },
+    { id: "personal", label: "Personal Info" },
+    { id: "account", label: "Account Details" },
+    { id: "guarantor", label: "Guarantor" },
   ];
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 @container">
-        <div className="bg-white rounded-lg shadow-lg p-6 w-full flex flex-col @2xl:flex-row items-end justify-between">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8 @container"
+      >
+        <div className="flex w-full flex-col items-end justify-between rounded-lg bg-white p-6 shadow-lg @2xl:flex-row">
           <div className="text-2xl font-semibold">New Employee Form</div>
 
           {/* Navigation Tabs */}
-          <div className="flex border-b mt-4">
+          <div className="mt-4 flex border-b">
             {sections.map((section) => (
               <button
                 key={section.id}
                 type="button"
-                className={`px-4 py-2 font-medium ${activeSection === section.id
-                  ? 'border-b-2 border-primary text-primary'
-                  : 'text-muted-foreground'
-                  }`}
+                className={`px-4 py-2 font-medium ${
+                  activeSection === section.id
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-muted-foreground"
+                }`}
                 onClick={() => {
                   // Only allow clicking on tabs that are before the current active section
-                  const currentIndex = sections.findIndex(s => s.id === activeSection);
-                  const clickedIndex = sections.findIndex(s => s.id === section.id);
+                  const currentIndex = sections.findIndex(
+                    (s) => s.id === activeSection,
+                  );
+                  const clickedIndex = sections.findIndex(
+                    (s) => s.id === section.id,
+                  );
                   if (clickedIndex <= currentIndex) {
                     setActiveSection(section.id as any);
                   }
@@ -172,17 +203,19 @@ export function NewEmployeeForm({ branches }: BranchProps) {
         </div>
 
         {/* Personal Information Section */}
-        {activeSection === 'personal' && (
-          <div className="space-y-4 border p-6 rounded-lg shadow-lg bg-white">
+        {activeSection === "personal" && (
+          <div className="space-y-4 rounded-lg border bg-white p-6 shadow-lg">
             <h3 className="text-lg font-medium">Personal Information</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <FormField
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      First Name <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="John"
@@ -201,7 +234,9 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      Last Name <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Doe"
@@ -220,7 +255,9 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      Email <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="johndoe@gmail.com"
@@ -235,13 +272,15 @@ export function NewEmployeeForm({ branches }: BranchProps) {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <FormField
                 control={form.control}
                 name="contactNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone Number <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      Phone Number <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="08012345678"
@@ -261,8 +300,13 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                 name="position"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Position <span className="text-red-500">*</span></FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel>
+                      Position <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select position" />
@@ -287,16 +331,25 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                 name="role"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role <span className="text-red-500">*</span></FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel>
+                      Role <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select position" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="admin">Administrative Staff</SelectItem>
-                        <SelectItem value="user">Non-Administrative Staff</SelectItem>
+                        <SelectItem value="admin">
+                          Administrative Staff
+                        </SelectItem>
+                        <SelectItem value="user">
+                          Non-Administrative Staff
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -304,14 +357,18 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                 )}
               />
 
-
               <FormField
                 control={form.control}
                 name="branchId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Station <span className="text-red-500">*</span></FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel>
+                      Station <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select station" />
@@ -382,8 +439,14 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                     <FormControl>
                       <Input
                         type="date"
-                        value={field.value ? field.value.toISOString().split('T')[0] : ""}
-                        onChange={(e) => field.onChange(new Date(e.target.value))}
+                        value={
+                          field.value
+                            ? field.value.toISOString().split("T")[0]
+                            : ""
+                        }
+                        onChange={(e) =>
+                          field.onChange(new Date(e.target.value))
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -422,7 +485,7 @@ export function NewEmployeeForm({ branches }: BranchProps) {
               </Button>
               <Button
                 type="button"
-                onClick={() => validateAndProceed('account')}
+                onClick={() => validateAndProceed("account")}
               >
                 Next: Account Details
               </Button>
@@ -431,17 +494,19 @@ export function NewEmployeeForm({ branches }: BranchProps) {
         )}
 
         {/* Account Details Section */}
-        {activeSection === 'account' && (
-          <div className="space-y-4 border p-6 rounded-lg shadow-lg bg-white">
+        {activeSection === "account" && (
+          <div className="space-y-4 rounded-lg border bg-white p-6 shadow-lg">
             <h3 className="text-lg font-medium">Account Details</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="bankName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bank Name <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      Bank Name <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Access Bank" {...field} />
                     </FormControl>
@@ -455,7 +520,9 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                 name="accountNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Account Number <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      Account Number <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="1234567890"
@@ -475,7 +542,9 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                 name="accountName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Account Name <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      Account Name <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="John Doe" {...field} />
                     </FormControl>
@@ -489,7 +558,9 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                 name="bvn"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>BVN <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      BVN <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="12345678901"
@@ -510,13 +581,13 @@ export function NewEmployeeForm({ branches }: BranchProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setActiveSection('personal')}
+                onClick={() => setActiveSection("personal")}
               >
                 Back
               </Button>
               <Button
                 type="button"
-                onClick={() => setActiveSection('guarantor')}
+                onClick={() => setActiveSection("guarantor")}
               >
                 Next: Guarantor
               </Button>
@@ -525,11 +596,11 @@ export function NewEmployeeForm({ branches }: BranchProps) {
         )}
 
         {/* Guarantor Section */}
-        {activeSection === 'guarantor' && (
-          <div className="space-y-4 border p-6 rounded-lg shadow-lg bg-white">
+        {activeSection === "guarantor" && (
+          <div className="space-y-4 rounded-lg border bg-white p-6 shadow-lg">
             <h3 className="text-lg font-medium">Guarantor Information</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="guarantorName"
@@ -569,7 +640,10 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Relationship</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select relationship" />
@@ -610,20 +684,19 @@ export function NewEmployeeForm({ branches }: BranchProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setActiveSection('account')}
+                onClick={() => setActiveSection("account")}
               >
                 Back
               </Button>
-              <Button
-                type="submit"
-                disabled={isLoading}
-              >
+              <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Adding...
                   </div>
-                ) : "Add Employee"}
+                ) : (
+                  "Add Employee"
+                )}
               </Button>
             </div>
           </div>

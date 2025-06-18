@@ -43,8 +43,8 @@ type Station = {
 // Components
 const StationInfoSection = ({ station }: { station: Station }) => (
   <div className="mb-4 w-full">
-    <h3 className="text-sm text-muted-foreground mb-2">Station Information</h3>
-    <div className="flex justify-between mb-1">
+    <h3 className="mb-2 text-sm text-muted-foreground">Station Information</h3>
+    <div className="mb-1 flex justify-between">
       <div className="space-y-8">
         <p className="text-xs text-muted-foreground">Station ID</p>
         <p className="text-xs font-semibold text-gray-700">{station.id}</p>
@@ -54,57 +54,68 @@ const StationInfoSection = ({ station }: { station: Station }) => (
         <p className="text-xs font-semibold text-gray-700">{station.manager}</p>
       </div>
     </div>
-    <div className="flex justify-between mb-1">
+    <div className="mb-1 flex justify-between">
       <div className="space-y-8">
         <p className="text-xs text-muted-foreground">Station Name</p>
         <p className="text-xs font-semibold text-gray-700">{station.name}</p>
       </div>
       <div className="text-right">
         <p className="text-xs text-muted-foreground">No. of Employees</p>
-        <p className="text-xs font-semibold text-gray-700">{station.employees}</p>
+        <p className="text-xs font-semibold text-gray-700">
+          {station.employees}
+        </p>
       </div>
     </div>
-    <div className="flex justify-between mb-1">
+    <div className="mb-1 flex justify-between">
       <div className="space-y-8">
         <p className="text-xs text-muted-foreground">Location</p>
-        <p className="text-xs font-semibold text-gray-700">{station.location}</p>
+        <p className="text-xs font-semibold text-gray-700">
+          {station.location}
+        </p>
       </div>
       <div className="text-right">
         <p className="text-xs text-muted-foreground">Total Salaries</p>
-        <p className="text-xs font-semibold text-gray-700">{station.totalSalaries}</p>
+        <p className="text-xs font-semibold text-gray-700">
+          {station.totalSalaries}
+        </p>
       </div>
     </div>
-    <div className="border-t border-gray-200 my-4"></div>
+    <div className="my-4 border-t border-gray-200"></div>
   </div>
 );
 
 const FuelPricesSection = ({ prices }: { prices: FuelPrice }) => (
   <div className="mb-4 w-full">
-    <h3 className="text-sm text-muted-foreground mb-4">Latest Selling Price</h3>
+    <h3 className="mb-4 text-sm text-muted-foreground">Latest Selling Price</h3>
     <div className="grid grid-cols-4 gap-2">
       {Object.entries(prices).map(([fuelType, price]) => (
         <div key={fuelType} className="space-y-2">
-          <p className="text-xs text-muted-foreground capitalize">{fuelType}</p>
+          <p className="text-xs capitalize text-muted-foreground">{fuelType}</p>
           <p className="text-xs font-semibold text-gray-700">{price}</p>
         </div>
       ))}
     </div>
-    <div className="border-t border-gray-200 my-4"></div>
+    <div className="my-4 border-t border-gray-200"></div>
   </div>
 );
 
 const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
   <div className="w-full">
-    <h3 className="text-sm text-muted-foreground mb-2">Present Tank Status</h3>
+    <h3 className="mb-2 text-sm text-muted-foreground">Present Tank Status</h3>
     {tanks.map((tank, index) => (
-      <div key={index} className="flex items-center justify-between mb-4 gap-30">
-        <p className="text-xs text-muted-foreground whitespace-nowrap">{tank.name}</p>
-        <div className="relative max-w-[180px] flex-1 h-6 2xl:h-10 p-1 rounded-[4px] bg-black overflow-hidden">
+      <div
+        key={index}
+        className="gap-30 mb-4 flex items-center justify-between"
+      >
+        <p className="whitespace-nowrap text-xs text-muted-foreground">
+          {tank.name}
+        </p>
+        <div className="relative h-6 max-w-[180px] flex-1 overflow-hidden rounded-[4px] bg-black p-1 2xl:h-10">
           <div
-            className="flex items-center h-full rounded-[2px] bg-green-600"
+            className="flex h-full items-center rounded-[2px] bg-green-600"
             style={{ width: `${tank.level}%` }}
           >
-            <span className="absolute right-2  text-[10px] text-white px-2">
+            <span className="absolute right-2 px-2 text-[10px] text-white">
               {tank.level}%
             </span>
           </div>
@@ -115,7 +126,7 @@ const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
 );
 
 const StationCard = ({ station }: { station: Station }) => (
-  <Card className="bg-white p-6 space-y-6 shadow-lg">
+  <Card className="space-y-6 bg-white p-6 shadow-lg">
     <StationInfoSection station={station} />
     <FuelPricesSection prices={station.prices} />
     <TankStatusSection tanks={station.tanks} />
@@ -123,20 +134,20 @@ const StationCard = ({ station }: { station: Station }) => (
 );
 
 const SearchAndFilterBar = () => (
-  <div className="bg-white rounded-lg shadow-sm gap-24 p-4 mb-6 flex items-center justify-between">
+  <div className="mb-6 flex items-center justify-between gap-24 rounded-lg bg-white p-4 shadow-sm">
     <div className="text-base font-medium">Stations</div>
-    <div className="flex items-center flex-1 gap-50 justify-between">
-      <div className="relative flex items-center flex-1">
+    <div className="gap-50 flex flex-1 items-center justify-between">
+      <div className="relative flex flex-1 items-center">
         <Filter className="absolute left-3 h-4 w-4 text-muted-foreground" />
         <Input
-          className="pl-10 border-gray-200 text-sm"
+          className="border-gray-200 pl-10 text-sm"
           placeholder="Filter by Terminal, Customer name, Employee ID..."
         />
       </div>
-      <div className="relative flex items-center flex-1 max-w-md">
+      <div className="relative flex max-w-md flex-1 items-center">
         <Search className="absolute left-3 h-4 w-4 text-gray-400" />
         <Input
-          className="pl-10 border-gray-200 text-sm"
+          className="border-gray-200 pl-10 text-sm"
           placeholder="Type here..."
         />
       </div>
@@ -165,7 +176,7 @@ const SearchAndFilterBar = () => (
 const NewStationDialog = ({
   isOpen,
   onOpenChange,
-  onClose
+  onClose,
 }: {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -173,15 +184,17 @@ const NewStationDialog = ({
 }) => (
   <Dialog open={isOpen} onOpenChange={onOpenChange}>
     <DialogTrigger asChild>
-      <Button size={"lg"} className="mb-10 absolute left-5 -top-7">
-        <Plus className="h-4 w-4 bg-gray-100/40 rounded-full" />
+      <Button size={"lg"} className="absolute -top-7 left-5 mb-10">
+        <Plus className="h-4 w-4 rounded-full bg-gray-100/40" />
         New Station
       </Button>
     </DialogTrigger>
     <DialogContent>
       <DialogHeader>
         <DialogTitle className="sr-only">New Station Form</DialogTitle>
-        <DialogDescription className="sr-only">New station form</DialogDescription>
+        <DialogDescription className="sr-only">
+          New station form
+        </DialogDescription>
       </DialogHeader>
       <NewStationForm onClose={onClose} />
     </DialogContent>
@@ -268,11 +281,11 @@ export default function FuelStationDashboard() {
 
       <SearchAndFilterBar />
 
-      <div className="flex justify-end my-2 pr-20">
+      <div className="my-2 flex justify-end pr-20">
         <span className="text-xs text-gray-400">Total Salaries</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-12 bg-white rounded-lg">
+      <div className="grid grid-cols-1 gap-10 rounded-lg bg-white p-12 md:grid-cols-2 lg:grid-cols-3">
         {stations.map((station, index) => (
           <StationCard key={index} station={station} />
         ))}

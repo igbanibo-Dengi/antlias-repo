@@ -61,7 +61,7 @@ const TableSection = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="flex w-full flex-col md:flex-row gap-6 p-6 bg-white rounded-lg  flex-1 shadow-sm  mx-auto">
+    <div className="mx-auto flex w-full flex-1 flex-col gap-6 rounded-lg bg-white p-6 shadow-sm md:flex-row">
       {/* Account Details Section */}
       <AccountDetails
         accountName="Fatgbems Petroleum"
@@ -111,14 +111,14 @@ const TableSection = () => {
                   ₦{item.amount.toLocaleString()}
                 </TableCell>
                 <TableCell>
-                  <Badge className="bg-[#00B000] text-[white] font-small">
+                  <Badge className="font-small bg-[#00B000] text-[white]">
                     {item.status}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   <button className="text-gray-500 hover:text-gray-700">
                     <svg
-                      className="w-5 h-5"
+                      className="h-5 w-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"

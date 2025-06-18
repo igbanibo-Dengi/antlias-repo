@@ -10,13 +10,13 @@ export default function SettingsPage() {
   return (
     <div className="w-full">
       {/* Stations Header */}
-      <div className="bg-white rounded-lg space-x- shadow-sm p-4 mb-6 flex items-center justify-between">
+      <div className="space-x- mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
         <div className="text-lg font-medium">Setting</div>
-        <div className="flex items-center flex-1 gap-60 mx-4">
-          <div className="relative flex items-center flex-1 max-w-md ">
+        <div className="mx-4 flex flex-1 items-center gap-60">
+          <div className="relative flex max-w-md flex-1 items-center">
             <Search className="absolute left-3 h-4 w-4 text-gray-400" />
             <Input
-              className="pl-10 border-gray-200 text-sm"
+              className="border-gray-200 pl-10 text-sm"
               placeholder="Type here..."
             />
           </div>
@@ -26,28 +26,28 @@ export default function SettingsPage() {
       {/* Header Tabs */}
       <div className="w-full">
         <Tabs defaultValue="general" className="w-full">
-          <TabsList className="bg-transparent border-b justify-start rounded-none h-auto gap-6">
+          <TabsList className="h-auto justify-start gap-6 rounded-none border-b bg-transparent">
             <TabsTrigger
               value="general"
-              className="py-4 px-1 rounded-none data-[state=active]:border-b-2 data-[state=active]:bg-muted data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent"
+              className="rounded-none bg-transparent px-1 py-4 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-muted data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
               General
             </TabsTrigger>
             <TabsTrigger
               value="pos"
-              className="py-4 px-1 rounded-none data-[state=active]:border-b-2 data-[state=active]:bg-muted data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent"
+              className="rounded-none bg-transparent px-1 py-4 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-muted data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
               POS
             </TabsTrigger>
             <TabsTrigger
               value="user-management"
-              className="py-4 px-1 rounded-none data-[state=active]:border-b-2 data-[state=active]:bg-muted data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent"
+              className="rounded-none bg-transparent px-1 py-4 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-muted data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
               User Management
             </TabsTrigger>
             <TabsTrigger
               value="security"
-              className="py-4 px-1 rounded-none data-[state=active]:border-b-2 data-[state=active]:bg-muted data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent"
+              className="rounded-none bg-transparent px-1 py-4 data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-muted data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
               Security
             </TabsTrigger>

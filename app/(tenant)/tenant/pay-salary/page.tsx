@@ -6,7 +6,7 @@ import TableSection from "@/components/Salary-components/TableSection";
 
 const Page = () => {
   return (
-    <div className="relative flex flex-col w-full ">
+    <div className="relative flex w-full flex-col">
       {/* Overlay Content */}
       <div className="w-full">
         <div className="flex flex-col items-start gap-6">

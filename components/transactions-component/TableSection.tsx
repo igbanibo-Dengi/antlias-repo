@@ -236,11 +236,12 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      const variant = {
-        Successful: "bg-green-100 text-green-800",
-        Declined: "bg-red-100 text-red-800",
-        Failed: "bg-yellow-100 text-yellow-800",
-      }[status] || "bg-gray-100 text-gray-800";
+      const variant =
+        {
+          Successful: "bg-green-100 text-green-800",
+          Declined: "bg-red-100 text-red-800",
+          Failed: "bg-yellow-100 text-yellow-800",
+        }[status] || "bg-gray-100 text-gray-800";
 
       return <Badge className={`${variant} capitalize`}>{status}</Badge>;
     },
@@ -285,23 +286,33 @@ export function DataTable() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4  bg-white rounded-lg shadow-sm p-4 mb-10">
-        <p className="font-semibold text-lg">Transactions</p>
+      <div className="mb-10 flex items-center justify-between rounded-lg bg-white p-4 py-4 shadow-sm">
+        <p className="text-lg font-semibold">Transactions</p>
 
         <div className="flex items-center gap-4">
           <Input
             placeholder="Search by transaction ID..."
-            value={(table.getColumn("transactionId")?.getFilterValue() as string) ?? ""}
+            value={
+              (table.getColumn("transactionId")?.getFilterValue() as string) ??
+              ""
+            }
             onChange={(event) =>
-              table.getColumn("transactionId")?.setFilterValue(event.target.value)
+              table
+                .getColumn("transactionId")
+                ?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
           <Input
             placeholder="Search by customer name..."
-            value={(table.getColumn("customerName")?.getFilterValue() as string) ?? ""}
+            value={
+              (table.getColumn("customerName")?.getFilterValue() as string) ??
+              ""
+            }
             onChange={(event) =>
-              table.getColumn("customerName")?.setFilterValue(event.target.value)
+              table
+                .getColumn("customerName")
+                ?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -318,13 +329,23 @@ export function DataTable() {
                 <DropdownMenuCheckboxItem
                   key={status}
                   className="capitalize"
-                  checked={(table.getColumn("status")?.getFilterValue() as string[] || []).includes(status)}
+                  checked={(
+                    (table.getColumn("status")?.getFilterValue() as string[]) ||
+                    []
+                  ).includes(status)}
                   onCheckedChange={(checked) => {
-                    const currentFilters = (table.getColumn("status")?.getFilterValue() as string[]) || [];
+                    const currentFilters =
+                      (table
+                        .getColumn("status")
+                        ?.getFilterValue() as string[]) || [];
                     const newFilters = checked
                       ? [...currentFilters, status]
                       : currentFilters.filter((value) => value !== status);
-                    table.getColumn("status")?.setFilterValue(newFilters.length ? newFilters : undefined);
+                    table
+                      .getColumn("status")
+                      ?.setFilterValue(
+                        newFilters.length ? newFilters : undefined,
+                      );
                   }}
                 >
                   {status}
@@ -362,7 +383,7 @@ export function DataTable() {
         </div>
       </div>
 
-      <div className="border bg-white rounded-lg shadow-sm p-4">
+      <div className="rounded-lg border bg-white p-4 shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -373,9 +394,9 @@ export function DataTable() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   );
                 })}
@@ -394,7 +415,7 @@ export function DataTable() {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

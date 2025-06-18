@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 import { SellingPrices } from "@/types";
 
 // Types
@@ -37,9 +37,8 @@ export type Station = {
 
 // Components
 export const StationInfoSection = ({ station }: { station: Station }) => (
-
   <div className="w-full">
-    <h3 className="text-sm font-semibold text-muted-foreground mb-4">
+    <h3 className="mb-4 text-sm font-semibold text-muted-foreground">
       Station Information
     </h3>
 
@@ -50,7 +49,7 @@ export const StationInfoSection = ({ station }: { station: Station }) => (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="cursor-pointer truncate max-w-[120px] text-xs text-foreground">
+              <div className="max-w-[120px] cursor-pointer truncate text-xs text-foreground">
                 {station.id}
               </div>
             </TooltipTrigger>
@@ -98,42 +97,45 @@ export const StationInfoSection = ({ station }: { station: Station }) => (
       </div>
     </div>
   </div>
-
 );
 
-export const FuelPricesSection = ({ prices }: { prices: SellingPrices[] }) => (
+export const FuelPricesSection = ({ prices }: { prices: SellingPrices[] }) =>
   prices.length === 0 ? (
-    <div>
-      empty
-    </div>
+    <div>empty</div>
   ) : (
     <div className="w-full">
-      <h3 className="text-sm text-muted-foreground mb-4">Selling Prices</h3>
+      <h3 className="mb-4 text-sm text-muted-foreground">Selling Prices</h3>
       <div className="grid grid-cols-4 gap-2">
         {prices.map((fuel) => (
           <div key={fuel.id} className="space-y-2">
-            <p className="text-xs text-muted-foreground capitalize">{fuel.fuelType}</p>
+            <p className="text-xs capitalize text-muted-foreground">
+              {fuel.fuelType}
+            </p>
             <p className="text-xs">{fuel.price}</p>
           </div>
         ))}
       </div>
-      <div className="border-t border-gray-200 my-4"></div>
+      <div className="my-4 border-t border-gray-200"></div>
     </div>
-  )
-);
+  );
 
 export const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
   <div className="w-full">
-    <h3 className="text-sm text-muted-foreground mb-2">Present Tank Status</h3>
+    <h3 className="mb-2 text-sm text-muted-foreground">Present Tank Status</h3>
     {tanks.map((tank, index) => (
-      <div key={index} className="flex items-center justify-between mb-4 gap-30">
-        <p className="text-xs text-muted-foreground whitespace-nowrap">{tank.name}</p>
-        <div className="relative max-w-[180px] flex-1 h-6 2xl:h-10 p-1 rounded-[4px] bg-black overflow-hidden">
+      <div
+        key={index}
+        className="gap-30 mb-4 flex items-center justify-between"
+      >
+        <p className="whitespace-nowrap text-xs text-muted-foreground">
+          {tank.name}
+        </p>
+        <div className="relative h-6 max-w-[180px] flex-1 overflow-hidden rounded-[4px] bg-black p-1 2xl:h-10">
           <div
-            className="flex items-center h-full rounded-[2px] bg-green-600"
+            className="flex h-full items-center rounded-[2px] bg-green-600"
             style={{ width: `${tank.level}%` }}
           >
-            <span className="absolute right-2  text-[10px] text-white px-2">
+            <span className="absolute right-2 px-2 text-[10px] text-white">
               {tank.level}%
             </span>
           </div>
@@ -144,7 +146,7 @@ export const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
 );
 
 export const StationCard = ({ station }: { station: Station }) => (
-  <Card className="bg-white pl-6 pr-2 py-6 space-y-6 shadow-lg">
+  <Card className="space-y-6 bg-white py-6 pl-6 pr-2 shadow-lg">
     <StationInfoSection station={station} />
     <Separator />
     <FuelPricesSection prices={station.prices} />
@@ -152,4 +154,3 @@ export const StationCard = ({ station }: { station: Station }) => (
     {/* <TankStatusSection tanks={station.tanks} /> */}
   </Card>
 );
-

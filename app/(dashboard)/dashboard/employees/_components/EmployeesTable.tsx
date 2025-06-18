@@ -184,10 +184,11 @@ export const columns: ColumnDef<Employee>[] = [
     header: "Payment Status",
     cell: ({ row }) => {
       const status = row.getValue("Status") as string;
-      const variant = {
-        Paid: "bg-green-100 text-green-800",
-        Pending: "bg-yellow-100 text-yellow-800",
-      }[status] || "bg-gray-100 text-gray-800";
+      const variant =
+        {
+          Paid: "bg-green-100 text-green-800",
+          Pending: "bg-yellow-100 text-yellow-800",
+        }[status] || "bg-gray-100 text-gray-800";
 
       return <Badge className={`${variant} capitalize`}>{status}</Badge>;
     },
@@ -224,8 +225,8 @@ export function EmployeesTable() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4 p-4 mb-4 border bg-white rounded-lg shadow-sm">
-        <p className="font-semibold text-lg">Employees</p>
+      <div className="mb-4 flex items-center justify-between rounded-lg border bg-white p-4 py-4 shadow-sm">
+        <p className="text-lg font-semibold">Employees</p>
         <div className="flex items-center gap-4">
           <Input
             placeholder="Search by name..."
@@ -237,7 +238,9 @@ export function EmployeesTable() {
           />
           <Input
             placeholder="Search by employee ID..."
-            value={(table.getColumn("employeeId")?.getFilterValue() as string) ?? ""}
+            value={
+              (table.getColumn("employeeId")?.getFilterValue() as string) ?? ""
+            }
             onChange={(event) =>
               table.getColumn("employeeId")?.setFilterValue(event.target.value)
             }
@@ -258,13 +261,23 @@ export function EmployeesTable() {
                 <DropdownMenuCheckboxItem
                   key={status}
                   className="capitalize"
-                  checked={(table.getColumn("Status")?.getFilterValue() as string[] || []).includes(status)}
+                  checked={(
+                    (table.getColumn("Status")?.getFilterValue() as string[]) ||
+                    []
+                  ).includes(status)}
                   onCheckedChange={(checked) => {
-                    const currentFilters = (table.getColumn("Status")?.getFilterValue() as string[]) || [];
+                    const currentFilters =
+                      (table
+                        .getColumn("Status")
+                        ?.getFilterValue() as string[]) || [];
                     const newFilters = checked
                       ? [...currentFilters, status]
                       : currentFilters.filter((value) => value !== status);
-                    table.getColumn("Status")?.setFilterValue(newFilters.length ? newFilters : undefined);
+                    table
+                      .getColumn("Status")
+                      ?.setFilterValue(
+                        newFilters.length ? newFilters : undefined,
+                      );
                   }}
                 >
                   {status}
@@ -302,7 +315,7 @@ export function EmployeesTable() {
         </div>
       </div>
 
-      <div className="border bg-white rounded-lg shadow-sm">
+      <div className="rounded-lg border bg-white shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -313,9 +326,9 @@ export function EmployeesTable() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   );
                 })}
@@ -333,7 +346,7 @@ export function EmployeesTable() {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -404,4 +417,3 @@ export function EmployeesTable() {
     </div>
   );
 }
-

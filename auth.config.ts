@@ -39,12 +39,10 @@ export const authConfig = {
   pages: { signIn: "/auth/sign-in" },
   callbacks: {
     authorized({ auth, request }) {
-
       const { nextUrl } = request;
       const isLoggedIn = !!auth?.user;
       const userRole = auth?.user?.role;
       const isOnAuth = nextUrl.pathname.startsWith("/auth");
-
 
       if (isOnAuth) {
         // If logged in, redirect away from auth pages
@@ -54,7 +52,7 @@ export const authConfig = {
         return true;
       }
 
-      if (nextUrl.pathname === '/' && isLoggedIn) {
+      if (nextUrl.pathname === "/" && isLoggedIn) {
         const redirects: Record<string, string> = {
           [USER_ROLES.TENANT]: "/tenant",
           [USER_ROLES.ADMIN]: "/admin",
@@ -67,25 +65,33 @@ export const authConfig = {
         }
       }
 
-      if (nextUrl.pathname === '/' && !isLoggedIn) {
+      if (nextUrl.pathname === "/" && !isLoggedIn) {
         return Response.redirect(new URL("/auth/sign-in", nextUrl));
       }
 
-
       if (isLoggedIn && userRole === USER_ROLES.TENANT) {
-        if (nextUrl.pathname.startsWith('/admin') || nextUrl.pathname.startsWith('/dashboard')) {
+        if (
+          nextUrl.pathname.startsWith("/admin") ||
+          nextUrl.pathname.startsWith("/dashboard")
+        ) {
           return Response.redirect(new URL("/unauthorized", nextUrl));
         }
       }
 
       if (isLoggedIn && userRole === USER_ROLES.ADMIN) {
-        if (nextUrl.pathname.startsWith('/tenant') || nextUrl.pathname.startsWith('/dashboard')) {
+        if (
+          nextUrl.pathname.startsWith("/tenant") ||
+          nextUrl.pathname.startsWith("/dashboard")
+        ) {
           return Response.redirect(new URL("/unauthorized", nextUrl));
         }
       }
 
       if (isLoggedIn && userRole === USER_ROLES.ADMIN) {
-        if (nextUrl.pathname.startsWith('/dashboard') || nextUrl.pathname.startsWith('/tenant')) {
+        if (
+          nextUrl.pathname.startsWith("/dashboard") ||
+          nextUrl.pathname.startsWith("/tenant")
+        ) {
           return Response.redirect(new URL("/unauthorized", nextUrl));
         }
       }

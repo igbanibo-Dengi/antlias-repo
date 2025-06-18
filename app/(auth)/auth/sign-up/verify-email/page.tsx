@@ -28,7 +28,6 @@
 //       <div className="flex h-screen w-full items-center justify-center">
 //         <div className="flex h-full w-full flex-col items-center justify-center">
 
-
 //           <div className="space-y-4 text-center">
 //             <div className="space-y-4 text-center">
 //               <Image
@@ -49,7 +48,6 @@
 //             </span>
 //           </div>
 
-
 //           <div className="space-y-2 text-center mt-2">
 //             <p className="text-xl font-semibold">
 //               Your email has been successfully verified!
@@ -58,7 +56,6 @@
 //               You can now sign in to your account.
 //             </p>
 //           </div>
-
 
 //           <div className="w-full max-w-md space-y-4 mt-4">
 //             <Button variant="default" className="w-full" asChild>
@@ -93,8 +90,6 @@
 //             </span>
 //           </div>
 
-
-
 //           <div className="space-y-2 text-center mt-4">
 //             <p className="text-xl font-semibold">
 //               The verification token is invalid or has expired.
@@ -103,8 +98,6 @@
 //               Please try signing up again to receive a new verification email.
 //             </p>
 //           </div>
-
-
 
 //           <div className="w-full max-w-md space-y-4 mt-4">
 //             <Button variant="default" className="w-full" asChild>
@@ -123,27 +116,30 @@
 //   );
 // };
 
-
-import { verifyCredentialsEmailAction } from "@/lib/actions/auth/verify-credentials-email-action"
-import { findVerificationTokenByToken } from "@/resources/verification-token-queries"
-import { EmailVerificationResult } from "../../_components/email-verification-result"
+import { verifyCredentialsEmailAction } from "@/lib/actions/auth/verify-credentials-email-action";
+import { findVerificationTokenByToken } from "@/resources/verification-token-queries";
+import { EmailVerificationResult } from "../../_components/email-verification-result";
 
 type PageProps = { searchParams: Promise<{ token: string }> };
 
 export default async function Page(props: PageProps) {
   const searchParams = await props.searchParams;
-  const verificationToken = await findVerificationTokenByToken(searchParams.token)
+  const verificationToken = await findVerificationTokenByToken(
+    searchParams.token,
+  );
 
   if (!verificationToken?.expires) {
-    return <EmailVerificationResult status="invalid" />
+    return <EmailVerificationResult status="invalid" />;
   }
 
-  const isExpired = new Date(verificationToken.expires) < new Date()
+  const isExpired = new Date(verificationToken.expires) < new Date();
 
   if (isExpired) {
-    return <EmailVerificationResult status="invalid" />
+    return <EmailVerificationResult status="invalid" />;
   }
 
-  const res = await verifyCredentialsEmailAction(searchParams.token)
-  return <EmailVerificationResult status={res.success ? "success" : "invalid"} />
+  const res = await verifyCredentialsEmailAction(searchParams.token);
+  return (
+    <EmailVerificationResult status={res.success ? "success" : "invalid"} />
+  );
 }

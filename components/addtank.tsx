@@ -63,11 +63,8 @@ interface AddTankCardProps {
   onClose?: () => void;
 }
 
-const AddTankCard: React.FC<AddTankCardProps> = ({
-  onClose,
-}) => {
+const AddTankCard: React.FC<AddTankCardProps> = ({ onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   // Initialize form
   const form = useForm<TankFormValues>({
@@ -99,7 +96,7 @@ const AddTankCard: React.FC<AddTankCardProps> = ({
       {/* form header */}
       <div className="flex flex-col gap-2">
         <h3 className="text-lg font-semibold">Add New tank</h3>
-        <p className="text-muted-foreground text-sm">Create new tank</p>
+        <p className="text-sm text-muted-foreground">Create new tank</p>
       </div>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {/* Tank ID */}
@@ -224,7 +221,6 @@ const AddTankCard: React.FC<AddTankCardProps> = ({
       </form>
     </Form>
   );
-}
-
+};
 
 export default AddTankCard;

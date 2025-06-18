@@ -19,10 +19,10 @@ export const SalesChart: React.FC<{
   title: string;
   data: { name: string; sales: number; expense: number }[];
 }> = ({ title, data }) => (
-  <Card className="p-6 border-2 border-blue-100 rounded-lg shadow-sm">
+  <Card className="rounded-lg border-2 border-blue-100 p-6 shadow-sm">
     <h3 className="text-lg font-semibold">{title}</h3>
-    <div className="flex justify-between items-center mb-4">
-      <div className="flex gap-4 items-center text-sm text-muted-foreground">
+    <div className="mb-4 flex items-center justify-between">
+      <div className="flex items-center gap-4 text-sm text-muted-foreground">
         <div className="flex items-center gap-1">
           <Circle size={10} className="text-blue-500" />
           <span>Sales</span>
@@ -31,7 +31,7 @@ export const SalesChart: React.FC<{
           <Circle size={10} className="text-teal-400" />
           <span>Expense</span>
         </div>
-        <div className="flex items-center gap-1 cursor-pointer">
+        <div className="flex cursor-pointer items-center gap-1">
           <span>This Month</span>
           <ChevronDown size={14} />
         </div>
@@ -82,16 +82,16 @@ export const TransactionsCard: React.FC<{
   data: { name: string; amount: string; type: string }[];
 }> = ({ title, data }) => (
   <Card className="p-6">
-    <div className="flex justify-between items-center mb-4">
+    <div className="mb-4 flex items-center justify-between">
       <h3 className="text-lg font-semibold">{title}</h3>
-      <span className="text-blue-500 text-sm cursor-pointer">View All</span>
+      <span className="cursor-pointer text-sm text-blue-500">View All</span>
     </div>
     <CardContent className="p-0">
       {data.length > 0 ? (
         data.map((tx, index) => (
           <div
             key={index}
-            className="py-2 border-b last:border-b-0 text-gray-600"
+            className="border-b py-2 text-gray-600 last:border-b-0"
           >
             <div className="flex justify-between">
               <span className="font-medium">{tx.name}</span>
@@ -114,18 +114,19 @@ export const InventoryChart: React.FC<{
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
   return (
-    <Card className=" h-full">
+    <Card className="h-full">
       <CardHeader className="space-y-2">
         <h3 className="text-lg font-semibold">Inventory Level</h3>
-        <div className="flex justify-between items-center mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <div className="flex gap-4 text-muted-foreground">
             {tabs.map((tab) => (
               <span
                 key={tab}
-                className={`cursor-pointer text-sm ${activeTab === tab
-                    ? "font-semibold border-b-2 border-primary"
+                className={`cursor-pointer text-sm ${
+                  activeTab === tab
+                    ? "border-b-2 border-primary font-semibold"
                     : ""
-                  }`}
+                }`}
                 onClick={() => setActiveTab(tab)}
               >
                 {tab}
@@ -169,7 +170,7 @@ export const ActivityOverview: React.FC<{
     time: string;
   }[];
 }> = ({ totalSales = "N/A", totalTransactions = 0, transactions = [] }) => (
-  <div className="h-full flex flex-col gap-8">
+  <div className="flex h-full flex-col gap-8">
     <div className="space-y-4">
       <Card className="p-6">
         <h1 className="text-lg font-semibold">
@@ -188,7 +189,7 @@ export const ActivityOverview: React.FC<{
       </Card>
     </div>
 
-    <Card className="p-6 h-full">
+    <Card className="h-full p-6">
       <h2 className="text-md font-semibold">Recent Transactions</h2>
       {transactions.length > 0 ? (
         <div className="mt-4 space-y-4">
@@ -209,7 +210,7 @@ export const ActivityOverview: React.FC<{
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground mt-4">No Activity</p>
+        <p className="mt-4 text-center text-muted-foreground">No Activity</p>
       )}
     </Card>
   </div>

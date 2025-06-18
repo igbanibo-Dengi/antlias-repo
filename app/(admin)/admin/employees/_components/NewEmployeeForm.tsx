@@ -24,14 +24,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { employeeFormSchema, EmployeeFormValues } from "@/validators/employee-form-validator";
+import {
+  employeeFormSchema,
+  EmployeeFormValues,
+} from "@/validators/employee-form-validator";
 import { useRouter } from "next/navigation";
-
-
 
 export function NewEmployeeForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [activeSection, setActiveSection] = useState<'personal' | 'account' | 'guarantor'>('personal');
+  const [activeSection, setActiveSection] = useState<
+    "personal" | "account" | "guarantor"
+  >("personal");
   const router = useRouter();
 
   const form = useForm<EmployeeFormValues>({
@@ -52,7 +55,7 @@ export function NewEmployeeForm() {
       guarantorPhone: "",
       guarantorAddress: "",
       guarantorRelationship: "",
-    }
+    },
   });
 
   async function onSubmit(data: EmployeeFormValues) {
@@ -61,20 +64,24 @@ export function NewEmployeeForm() {
       // Simulate API call
       console.log(data);
 
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      toast.success(`${data.firstName} ${data.lastName} has been added to your staff.`, {
-        action: {
-          label: "View",
-          onClick: () => console.log("View employee"),
+      toast.success(
+        `${data.firstName} ${data.lastName} has been added to your staff.`,
+        {
+          action: {
+            label: "View",
+            onClick: () => console.log("View employee"),
+          },
         },
-      });
+      );
 
       // router.push("/employees");
       // form.reset();
     } catch (error) {
       toast.error("Error adding employee", {
-        description: "An error occurred while adding the employee. Please try again.",
+        description:
+          "An error occurred while adding the employee. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -82,30 +89,31 @@ export function NewEmployeeForm() {
   }
 
   const sections = [
-    { id: 'personal', label: 'Personal Info' },
-    { id: 'account', label: 'Account Details' },
-    { id: 'guarantor', label: 'Guarantor' },
+    { id: "personal", label: "Personal Info" },
+    { id: "account", label: "Account Details" },
+    { id: "guarantor", label: "Guarantor" },
   ];
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="bg-white rounded-lg shadow-lg p-6 w-full">
+        <div className="w-full rounded-lg bg-white p-6 shadow-lg">
           <div className="text-2xl font-semibold">New Employee Form</div>
           <p className="text-sm text-muted-foreground">
             All fields are required
           </p>
 
           {/* Navigation Tabs */}
-          <div className="flex border-b mt-4">
+          <div className="mt-4 flex border-b">
             {sections.map((section) => (
               <button
                 key={section.id}
                 type="button"
-                className={`px-4 py-2 font-medium ${activeSection === section.id
-                  ? 'border-b-2 border-primary text-primary'
-                  : 'text-muted-foreground'
-                  }`}
+                className={`px-4 py-2 font-medium ${
+                  activeSection === section.id
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-muted-foreground"
+                }`}
                 onClick={() => setActiveSection(section.id as any)}
               >
                 {section.label}
@@ -115,17 +123,19 @@ export function NewEmployeeForm() {
         </div>
 
         {/* Personal Information Section */}
-        {activeSection === 'personal' && (
-          <div className="space-y-4 border p-6 rounded-lg shadow-lg bg-white">
+        {activeSection === "personal" && (
+          <div className="space-y-4 rounded-lg border bg-white p-6 shadow-lg">
             <h3 className="text-lg font-medium">Personal Information</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <FormField
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      First Name <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="John"
@@ -144,7 +154,9 @@ export function NewEmployeeForm() {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      Last Name <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Doe"
@@ -163,7 +175,9 @@ export function NewEmployeeForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      Email <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="johndoe@gmail.com"
@@ -178,13 +192,15 @@ export function NewEmployeeForm() {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <FormField
                 control={form.control}
                 name="contactNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone Number <span className="text-red-500">*</span></FormLabel>
+                    <FormLabel>
+                      Phone Number <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="08012345678"
@@ -204,8 +220,13 @@ export function NewEmployeeForm() {
                 name="position"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Position <span className="text-red-500">*</span></FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel>
+                      Position <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select position" />
@@ -276,10 +297,7 @@ export function NewEmployeeForm() {
               >
                 Reset
               </Button>
-              <Button
-                type="button"
-                onClick={() => setActiveSection('account')}
-              >
+              <Button type="button" onClick={() => setActiveSection("account")}>
                 Next: Account Details
               </Button>
             </div>
@@ -287,11 +305,11 @@ export function NewEmployeeForm() {
         )}
 
         {/* Account Details Section */}
-        {activeSection === 'account' && (
-          <div className="space-y-4 border p-6 rounded-lg shadow-lg bg-white">
+        {activeSection === "account" && (
+          <div className="space-y-4 rounded-lg border bg-white p-6 shadow-lg">
             <h3 className="text-lg font-medium">Account Details</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="bankName"
@@ -366,13 +384,13 @@ export function NewEmployeeForm() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setActiveSection('personal')}
+                onClick={() => setActiveSection("personal")}
               >
                 Back
               </Button>
               <Button
                 type="button"
-                onClick={() => setActiveSection('guarantor')}
+                onClick={() => setActiveSection("guarantor")}
               >
                 Next: Guarantor
               </Button>
@@ -381,11 +399,11 @@ export function NewEmployeeForm() {
         )}
 
         {/* Guarantor Section */}
-        {activeSection === 'guarantor' && (
-          <div className="space-y-4 border p-6 rounded-lg shadow-lg bg-white">
+        {activeSection === "guarantor" && (
+          <div className="space-y-4 rounded-lg border bg-white p-6 shadow-lg">
             <h3 className="text-lg font-medium">Guarantor Information</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="guarantorName"
@@ -425,7 +443,10 @@ export function NewEmployeeForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Relationship</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select relationship" />
@@ -466,7 +487,7 @@ export function NewEmployeeForm() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setActiveSection('account')}
+                onClick={() => setActiveSection("account")}
               >
                 Back
               </Button>
@@ -479,7 +500,9 @@ export function NewEmployeeForm() {
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Adding...
                   </div>
-                ) : "Add Employee"}
+                ) : (
+                  "Add Employee"
+                )}
               </Button>
             </div>
           </div>

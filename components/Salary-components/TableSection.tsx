@@ -127,10 +127,10 @@ const TableSection = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="w-full bg-white flex  flex-col rounded-lg shadow-sm">
+    <div className="flex w-full flex-col rounded-lg bg-white shadow-sm">
       {/* Table */}
-      <div className="overflow-auto flex-grow">
-        <Table className="w-full ">
+      <div className="flex-grow overflow-auto">
+        <Table className="w-full">
           <TableHeader className="text-center">
             <TableRow>
               <TableHead className="w-10">
@@ -139,7 +139,7 @@ const TableSection = () => {
                   onCheckedChange={handleSelectAll}
                 />
               </TableHead>
-              <TableHead className="w-10 px-13"></TableHead>
+              <TableHead className="px-13 w-10"></TableHead>
               <TableHead>Employee ID</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Contact no</TableHead>
@@ -173,9 +173,9 @@ const TableSection = () => {
                   <p
                     className={
                       item.Status === "Paid"
-                        ? "bg-[#2EE02E] text-transparent bg-clip-text "
+                        ? "bg-[#2EE02E] bg-clip-text text-transparent"
                         : item.Status === "Pending"
-                          ? "bg-[#E57D3D] text-transparent bg-clip-text"
+                          ? "bg-[#E57D3D] bg-clip-text text-transparent"
                           : "text-white"
                     }
                   >
@@ -188,7 +188,7 @@ const TableSection = () => {
         </Table>
       </div>
       {/* Pagination Controls */}
-      <div className="flex items-center justify-between p-4 border-t border-gray-200">
+      <div className="flex items-center justify-between border-t border-gray-200 p-4">
         <div className="flex items-center gap-2">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
@@ -196,7 +196,7 @@ const TableSection = () => {
             className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50"
           >
             <svg
-              className="w-5 h-5"
+              className="h-5 w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -216,7 +216,7 @@ const TableSection = () => {
             <button
               key={page}
               onClick={() => handlePageChange(page)}
-              className={`px-3 py-1 rounded-md text-sm ${
+              className={`rounded-md px-3 py-1 text-sm ${
                 currentPage === page
                   ? "bg-blue-500 text-white"
                   : "text-gray-500 hover:bg-gray-100"
@@ -232,7 +232,7 @@ const TableSection = () => {
             className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50"
           >
             <svg
-              className="w-5 h-5"
+              className="h-5 w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -249,9 +249,9 @@ const TableSection = () => {
         </div>
 
         {/* Total Transactions */}
-        <div className="text-sm text-gray-500 flex items-center gap-1">
+        <div className="flex items-center gap-1 text-sm text-gray-500">
           <svg
-            className="w-5 h-5"
+            className="h-5 w-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

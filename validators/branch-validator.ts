@@ -11,6 +11,6 @@ export const newStationSchema = z.object({
     .string()
     .regex(
       /^(?:\+234|234|0)?(7[0-9]|8[0-9]|9[0-9])[0-9]{8}$/,
-      "Invalid phone number"
+      "Invalid phone number",
     ),
 });

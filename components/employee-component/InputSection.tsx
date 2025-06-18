@@ -30,7 +30,7 @@ const InputSection = () => {
   };
 
   return (
-    <div className="w-full bg-white px-6 py-2 flex items-center justify-between rounded-lg shadow-sm">
+    <div className="flex w-full items-center justify-between rounded-lg bg-white px-6 py-2 shadow-sm">
       {/* Left Section: Title and Filter */}
       <div className="flex items-center gap-4">
         <h2 className="text-lg font-semibold">Employee</h2>
@@ -38,33 +38,33 @@ const InputSection = () => {
       </div>
 
       {/* Right Section: Search and Export Buttons */}
-      <div className="flex items-center gap-4 min-w-[600px]">
-        <span className="relative w-full flex items-center space-x-8 flex-1 max-w-md">
+      <div className="flex min-w-[600px] items-center gap-4">
+        <span className="relative flex w-full max-w-md flex-1 items-center space-x-8">
           <Search className="absolute left-3 h-4 w-4 text-gray-400" />
-          <Input placeholder="Type here..." className="pl-10 flex-1 w-full" />
+          <Input placeholder="Type here..." className="w-full flex-1 pl-10" />
         </span>
         <button
           onClick={handleExportExcel}
-          className="flex items-center gap-1  text-white text-sm font-medium rounded-lg px-3 py-2 "
+          className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-white"
         >
           <Image
             src="/icons/excel.svg"
             alt="Export to Excel"
             width={16}
             height={16}
-            className="w-4 h-4 hidden lg:block"
+            className="hidden h-4 w-4 lg:block"
           />
         </button>
         <button
           onClick={handleExportPDF}
-          className="flex items-center gap-1 0 text-white text-sm font-medium rounded-lg px-3 py-2 "
+          className="0 flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-white"
         >
           <Image
             src="/icons/pdf.svg"
             alt="Export to PDF"
             width={16}
             height={16}
-            className="w-6 h-6 hidden lg:block"
+            className="hidden h-6 w-6 lg:block"
           />
         </button>
       </div>

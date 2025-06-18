@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
   Form,
   FormControl,
@@ -9,22 +9,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Input } from '../ui/input'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Button } from '../ui/button'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
+} from "@/components/ui/select";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 // station
 // amount
@@ -33,7 +33,6 @@ import { toast } from 'sonner'
 interface SendFundsFormProps {
   onClose: () => void;
 }
-
 
 const sendFormSchema = z.object({
   station: z.string().min(1, {
@@ -45,12 +44,12 @@ const sendFormSchema = z.object({
   reference: z.string().min(1, {
     message: "Reference is required",
   }),
-})
+});
 
 const SendFundsForm: React.FC<SendFundsFormProps> = ({ onClose }) => {
-  const [submitting, setSubmitting] = useState(false)
+  const [submitting, setSubmitting] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof sendFormSchema>>({
     resolver: zodResolver(sendFormSchema),
@@ -59,12 +58,12 @@ const SendFundsForm: React.FC<SendFundsFormProps> = ({ onClose }) => {
       amount: "",
       reference: "",
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof sendFormSchema>) {
-    setSubmitting(true)
-    console.log(values)
-    toast.success("Funds sent successfully")
+    setSubmitting(true);
+    console.log(values);
+    toast.success("Funds sent successfully");
     onClose();
   }
 
@@ -72,16 +71,18 @@ const SendFundsForm: React.FC<SendFundsFormProps> = ({ onClose }) => {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-
           <FormField
             control={form.control}
             name="station"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Station</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
-                    <SelectTrigger className='w-full'>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select Station" />
                     </SelectTrigger>
                   </FormControl>
@@ -103,7 +104,7 @@ const SendFundsForm: React.FC<SendFundsFormProps> = ({ onClose }) => {
               <FormItem>
                 <FormLabel>Amount</FormLabel>
                 <FormControl>
-                  <Input type='number' placeholder="Enter amount" {...field} />
+                  <Input type="number" placeholder="Enter amount" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -117,22 +118,19 @@ const SendFundsForm: React.FC<SendFundsFormProps> = ({ onClose }) => {
               <FormItem>
                 <FormLabel>Reference</FormLabel>
                 <FormControl>
-                  <Input type='text' placeholder="Enter purpose" {...field} />
+                  <Input type="text" placeholder="Enter purpose" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            className='mt-8 w-full'
-          >
+          <Button type="submit" className="mt-8 w-full">
             {submitting ? "Sending..." : "Send Funds"}
           </Button>
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default SendFundsForm
+export default SendFundsForm;

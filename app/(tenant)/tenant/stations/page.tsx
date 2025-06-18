@@ -2,31 +2,33 @@ import StationSearchAndFilterBar from "@/components/employee-component/station-c
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Plus } from "lucide-react";
-import { getAllTenantBranches, getSellingPrices } from "@/lib/actions/tenant/tenant.action";
+import {
+  getAllTenantBranches,
+  getSellingPrices,
+} from "@/lib/actions/tenant/tenant.action";
 import { StationCard } from "@/components/employee-component/station-components/Station";
 import { getEmployeeByBranchId } from "@/lib/actions/employee/employee";
 
 export default async function FuelStationDashboard() {
-
   const getBranches = await getAllTenantBranches();
   // const employess = await getEmployeeByBranchId(getBranches.data[0].id);
 
-
-
   if (!getBranches.success) {
-    console.error('Error fetching branches or employees:', getBranches.error);
+    console.error("Error fetching branches or employees:", getBranches.error);
 
     return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] h-full gap-4 p-6 bg-white rounded-lg shadow">
+      <div className="flex h-full min-h-[300px] flex-col items-center justify-center gap-4 rounded-lg bg-white p-6 shadow">
         <div className="flex items-center gap-3">
           <AlertTriangle className="h-10 w-10 text-red-500" />
           <h3 className="text-xl font-semibold text-gray-800">
-            {getBranches.error ? 'Failed to Load Branches' : 'Failed to Load Employees'}
+            {getBranches.error
+              ? "Failed to Load Branches"
+              : "Failed to Load Employees"}
           </h3>
         </div>
 
-        <p className="text-gray-600 text-center max-w-md">
-          {'An unexpected error occurred while loading branch data.'}
+        <p className="max-w-md text-center text-gray-600">
+          {"An unexpected error occurred while loading branch data."}
         </p>
       </div>
     );
@@ -41,7 +43,6 @@ export default async function FuelStationDashboard() {
       const employees = await getEmployeeByBranchId(branch.id);
       const sellingPrices = await getSellingPrices(branch.id);
       console.log(sellingPrices.data);
-
 
       if (employees.success === false) {
         // Return a consistent error object or null
@@ -70,41 +71,43 @@ export default async function FuelStationDashboard() {
         state: branch.state,
         managerId: branch.managerId,
         employees: employees.data?.length,
-        totalSalaries: employees.data?.reduce((sum, emp) => sum + (emp.salary || 0), 0),
+        totalSalaries: employees.data?.reduce(
+          (sum, emp) => sum + (emp.salary || 0),
+          0,
+        ),
         prices: sellingPrices.data ?? [],
       };
-    })
+    }),
   );
 
   console.log(stations);
 
-
-
-
   return (
     <div className="min-h-screen">
-      <Button size={"lg"} className="mb-30 absolute left-5 -top-2 -translate-y-6">
+      <Button
+        size={"lg"}
+        className="mb-30 absolute -top-2 left-5 -translate-y-6"
+      >
         <Link href={"/tenant/stations/new"} className="flex items-center">
-          <Plus className="h-4 w-4 bg-gray-100/40 rounded-full mr-2" />
+          <Plus className="mr-2 h-4 w-4 rounded-full bg-gray-100/40" />
           New Station
         </Link>
       </Button>
       <StationSearchAndFilterBar />
 
-      <div className="flex justify-end my-2 pr-20">
+      <div className="my-2 flex justify-end pr-20">
         <span className="text-xs text-gray-400">Total Salaries</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        {stations.map(station =>
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
+        {stations.map((station) =>
           station.error ? (
-            <div key={station.id} className="error">{station.error}</div>
+            <div key={station.id} className="error">
+              {station.error}
+            </div>
           ) : (
-            <StationCard
-              key={station.id}
-              station={station}
-            />
-          )
+            <StationCard key={station.id} station={station} />
+          ),
         )}
       </div>
     </div>

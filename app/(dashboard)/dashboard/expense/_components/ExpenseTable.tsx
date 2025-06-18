@@ -31,7 +31,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronLeft, ChevronRight, Filter, MoreHorizontal } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  MoreHorizontal,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -58,7 +64,8 @@ const data: Expense[] = [
     category: "Transfer",
     amount: "₦33,560",
     evidence: "Image.jpg",
-    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    description:
+      "Linking rods, 224 sheets to be replaced with additional nuts...",
     requestBy: "Manager",
     dateCode: "8782",
     status: "Approved",
@@ -69,7 +76,8 @@ const data: Expense[] = [
     category: "Transfer",
     amount: "₦33,560",
     evidence: "Image.jpg",
-    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    description:
+      "Linking rods, 224 sheets to be replaced with additional nuts...",
     requestBy: "Manager",
     dateCode: "8782",
     status: "Pending",
@@ -80,7 +88,8 @@ const data: Expense[] = [
     category: "Transfer",
     amount: "₦33,560",
     evidence: "Image.jpg",
-    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    description:
+      "Linking rods, 224 sheets to be replaced with additional nuts...",
     requestBy: "Manager",
     dateCode: "8782",
     status: "Rejected",
@@ -91,7 +100,8 @@ const data: Expense[] = [
     category: "Transfer",
     amount: "₦33,560",
     evidence: "Image.jpg",
-    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    description:
+      "Linking rods, 224 sheets to be replaced with additional nuts...",
     requestBy: "Manager",
     dateCode: "8782",
     status: "Approved",
@@ -102,7 +112,8 @@ const data: Expense[] = [
     category: "Transfer",
     amount: "₦33,560",
     evidence: "Image.jpg",
-    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    description:
+      "Linking rods, 224 sheets to be replaced with additional nuts...",
     requestBy: "Manager",
     dateCode: "8782",
     status: "Approved",
@@ -113,7 +124,8 @@ const data: Expense[] = [
     category: "Transfer",
     amount: "₦33,560",
     evidence: "Image.jpg",
-    description: "Linking rods, 224 sheets to be replaced with additional nuts...",
+    description:
+      "Linking rods, 224 sheets to be replaced with additional nuts...",
     requestBy: "Manager",
     dateCode: "8782",
     status: "Approved",
@@ -150,8 +162,8 @@ export const columns: ColumnDef<Expense>[] = [
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex flex-col cursor-pointer">
-              <div className="truncate max-w-[120px]">{row.getValue("id")}</div>
+            <div className="flex cursor-pointer flex-col">
+              <div className="max-w-[120px] truncate">{row.getValue("id")}</div>
               <div className="text-xs text-muted-foreground">
                 {row.original.date}
               </div>
@@ -188,7 +200,7 @@ export const columns: ColumnDef<Expense>[] = [
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="max-w-[120px] truncate cursor-pointer">
+            <div className="max-w-[120px] cursor-pointer truncate">
               {row.getValue("description")}
             </div>
           </TooltipTrigger>
@@ -212,11 +224,12 @@ export const columns: ColumnDef<Expense>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      const variant = {
-        Approved: "bg-green-100 text-green-800",
-        Pending: "bg-yellow-100 text-yellow-800",
-        Rejected: "bg-red-100 text-red-800",
-      }[status] || "bg-gray-100 text-gray-800";
+      const variant =
+        {
+          Approved: "bg-green-100 text-green-800",
+          Pending: "bg-yellow-100 text-yellow-800",
+          Rejected: "bg-red-100 text-red-800",
+        }[status] || "bg-gray-100 text-gray-800";
 
       return <Badge className={`${variant} capitalize`}>{status}</Badge>;
     },
@@ -261,8 +274,8 @@ export function ExpenseTable() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4 bg-white rounded-lg shadow-sm p-4 mb-10">
-        <p className="font-semibold text-lg">Expense</p>
+      <div className="mb-10 flex items-center justify-between rounded-lg bg-white p-4 py-4 shadow-sm">
+        <p className="text-lg font-semibold">Expense</p>
         <div className="flex items-center gap-4">
           <Input
             placeholder="Search by expense ID..."
@@ -274,7 +287,9 @@ export function ExpenseTable() {
           />
           <Input
             placeholder="Search by requester..."
-            value={(table.getColumn("requestBy")?.getFilterValue() as string) ?? ""}
+            value={
+              (table.getColumn("requestBy")?.getFilterValue() as string) ?? ""
+            }
             onChange={(event) =>
               table.getColumn("requestBy")?.setFilterValue(event.target.value)
             }
@@ -295,13 +310,23 @@ export function ExpenseTable() {
                 <DropdownMenuCheckboxItem
                   key={status}
                   className="capitalize"
-                  checked={(table.getColumn("status")?.getFilterValue() as string[] || []).includes(status)}
+                  checked={(
+                    (table.getColumn("status")?.getFilterValue() as string[]) ||
+                    []
+                  ).includes(status)}
                   onCheckedChange={(checked) => {
-                    const currentFilters = (table.getColumn("status")?.getFilterValue() as string[]) || [];
+                    const currentFilters =
+                      (table
+                        .getColumn("status")
+                        ?.getFilterValue() as string[]) || [];
                     const newFilters = checked
                       ? [...currentFilters, status]
                       : currentFilters.filter((value) => value !== status);
-                    table.getColumn("status")?.setFilterValue(newFilters.length ? newFilters : undefined);
+                    table
+                      .getColumn("status")
+                      ?.setFilterValue(
+                        newFilters.length ? newFilters : undefined,
+                      );
                   }}
                 >
                   {status}
@@ -339,7 +364,7 @@ export function ExpenseTable() {
         </div>
       </div>
 
-      <div className="border bg-white rounded-lg shadow-sm p-4">
+      <div className="rounded-lg border bg-white p-4 shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -350,9 +375,9 @@ export function ExpenseTable() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   );
                 })}
@@ -371,7 +396,7 @@ export function ExpenseTable() {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -445,7 +470,7 @@ export function ExpenseTable() {
 
 export default function ExpenseManagement() {
   return (
-    <div className="bg-gray-50 min-h-screen mt-5">
+    <div className="mt-5 min-h-screen bg-gray-50">
       <ExpenseTable />
     </div>
   );

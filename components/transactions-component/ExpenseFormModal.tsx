@@ -68,8 +68,8 @@ const ExpenseFormModal: React.FC = () => {
 
   return (
     <div className="h-full overflow-auto pr-4">
-      <h2 className="text-lg font-semibold mb-4">New Expense Form</h2>
-      <p className="text-sm text-muted-foreground mb-4">
+      <h2 className="mb-4 text-lg font-semibold">New Expense Form</h2>
+      <p className="mb-4 text-sm text-muted-foreground">
         Create a new expense form for approval
       </p>
 
@@ -131,7 +131,7 @@ const ExpenseFormModal: React.FC = () => {
                     {...field}
                   />
                 </FormControl>
-                <p className="text-xs text-muted-foreground mt-1 text-right">
+                <p className="mt-1 text-right text-xs text-muted-foreground">
                   Max: 2000 characters
                 </p>
                 <FormMessage />
@@ -146,9 +146,9 @@ const ExpenseFormModal: React.FC = () => {
             render={() => (
               <FormItem>
                 <FormLabel>Upload Evidence</FormLabel>
-                <div className="w-full p-4 border-2 border-dashed border-gray-300 rounded-md text-center bg-gray-50">
-                  <FilePlus className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                  <p className="text-sm text-gray-600 mb-2">
+                <div className="w-full rounded-md border-2 border-dashed border-gray-300 bg-gray-50 p-4 text-center">
+                  <FilePlus className="mx-auto mb-2 h-8 w-8 text-gray-400" />
+                  <p className="mb-2 text-sm text-gray-600">
                     Drag and drop the file.
                   </p>
 
@@ -169,12 +169,12 @@ const ExpenseFormModal: React.FC = () => {
                   </Button>
 
                   {selectedFile && (
-                    <p className="text-sm text-gray-600 mt-2">
+                    <p className="mt-2 text-sm text-gray-600">
                       {selectedFile.name}
                     </p>
                   )}
 
-                  <p className="text-xs text-muted-foreground mt-2">
+                  <p className="mt-2 text-xs text-muted-foreground">
                     Max size: 700MB | Formats: JPG, PNG, PDF
                   </p>
                 </div>

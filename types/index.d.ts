@@ -6,7 +6,6 @@ export type ActionResponse<T> = {
   statusCode?: number;
 };
 
-
 export interface Branch {
   id: string;
   tenantId: string;
@@ -14,7 +13,7 @@ export interface Branch {
   address: string;
   city: string;
   state: string;
-  managerId: string | null
+  managerId: string | null;
   contactPhone: string | null;
   isHeadQuarters: boolean | null;
   isActive: boolean | null;
@@ -24,7 +23,6 @@ export interface Branch {
 export interface BranchProps {
   branches: Branch[];
 }
-
 
 export interface DbUser {
   id: string;

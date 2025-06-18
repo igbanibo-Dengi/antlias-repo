@@ -73,13 +73,12 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
       setIsSubmitting(false);
       onClose?.();
     }, 2000);
-
   };
 
   return (
-    <div className="h-[90vh] 2xl:h-fit overflow-y-auto px-2">
+    <div className="h-[90vh] overflow-y-auto px-2 2xl:h-fit">
       <h2 className="text-xl font-semibold">Transaction Form</h2>
-      <p className="text-sm text-muted-foreground mb-6">
+      <p className="mb-6 text-sm text-muted-foreground">
         {" "}
         Create periodic sales remittance for approval
       </p>
@@ -163,8 +162,13 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
             <div className="space-y-2">
               <FormLabel>Method</FormLabel>
               <Select defaultValue="cash">
-                <SelectTrigger className="w-full pointer-events-none text-foreground" disabled >
-                  <SelectValue className="disabled:text-foreground">Cash</SelectValue>
+                <SelectTrigger
+                  className="pointer-events-none w-full text-foreground"
+                  disabled
+                >
+                  <SelectValue className="disabled:text-foreground">
+                    Cash
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="cash">Cash</SelectItem>
@@ -194,11 +198,18 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
             <div className="space-y-2">
               <FormLabel>Method</FormLabel>
               <Select defaultValue="transfer">
-                <SelectTrigger className="w-full pointer-events-none text-foreground" disabled>
-                  <SelectValue className="disabled:text-foreground">Transfer</SelectValue>
+                <SelectTrigger
+                  className="pointer-events-none w-full text-foreground"
+                  disabled
+                >
+                  <SelectValue className="disabled:text-foreground">
+                    Transfer
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="transfer" disabled>Transfer</SelectItem>
+                  <SelectItem value="transfer" disabled>
+                    Transfer
+                  </SelectItem>
                   {/* <SelectItem value="cash">Cash</SelectItem> */}
                   {/* <SelectItem value="card">Card</SelectItem> */}
                 </SelectContent>
@@ -225,13 +236,20 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
             <div className="space-y-2">
               <FormLabel>Method</FormLabel>
               <Select defaultValue="card">
-                <SelectTrigger className="w-full pointer-events-none text-foreground" disabled>
-                  <SelectValue className="disabled:text-foreground">Card</SelectValue>
+                <SelectTrigger
+                  className="pointer-events-none w-full text-foreground"
+                  disabled
+                >
+                  <SelectValue className="disabled:text-foreground">
+                    Card
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {/* <SelectItem value="cash">Cash</SelectItem> */}
                   {/* <SelectItem value="transfer">Transfer</SelectItem> */}
-                  <SelectItem value="card" disabled>Card</SelectItem>
+                  <SelectItem value="card" disabled>
+                    Card
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -325,7 +343,7 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            className="w-full bg-blue-600 text-white hover:bg-blue-700"
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </Button>

@@ -13,7 +13,7 @@ export function StatusBadge({ status }: { status: ExpenseStatus }) {
 
   return (
     <Badge
-      className={`${statusStyles[status]} text-white font-normal text-sm w-24 rounded-md`}
+      className={`${statusStyles[status]} w-24 rounded-md text-sm font-normal text-white`}
     >
       {status}
     </Badge>

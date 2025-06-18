@@ -20,7 +20,7 @@ import { signUpAction } from "@/lib/actions/auth/signUp.actions";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import heroImage from "../../../../public/images/auth_Image.webp"
+import heroImage from "../../../../public/images/auth_Image.webp";
 
 export const SignupForm = () => {
   const [success, setSuccess] = useState(false);
@@ -164,12 +164,7 @@ export const SignupForm = () => {
     >
       <div className="col-span-2 hidden w-full items-center justify-center lg:flex">
         <div className="relative h-[90%] w-[70%]">
-          <Image
-            src={heroImage}
-            alt="Illustration"
-            fill
-            priority
-          />
+          <Image src={heroImage} alt="Illustration" fill priority />
         </div>
       </div>
 
@@ -177,12 +172,7 @@ export const SignupForm = () => {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-4">
             <div className="ml-4.5 flex items-center gap-2">
-              <Image
-                src="/icons/Logo.svg"
-                alt="logo"
-                width={20}
-                height={20}
-              />
+              <Image src="/icons/Logo.svg" alt="logo" width={20} height={20} />
               <h2 className="text-xl font-semibold">Antlias</h2>
             </div>
           </div>

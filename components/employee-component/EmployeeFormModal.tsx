@@ -43,20 +43,20 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="lg:max-w-[900px] sm:max-w-[700px] lg:max-h-[99vh] h-[100vh]  overflow-y-auto bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-lg font-semibold mb-4 text-gray-700">
+      <DialogContent className="h-[100vh] overflow-y-auto rounded-lg bg-white p-6 shadow-lg sm:max-w-[700px] lg:max-h-[99vh] lg:max-w-[900px]">
+        <h2 className="mb-4 text-lg font-semibold text-gray-700">
           Add New Employee
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-6 w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <form onSubmit={handleSubmit} className="w-full space-y-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {/* Personal Information */}
             <div className="border border-gray-300 p-3">
-              <h3 className="text-4xl font-bold text-gray-700 mb-2 ">
+              <h3 className="mb-2 text-4xl font-bold text-gray-700">
                 Personal Information
               </h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Employee ID
                   </label>
                   <input
@@ -64,13 +64,13 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="employeeId"
                     value={formData.employeeId}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="7868"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Name (First Name / Last Name)
                   </label>
                   <input
@@ -78,11 +78,11 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Contact Number
                   </label>
                   <input
@@ -90,11 +90,11 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="contactNumber"
                     value={formData.contactNumber}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Address
                   </label>
                   <input
@@ -102,18 +102,18 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Role
                   </label>
                   <select
                     name="role"
                     value={formData.role}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <option>Please Select</option>
                     <option>Manager</option>
@@ -122,7 +122,7 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Salary
                   </label>
                   <input
@@ -130,11 +130,11 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="salary"
                     value={formData.salary}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Commission
                   </label>
                   <input
@@ -142,20 +142,20 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="commission"
                     value={formData.commission}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>
             </div>
 
             {/* Salary Details */}
-            <div className="border h-[240px] border-gray-300 p-3">
-              <h3 className="text-4xl font-bold text-gray-700 mb-2 ">
+            <div className="h-[240px] border border-gray-300 p-3">
+              <h3 className="mb-2 text-4xl font-bold text-gray-700">
                 Salary Details
               </h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Bank Name
                   </label>
                   <input
@@ -163,11 +163,11 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="bankName"
                     value={formData.bankName}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Account Number
                   </label>
                   <input
@@ -175,11 +175,11 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="accountNumber"
                     value={formData.accountNumber}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Account Name
                   </label>
                   <input
@@ -187,11 +187,11 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="accountName"
                     value={formData.accountName}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     BVN
                   </label>
                   <input
@@ -199,20 +199,20 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="BVN"
                     value={formData.BVN}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>
             </div>
 
             {/* Guarantor */}
-            <div className="border h-[257px] border-gray-300 p-3">
-              <h3 className="text-4xl font-bold text-gray-700 mb-2 ">
+            <div className="h-[257px] border border-gray-300 p-3">
+              <h3 className="mb-2 text-4xl font-bold text-gray-700">
                 Guarantor
               </h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Name (First Name / Last Name)
                   </label>
                   <input
@@ -220,11 +220,11 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="guarantorName"
                     value={formData.guarantorName}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Contact Number
                   </label>
                   <input
@@ -232,11 +232,11 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="guarantorContact"
                     value={formData.guarantorContact}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Address
                   </label>
                   <input
@@ -244,18 +244,18 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                     name="guarantorAddress"
                     value={formData.guarantorAddress}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
                     Relationship
                   </label>
                   <select
                     name="relationship"
                     value={formData.relationship}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <option>Please Select</option>
                     <option>Family</option>
@@ -265,7 +265,7 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 </div>
                 <button
                   type="button"
-                  className="text-blue-600 text-sm hover:underline"
+                  className="text-sm text-blue-600 hover:underline"
                 >
                   Add New Guarantor Field
                 </button>
@@ -274,7 +274,7 @@ const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
           </div>
           <button
             type="submit"
-            className=" text-white fixed right-19 p-5 rounded-md text-xl font-bold hover:opacity-90 transition-colors bg-[#3A57E8] w-[250.64px] h-[35.65px]"
+            className="right-19 fixed h-[35.65px] w-[250.64px] rounded-md bg-[#3A57E8] p-5 text-xl font-bold text-white transition-colors hover:opacity-90"
           >
             Submit
           </button>

@@ -33,11 +33,11 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({
   };
 
   return (
-    <div className="w-full lg:w-[400px] md:w-1/4 p-5 space-y-4 bg-white rounded-lg shadow-sm border">
+    <div className="w-full space-y-4 rounded-lg border bg-white p-5 shadow-sm md:w-1/4 lg:w-[400px]">
       {/* Account Name */}
       <div className="flex items-center justify-between gap-2">
         <div>
-          <p className="text-sm text-muted-foreground font-medium">
+          <p className="text-sm font-medium text-muted-foreground">
             Account Name
           </p>
           <p className="text-xs font-semibold">{accountName}</p>
@@ -57,7 +57,7 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({
       {/* Account Number */}
       <div className="flex items-center justify-between gap-2">
         <div>
-          <p className="text-sm text-muted-foreground font-medium">
+          <p className="text-sm font-medium text-muted-foreground">
             Account Number
           </p>
           <p className="text-xs font-semibold">{accountNumber}</p>
@@ -77,7 +77,7 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({
       {/* Bank Name */}
       <div className="flex items-center justify-between gap-2">
         <div>
-          <p className="text-sm text-muted-foreground font-medium">Bank Name</p>
+          <p className="text-sm font-medium text-muted-foreground">Bank Name</p>
           <p className="text-xs font-semibold">{bankName}</p>
         </div>
         <button

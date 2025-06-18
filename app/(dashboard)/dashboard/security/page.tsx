@@ -28,7 +28,7 @@ export default function SecuritySettings() {
         <CardContent className="w-full">
           <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-medium mb-4">
+              <h2 className="mb-4 text-xl font-medium">
                 Activate Two Factor Authentication
               </h2>
               <div className="flex items-center justify-between">
@@ -46,9 +46,9 @@ export default function SecuritySettings() {
             <Separator className="my-4" />
 
             <div>
-              <h2 className="text-xl font-medium mb-4">Change Password</h2>
+              <h2 className="mb-4 text-xl font-medium">Change Password</h2>
               <form onSubmit={handlePasswordChange} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                   <div>
                     <Label htmlFor="old-password">Old Password</Label>
                     <Input
@@ -82,7 +82,7 @@ export default function SecuritySettings() {
                     />
                   </div>
                 </div>
-                <div className="flex justify-end mt-4">
+                <div className="mt-4 flex justify-end">
                   <Button type="submit">Update Password</Button>
                 </div>
               </form>

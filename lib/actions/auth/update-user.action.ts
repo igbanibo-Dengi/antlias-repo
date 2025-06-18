@@ -9,12 +9,12 @@ import { eq } from "drizzle-orm";
 
 type Res =
   | {
-    success: true;
-    data: {
-      id: (typeof users.$inferSelect)["id"];
-      name: (typeof users.$inferSelect)["name"];
-    };
-  }
+      success: true;
+      data: {
+        id: (typeof users.$inferSelect)["id"];
+        name: (typeof users.$inferSelect)["name"];
+      };
+    }
   | { success: false; error: v.FlatErrors<undefined>; statusCode: 400 }
   | { success: false; error: string; statusCode: 401 | 500 };
 
