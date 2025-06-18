@@ -46,7 +46,7 @@ export default async function RootLayout({
         <TenantDashboardSidebar />
         <SidebarInset className="flex min-h-screen flex-col">
           <Header
-            user={{ name: "Austin Robertson", role: "Marketing Administrator" }}
+            user={{ name: "Austin Robertson", }}
           />
           <main className="flex flex-1 flex-col bg-muted">
             <div className="h-[90px] w-full overflow-hidden rounded-b-2xl">
