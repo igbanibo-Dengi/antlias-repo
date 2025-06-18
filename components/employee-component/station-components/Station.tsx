@@ -15,13 +15,16 @@ export type Tank = {
 
 export type Station = {
   id: string;
-  manager: string;
+  tenantId: string;
   name: string;
-  employees: number;
-  location: string;
-  totalSalaries: string;
-  prices: FuelPrice;
-  tanks: Tank[];
+  address: string;
+  city: string;
+  state: string;
+  managerId: string | null;
+  // employees: number;
+  totalSalaries: number | undefined;
+  // prices: FuelPrice;
+  // tanks: Tank[];
 };
 
 // Components
@@ -35,7 +38,7 @@ export const StationInfoSection = ({ station }: { station: Station }) => (
       </div>
       <div className="text-right">
         <p className="text-xs text-muted-foreground">Manager</p>
-        <p className="text-xs font-semibold text-gray-700">{station.manager}</p>
+        <p className="text-xs font-semibold text-gray-700">{station.managerId}</p>
       </div>
     </div>
     <div className="flex justify-between mb-1">
@@ -45,13 +48,13 @@ export const StationInfoSection = ({ station }: { station: Station }) => (
       </div>
       <div className="text-right">
         <p className="text-xs text-muted-foreground">No. of Employees</p>
-        <p className="text-xs font-semibold text-gray-700">{station.employees}</p>
+        {/* <p className="text-xs font-semibold text-gray-700">{station.employees}</p> */}
       </div>
     </div>
     <div className="flex justify-between mb-1">
       <div className="space-y-8">
         <p className="text-xs text-muted-foreground">Location</p>
-        <p className="text-xs font-semibold text-gray-700">{station.location}</p>
+        <p className="text-xs font-semibold text-gray-700">{station.address}</p>
       </div>
       <div className="text-right">
         <p className="text-xs text-muted-foreground">Total Salaries</p>
@@ -101,8 +104,8 @@ export const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
 export const StationCard = ({ station }: { station: Station }) => (
   <Card className="bg-white p-6 space-y-6 shadow-lg">
     <StationInfoSection station={station} />
-    <FuelPricesSection prices={station.prices} />
-    <TankStatusSection tanks={station.tanks} />
+    {/* <FuelPricesSection prices={station.prices} /> */}
+    {/* <TankStatusSection tanks={station.tanks} /> */}
   </Card>
 );
 

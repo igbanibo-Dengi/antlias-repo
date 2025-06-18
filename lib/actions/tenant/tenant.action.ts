@@ -2,9 +2,9 @@
 
 import { auth } from "@/auth"
 import db from "@/database/drizzle"
-import { branches, employees, tenants, users } from "@/database/drizzle/schema"
+import { branches, employees, sellingPrices, tenants, users } from "@/database/drizzle/schema"
 import { USER_ROLES } from "@/lib/constants"
-import { ActionResponse, Branch, DbUser, Employee } from "@/types"
+import { ActionResponse, Branch, DbUser, Employee, SellingPrices } from "@/types"
 import { newStationSchema } from "@/validators/branch-validator"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
@@ -279,4 +279,48 @@ export async function createBranch(values: z.infer<typeof newStationSchema>)
     console.error(error);
     return { success: false, error: "An error occurred while creating the branch", statusCode: 500 };
   }
+}
+
+
+export async function getSellingPrices(branchId: string): Promise<ActionResponse<SellingPrices>> {
+
+
+  const session = await auth();
+
+  // Authentication check
+  if (!session) {
+    return {
+      success: false,
+      error: "No session found",
+      statusCode: 401
+    };
+  }
+
+  // Authorization check
+  if (session.user?.role !== USER_ROLES.TENANT && session.user?.role !== USER_ROLES.ADMIN) {
+    return {
+      success: false,
+      error: "You are not authorized to perform this action",
+      statusCode: 403
+    };
+  }
+
+  try {
+    const prices = await db
+      .select()
+      .from(sellingPrices)
+      .where(eq(sellingPrices.branchId, branchId))
+      .then((res) => res[0] ?? null);
+
+    return {
+      success: true,
+      data: prices,
+      statusCode: 200
+    };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "An error occurred while fetching the tenant branches", statusCode: 500 };
+  }
+
+
 }

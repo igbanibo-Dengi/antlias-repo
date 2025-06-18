@@ -10,7 +10,7 @@ import heroImage from "../../../../public/images/auth_Image.webp"
 
 const SignInPage = () => {
   return (
-    <div className="grid h-screen w-screen overflow-hidden lg:grid-cols-5">
+    <div className="grid h-screen w-screen container overflow-hidden lg:grid-cols-5">
       <div className="col-span-2 hidden w-full items-center justify-center lg:flex">
         <div className="relative h-[90%] w-[70%]">
           <Image

@@ -4,7 +4,7 @@ import * as v from "valibot";
 import { SignupSchema } from "@/validators/signup-validator";
 import bcrypt from "bcrypt";
 import db from "@/database/drizzle";
-import { branches, lower, tenants, users } from "@/database/drizzle/schema";
+import { branches, employees, lower, tenants, users } from "@/database/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { createVerificationTokenAction } from "../admin/create-verification-token-action";
 import { headers } from "next/headers";
@@ -16,17 +16,17 @@ import { getWelcomeEmailHTML } from "@/lib/emails/WelcomeEmail";
 type Res =
   | { success: true; redirectTo?: string }
   | {
-      success: false;
-      error: v.FlatErrors<undefined>;
-      statusCode: 400;
-      redirectTo?: string;
-    }
+    success: false;
+    error: v.FlatErrors<undefined>;
+    statusCode: 400;
+    redirectTo?: string;
+  }
   | {
-      success: false;
-      error: string;
-      statusCode: 409 | 500;
-      redirectTo?: string;
-    };
+    success: false;
+    error: string;
+    statusCode: 409 | 500;
+    redirectTo?: string;
+  };
 
 export async function signUpAction(values: unknown): Promise<Res> {
   const parsedValues = v.safeParse(SignupSchema, values);
@@ -150,6 +150,23 @@ export async function signUpAction(values: unknown): Promise<Res> {
 
     if (!newUser) throw new Error("Failed to create user");
 
+    // Step 4: Create new Employee
+    // const newEmployee = await db
+    // .insert(employees)
+    // .values({
+    //   tenantId: newTenant.id,
+    //   userId: newUser.id,
+    //   firstName: companyName,
+    //   lastName: companyName,
+    //   email: newUser.email,
+    //   phone: companyPhone,
+    //   role: "admin",
+    //   isActive: true,
+    // })
+    // .returning()
+    // .then((res) => res[0]);
+
+
     // Step 3: Create branch
     const defaultBranch = await db
       .insert(branches)
@@ -159,7 +176,7 @@ export async function signUpAction(values: unknown): Promise<Res> {
         address: branchAddress,
         city: branchCity,
         state: branchState,
-        managerId: newUser.id,
+        // managerId: newUser.id,
         isActive: true,
         isHeadQuarters: true,
       })

@@ -39,7 +39,7 @@ export interface DbUser {
   createdAt: Date | null;
 }
 
-interface Employee {
+export interface Employee {
   id: string;
   address: string | null;
   salary: number | null;
@@ -62,4 +62,13 @@ interface Employee {
   guarantorPhone: string | null;
   guarantorAddress: string | null;
   guarantorRelationship: string | null;
+}
+
+export interface SellingPrices {
+  id: string;
+  tenantId: string;
+  branchId: string;
+  fuelType: string;
+  price: string;
+  createdAt: Date | null;
 }
