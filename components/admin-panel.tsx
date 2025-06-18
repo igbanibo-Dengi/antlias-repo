@@ -1,15 +1,9 @@
 "use client";
 
-import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { USER_ROLES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { findAllUsers } from "@/resources/user.queries";
-import { ArrowLeftSquareIcon } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-// import { ToggleEmailVerifiedInput } from "./_componenets/toggle-verified-email-input"
-// import { ChangeUserRoleInput } from "./_componenets/change-user-role-input"
+
 import { useState } from "react";
 import {
   ColumnDef,
@@ -38,10 +32,8 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ToggleEmailVerifiedInput } from "@/app/(dashboard)/_componenets/toggle-verified-email-input";
-import { ChangeUserRoleInput } from "@/app/(dashboard)/_componenets/change-user-role-input";
-// import { ChangeUserRoleInput } from "@/app/(Root)/dashboard/_componenets/change-user-role-input";
-// import { ToggleEmailVerifiedInput } from "@/app/(Root)/dashboard/_componenets/toggle-verified-email-input";
+import { ToggleEmailVerifiedInput } from "@/app/(tenant)/tenant/dashboard/_componenets/toggle-verified-email-input";
+import { ChangeUserRoleInput } from "@/app/(tenant)/tenant/dashboard/_componenets/change-user-role-input";
 
 type User = {
   id: string;
@@ -180,9 +172,9 @@ export function AdminPanelComponent({ users }: any) {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                       </TableHead>
                     );
                   })}
