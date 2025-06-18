@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useActionState, useCallback, useEffect, useState } from "react";
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -47,7 +47,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { BranchProps, Employee } from "@/types";
+import type { ActionResponse, BranchProps, Employee } from "@/types";
 import { getEmployeeByBranchId } from "@/lib/actions/employee/employee";
 import {
   Select,
@@ -124,7 +124,7 @@ export const columns: ColumnDef<Employee>[] = [
     accessorKey: "salary",
     header: "Salary",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("salary"));
+      const amount = Number.parseFloat(row.getValue("salary"));
       const formatted = new Intl.NumberFormat("en-NG", {
         style: "currency",
         currency: "NGN",
@@ -202,31 +202,43 @@ export function EmployeesTable({ branches }: BranchProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [error, setError] = useState("");
+  const [initialLoad, setInitialLoad] = useState(true);
 
-  const router = useRouter();
-  const handleBranchChange = async (branchId: string) => {
+  // Create a fetch function
+  const fetchEmployees = useCallback(async (branchId: string) => {
     setIsLoading(true);
+    setError("");
+
+    try {
+      const response: ActionResponse<Employee[]> =
+        await getEmployeeByBranchId(branchId);
+
+      if (response.success && response.data) {
+        setEmployees(response.data);
+      } else {
+        setError(response.error || "Failed to fetch employees");
+        setEmployees([]);
+      }
+    } catch (err) {
+      setError("An unexpected error occurred");
+      setEmployees([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Handle branch selection
+  const handleBranchChange = (branchId: string) => {
     setSelectedBranch(branchId);
-    setIsLoading(false);
+    fetchEmployees(branchId);
   };
 
+  // Initial fetch
   useEffect(() => {
-    const loadEmployees = async () => {
-      try {
-        const response = await getEmployeeByBranchId(selectedBranch);
-        if ("error" in response) {
-          setError(response.error);
-          setEmployees([]);
-        } else {
-          setEmployees(response as Employee[]);
-        }
-      } catch (err) {
-        setError("Failed to load employees");
-      }
-    };
-
-    loadEmployees();
-  }, [selectedBranch]);
+    if (selectedBranch) {
+      fetchEmployees(selectedBranch);
+    }
+  }, []);
 
   const table = useReactTable({
     data: employees,
@@ -371,9 +383,9 @@ export function EmployeesTable({ branches }: BranchProps) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   );
                 })}
