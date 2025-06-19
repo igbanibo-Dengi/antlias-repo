@@ -49,6 +49,7 @@ export interface Employee {
   firstName: string;
   lastName: string;
   contactNumber: string | null;
+  email: string | null;
   hireDate: string | null;
   position: string | null;
   commission: string | null;

@@ -20,6 +20,7 @@ import {
 import { newStationSchema } from "@/validators/branch-validator";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { getAllEmployees } from "../employee/employee";
 
 export const getTenantId = async () => {
   try {
@@ -149,10 +150,10 @@ export const getBranchById = async (
 ): Promise<
   | Branch
   | {
-      success: false;
-      error: string;
-      statusCode: number;
-    }
+    success: false;
+    error: string;
+    statusCode: number;
+  }
 > => {
   try {
     const session = await auth();
@@ -221,6 +222,62 @@ export const getEmployeeById = async (
   }
 };
 
+export const assignManagerToBranch = async (
+  branchId: string,
+  employeeUserId: string,
+): Promise<ActionResponse<Branch>> => {
+  try {
+    const session = await auth();
+
+    // Authentication check
+    if (!session) {
+      return {
+        success: false,
+        error: "No session found",
+        statusCode: 401,
+      };
+    }
+
+    // Authorization check
+    if (
+      session.user?.role !== USER_ROLES.TENANT &&
+      session.user?.role !== USER_ROLES.ADMIN
+    ) {
+      return {
+        success: false,
+        error: "You are not authorized to perform this action",
+        statusCode: 403,
+      };
+    }
+
+    const branch = await getBranchById(branchId);
+    if ("success" in branch && !branch.success) {
+      return branch;
+    }
+
+
+    const updatedBranch = await db
+      .update(branches)
+      .set({ managerId: employeeUserId, })
+      .where(eq(branches.id, branchId))
+      .returning()
+      .then((res) => res[0]);
+
+    return {
+      success: true,
+      data: updatedBranch,
+      statusCode: 200,
+    };
+  } catch (error) {
+    console.error("Error in assignManagerToBranch:", error);
+    return {
+      success: false,
+      error: "An error occurred while assigning the manager to the branch",
+      statusCode: 500,
+    };
+  }
+}
+
 export const getManagerById = async (
   managerId: string,
 ): Promise<DbUser | { success: false; error: string; statusCode: number }> => {
@@ -259,8 +316,16 @@ export async function createBranch(
     };
   }
 
-  const { branchName, city, state, address, phone, managerId } =
-    validatedFields.data;
+  const
+    {
+      branchName,
+      city,
+      state,
+      address,
+      phone,
+      // managerId
+    } =
+      validatedFields.data;
 
   const session = await auth();
 
@@ -305,7 +370,7 @@ export async function createBranch(
         city: city,
         state: state,
         contactPhone: phone,
-        managerId: managerId,
+        // managerId: managerId,
       })
       .returning()
       .then((res) => res[0]);

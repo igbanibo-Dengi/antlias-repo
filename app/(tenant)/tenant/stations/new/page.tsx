@@ -1,7 +1,9 @@
 import NewStationForm from "@/components/forms/NewStationForm";
+import { Button } from "@/components/ui/button";
 import { getAllEmployees } from "@/lib/actions/employee/employee";
 import { getAllTenantBranches } from "@/lib/actions/tenant/tenant.action";
 import { AlertTriangle } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 const page = async () => {
@@ -23,6 +25,14 @@ const page = async () => {
               ? "Failed to Load Branches"
               : "Failed to Load Employees"}
           </h3>
+          <Button>
+            <Link
+              href={`/tenant/stations`}
+              className="flex items-center gap-2"
+            >
+              Back to stations
+            </Link>
+          </Button>
         </div>
 
         <p className="max-w-md text-center text-gray-600">
@@ -44,6 +54,14 @@ const page = async () => {
             <h3 className="text-xl font-semibold text-gray-800">
               Failed to Load Branches or employees
             </h3>
+            <Button>
+              <Link
+                href={`/tenant/stations`}
+                className="flex items-center gap-2"
+              >
+                Back to stations
+              </Link>
+            </Button>
           </div>
 
           <p className="max-w-md text-center text-gray-600">

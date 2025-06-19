@@ -1,21 +1,21 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+// import { Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { cn } from "@/lib/utils";
+// import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+// import {
+//   Command,
+//   CommandEmpty,
+//   CommandGroup,
+//   CommandInput,
+//   CommandItem,
+//   CommandList,
+// } from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -25,27 +25,28 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Label } from "@/components/ui/label";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover";
+// import {
+//   Sheet,
+//   SheetContent,
+//   SheetDescription,
+//   SheetHeader,
+//   SheetTitle,
+//   SheetTrigger,
+// } from "@/components/ui/sheet";
+// import { Label } from "@/components/ui/label";
 import { Textarea } from "../ui/textarea";
 import { Branch, BranchProps, Employee } from "@/types";
-import { NewEmployeeForm } from "@/app/(tenant)/tenant/employees/_components/NewEmployeeForm";
+// import { NewEmployeeForm } from "@/app/(tenant)/tenant/employees/_components/NewEmployeeForm";
 import { createBranch } from "@/lib/actions/tenant/tenant.action";
 import { newStationSchema } from "@/validators/branch-validator";
 import { toast } from "sonner";
-import { format } from "path";
+// import { format } from "path";
+import { useRouter } from "next/navigation";
 
 interface NewStationFormProps {
   branches: Branch[];
@@ -56,6 +57,7 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
+  const router = useRouter();
 
   console.log(value);
   const stationForm = useForm<z.infer<typeof newStationSchema>>({
@@ -65,7 +67,7 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
       city: "",
       state: "",
       address: "",
-      managerId: "",
+      // managerId: "",
       phone: "",
     },
   });
@@ -90,6 +92,12 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
     <div className="mx-auto w-full rounded-lg border bg-white p-6 shadow-md">
       <div className="space-y-6 p-6 pt-2">
         <h2 className="text-2xl font-semibold">Create new station</h2>
+        <Button
+          className="absolute left-6 -top-14"
+          onClick={() => router.back()}
+        >
+          Back to stations
+        </Button>
       </div>
 
       <Form {...stationForm}>
@@ -175,7 +183,7 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
             />
           </div>
 
-          <div className="flex items-end gap-6">
+          {/* <div className="flex items-end gap-6">
             <FormField
               control={stationForm.control}
               name="managerId"
@@ -258,11 +266,12 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
                 </SheetContent>
               </Sheet>
             </div>
-          </div>
+          </div> */}
 
           <Button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700"
+            disabled={submitting}
           >
             {submitting ? "Creating..." : "Create Station"}
           </Button>

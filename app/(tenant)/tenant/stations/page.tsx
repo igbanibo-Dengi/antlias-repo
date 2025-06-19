@@ -11,7 +11,6 @@ import { getEmployeeByBranchId } from "@/lib/actions/employee/employee";
 
 export default async function FuelStationDashboard() {
   const getBranches = await getAllTenantBranches();
-  // const employess = await getEmployeeByBranchId(getBranches.data[0].id);
 
   if (!getBranches.success) {
     console.error("Error fetching branches or employees:", getBranches.error);
@@ -42,7 +41,11 @@ export default async function FuelStationDashboard() {
     (branches ?? []).map(async (branch) => {
       const employees = await getEmployeeByBranchId(branch.id);
       const sellingPrices = await getSellingPrices(branch.id);
-      console.log(sellingPrices.data);
+      const manager = employees.data?.find(
+        (emp) => emp.userId === branch.managerId,
+      );
+      // console.log("Manager:", manager);
+      // console.log(sellingPrices.data);
 
       if (employees.success === false) {
         // Return a consistent error object or null
@@ -54,10 +57,13 @@ export default async function FuelStationDashboard() {
           city: branch.city,
           state: branch.state,
           managerId: branch.managerId,
+          managerName: manager
+            ? `${manager.firstName} ${manager.lastName}`
+            : null,
           employees: 0,
           totalSalaries: 0,
           prices: sellingPrices.data ?? [],
-          error: employees.error, // Add an error field
+          error: employees.error,
         };
       }
 
@@ -70,6 +76,9 @@ export default async function FuelStationDashboard() {
         city: branch.city,
         state: branch.state,
         managerId: branch.managerId,
+        managerName: manager
+          ? `${manager.firstName} ${manager.lastName}`
+          : null,
         employees: employees.data?.length,
         totalSalaries: employees.data?.reduce(
           (sum, emp) => sum + (emp.salary || 0),
@@ -79,8 +88,6 @@ export default async function FuelStationDashboard() {
       };
     }),
   );
-
-  console.log(stations);
 
   return (
     <div className="min-h-screen">
@@ -106,7 +113,10 @@ export default async function FuelStationDashboard() {
               {station.error}
             </div>
           ) : (
-            <StationCard key={station.id} station={station} />
+            <StationCard
+              key={station.id}
+              station={station}
+            />
           ),
         )}
       </div>

@@ -6,7 +6,7 @@ export const newStationSchema = z.object({
   city: z.string().min(2, { message: "Location is required" }),
   state: z.string().min(2, { message: "State is required" }),
   address: z.string().min(2, { message: "Address is required" }),
-  managerId: z.string().optional(),
+  // managerId: z.string().optional(),
   phone: z
     .string()
     .regex(

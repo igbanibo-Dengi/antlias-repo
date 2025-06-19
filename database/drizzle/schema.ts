@@ -16,6 +16,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 import { permission } from "process";
+import { optional } from "valibot";
 
 // custom lower function
 export function lower(email: AnyPgColumn): SQL {

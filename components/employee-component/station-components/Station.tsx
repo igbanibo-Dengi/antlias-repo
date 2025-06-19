@@ -1,57 +1,54 @@
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { SellingPrices } from "@/types";
+"use client"
 
-// Types
-// export type FuelPrice = {
-//   petrol: string;
-//   diesel: string;
-//   gas: string;
-//   kerosene: string;
-// };
+import { Card } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import type { SellingPrices } from "@/types"
+import { useState } from "react"
+import AssignManagerForm from "./AssigngManagerForm"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 
 export type Tank = {
-  name: string;
-  level: number;
-};
+  name: string
+  level: number
+}
 
 export type Station = {
-  id: string;
-  tenantId: string;
-  name: string;
-  address: string;
-  city: string;
-  state: string;
-  managerId: string | null;
-  employees: number | undefined;
-  totalSalaries: number | undefined;
-  prices: SellingPrices[];
-  // tanks: Tank[];
-};
+  id: string
+  tenantId: string
+  name: string
+  address: string
+  city: string
+  state: string
+  managerId: string | null
+  managerName: string | null
+  employees: number | undefined
+  totalSalaries: number | undefined
+  prices: SellingPrices[]
+}
 
 // Components
-export const StationInfoSection = ({ station }: { station: Station }) => (
+export const StationInfoSection = ({
+  station,
+  onManagerAssigned,
+}: {
+  station: Station
+  onManagerAssigned?: () => void
+}) => (
   <div className="w-full">
-    <h3 className="mb-4 text-sm font-semibold text-muted-foreground">
-      Station Information
-    </h3>
+    <h3 className="mb-4 text-sm font-semibold text-muted-foreground">Station Information</h3>
 
     <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
       {/* Station ID */}
       <div className="flex flex-col space-y-1">
-        <p className="text-xs text-muted-foreground">Station ID</p>
+        <div className="text-xs text-muted-foreground h-6 flex items-center">
+          <p>Station ID</p>
+        </div>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="max-w-[120px] cursor-pointer truncate text-xs text-foreground">
-                {station.id}
-              </div>
+              <div className="max-w-[65px] cursor-pointer truncate text-xs text-foreground">{station.id}</div>
             </TooltipTrigger>
             <TooltipContent>
               <p>{station.id}</p>
@@ -62,14 +59,33 @@ export const StationInfoSection = ({ station }: { station: Station }) => (
 
       {/* Manager */}
       <div className="flex flex-col space-y-1">
-        <p className="text-xs text-muted-foreground">Manager</p>
-        <p className="text-xs">
+        <div className="flex items-center justify-between gap-2">
           {station.managerId === null ? (
-            <span className="text-red-500">not assigned</span>
+            <div className="flex flex-col w-full">
+              <div className="flex items-center gap-2 w-full justify-between">
+                <p className="text-xs text-muted-foreground">Manager</p>
+                <AssignManagerForm
+                  stationId={station.id}
+                  currentManagerId={station.managerId}
+                  onManagerAssigned={onManagerAssigned}
+                />
+              </div>
+              <span className="text-xs text-red-500">Not assigned</span>
+            </div>
           ) : (
-            station.managerId
+            <div className="flex flex-col w-full">
+              <div className="flex items-center gap-2 w-full justify-between">
+                <p className="text-xs text-muted-foreground">Manager</p>
+                <AssignManagerForm
+                  stationId={station.id}
+                  currentManagerId={station.managerId}
+                  onManagerAssigned={onManagerAssigned}
+                />
+              </div>
+              <span className="text-xs text-foreground">{station.managerName || station.managerId}</span>
+            </div>
           )}
-        </p>
+        </div>
       </div>
 
       {/* Station Name */}
@@ -93,64 +109,67 @@ export const StationInfoSection = ({ station }: { station: Station }) => (
       {/* Total Salaries */}
       <div className="flex flex-col space-y-1">
         <p className="text-xs text-muted-foreground">Total Salaries</p>
-        <p className="text-xs text-foreground">{station.totalSalaries}</p>
+        <p className="text-xs text-foreground">
+          {station.totalSalaries ? `$${station.totalSalaries.toLocaleString()}` : "N/A"}
+        </p>
       </div>
     </div>
   </div>
-);
+)
 
 export const FuelPricesSection = ({ prices }: { prices: SellingPrices[] }) =>
   prices.length === 0 ? (
-    <div>empty</div>
+    <div className="flex flex-col gap-2 items-center justify-center py-4">
+      <p className="text-sm text-muted-foreground">No pricing data available</p>
+      <Button size={"sm"} variant={"secondary"}>Set Prices</Button>
+    </div>
   ) : (
     <div className="w-full">
       <h3 className="mb-4 text-sm text-muted-foreground">Selling Prices</h3>
       <div className="grid grid-cols-4 gap-2">
         {prices.map((fuel) => (
           <div key={fuel.id} className="space-y-2">
-            <p className="text-xs capitalize text-muted-foreground">
-              {fuel.fuelType}
-            </p>
-            <p className="text-xs">{fuel.price}</p>
+            <p className="text-xs capitalize text-muted-foreground">{fuel.fuelType}</p>
+            <p className="text-xs font-medium">${fuel.price}</p>
           </div>
         ))}
       </div>
-      <div className="my-4 border-t border-gray-200"></div>
     </div>
-  );
+  )
 
 export const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
   <div className="w-full">
     <h3 className="mb-2 text-sm text-muted-foreground">Present Tank Status</h3>
     {tanks.map((tank, index) => (
-      <div
-        key={index}
-        className="gap-30 mb-4 flex items-center justify-between"
-      >
-        <p className="whitespace-nowrap text-xs text-muted-foreground">
-          {tank.name}
-        </p>
+      <div key={index} className="gap-30 mb-4 flex items-center justify-between">
+        <p className="whitespace-nowrap text-xs text-muted-foreground">{tank.name}</p>
         <div className="relative h-6 max-w-[180px] flex-1 overflow-hidden rounded-[4px] bg-black p-1 2xl:h-10">
-          <div
-            className="flex h-full items-center rounded-[2px] bg-green-600"
-            style={{ width: `${tank.level}%` }}
-          >
-            <span className="absolute right-2 px-2 text-[10px] text-white">
-              {tank.level}%
-            </span>
+          <div className="flex h-full items-center rounded-[2px] bg-green-600" style={{ width: `${tank.level}%` }}>
+            <span className="absolute right-2 px-2 text-[10px] text-white">{tank.level}%</span>
           </div>
         </div>
       </div>
     ))}
   </div>
-);
+)
 
-export const StationCard = ({ station }: { station: Station }) => (
-  <Card className="space-y-6 bg-white py-6 pl-6 pr-2 shadow-lg">
-    <StationInfoSection station={station} />
-    <Separator />
-    <FuelPricesSection prices={station.prices} />
-    <Separator />
-    {/* <TankStatusSection tanks={station.tanks} /> */}
-  </Card>
-);
+export const StationCard = ({ station }: { station: Station }) => {
+  const [key, setKey] = useState(0)
+
+  const router = useRouter()
+
+  const handleManagerAssigned = () => {
+    // Force re-render of the component to reflect the updated manager
+    router.refresh()
+  }
+
+  return (
+    <Card key={key} className="space-y-6 bg-white py-6 pl-6 pr-2 shadow-lg">
+      <StationInfoSection station={station} onManagerAssigned={handleManagerAssigned} />
+      <Separator />
+      <FuelPricesSection prices={station.prices} />
+      <Separator />
+      {/* <TankStatusSection tanks={station.tanks} /> */}
+    </Card>
+  )
+}
