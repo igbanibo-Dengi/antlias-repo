@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect, useState, useTransition } from "react"
+import { useEffect, useState, useTransition } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,89 +8,99 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Edit, Loader, Check, User } from "lucide-react"
-import { getEmployeeByBranchId } from "@/lib/actions/employee/employee"
-import { cn } from "@/lib/utils"
-import { assignManagerToBranch } from "@/lib/actions/tenant/tenant.action"
-import { Employee } from "@/types"
-import { toast } from "sonner"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Edit, Loader, Check, User } from "lucide-react";
+import { getEmployeeByBranchId } from "@/lib/actions/employee/employee";
+import { cn } from "@/lib/utils";
+import { assignManagerToBranch } from "@/lib/actions/tenant/tenant.action";
+import { Employee } from "@/types";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import Link from "next/link"
+} from "@/components/ui/select";
+import Link from "next/link";
 
 interface AssignManagerFormProps {
-  stationId: string
-  currentManagerId?: string | null
-  onManagerAssigned?: () => void
-  bigButton?: boolean
+  stationId: string;
+  currentManagerId?: string | null;
+  onManagerAssigned?: () => void;
+  bigButton?: boolean;
 }
 
-const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, bigButton = false }: AssignManagerFormProps) => {
-  const [employees, setEmployees] = useState<Employee[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
-  const [isPending, startTransition] = useTransition()
+const AssignManagerForm = ({
+  stationId,
+  currentManagerId,
+  onManagerAssigned,
+  bigButton = false,
+}: AssignManagerFormProps) => {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null,
+  );
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     const fetchEmployees = async () => {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
       try {
-        const result = await getEmployeeByBranchId(stationId)
+        const result = await getEmployeeByBranchId(stationId);
 
         if (result.success && result.data) {
-          setEmployees(result.data)
+          setEmployees(result.data);
         } else {
-          setError(result.error || "Failed to load employees")
+          setError(result.error || "Failed to load employees");
         }
       } catch (err) {
-        setError("An unexpected error occurred")
+        setError("An unexpected error occurred");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
     if (dialogOpen) {
-      fetchEmployees()
+      fetchEmployees();
     }
-  }, [stationId, dialogOpen])
+  }, [stationId, dialogOpen]);
 
   const handleAssignManager = () => {
     if (!selectedEmployee) {
-      toast.error("Please select an employee to assign as manager.")
-      return
+      toast.error("Please select an employee to assign as manager.");
+      return;
     }
 
     startTransition(async () => {
       try {
-        const result = await assignManagerToBranch(stationId, selectedEmployee.userId)
+        const result = await assignManagerToBranch(
+          stationId,
+          selectedEmployee.userId,
+        );
 
         if (result.success) {
           toast.success("Successfully assigned manager", {
             description: `${selectedEmployee.firstName} ${selectedEmployee.lastName} has been assigned as manager.`,
-          })
-          setDialogOpen(false)
-          setSelectedEmployee(null)
-          onManagerAssigned?.()
+          });
+          setDialogOpen(false);
+          setSelectedEmployee(null);
+          onManagerAssigned?.();
         } else {
-          toast.error(result.error || "Failed to assign manager")
+          toast.error(result.error || "Failed to assign manager");
         }
       } catch (err) {
-        toast.error("An unexpected error occurred while assigning manager.")
-        console.error("Error assigning manager:", err)
+        toast.error("An unexpected error occurred while assigning manager.");
+        console.error("Error assigning manager:", err);
       }
-    })
-  }
+    });
+  };
 
   const renderContent = () => {
     if (loading) {
@@ -98,10 +108,12 @@ const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, big
         <div className="flex items-center justify-center py-8">
           <div className="flex items-center gap-3">
             <Loader className="h-6 w-6 animate-spin text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Loading employees...</span>
+            <span className="text-sm text-muted-foreground">
+              Loading employees...
+            </span>
           </div>
         </div>
-      )
+      );
     }
 
     if (error) {
@@ -109,20 +121,24 @@ const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, big
         <div className="flex flex-col items-center justify-center gap-4 py-8">
           <div className="flex items-center gap-3">
             <User className="h-8 w-8 text-red-500" />
-            <h3 className="text-lg font-semibold text-gray-800">Failed to Load Employees</h3>
+            <h3 className="text-lg font-semibold text-gray-800">
+              Failed to Load Employees
+            </h3>
           </div>
-          <p className="max-w-md text-center text-sm text-muted-foreground">{error}</p>
+          <p className="max-w-md text-center text-sm text-muted-foreground">
+            {error}
+          </p>
           <Button
             variant="outline"
             onClick={() => {
-              setError(null)
-              setLoading(true)
+              setError(null);
+              setLoading(true);
             }}
           >
             Try Again
           </Button>
         </div>
-      )
+      );
     }
 
     if (employees.length === 0) {
@@ -131,16 +147,24 @@ const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, big
           <User className="h-8 w-8 text-muted-foreground" />
           <div className="text-center">
             <h3 className="text-lg font-semibold">No Employees Found</h3>
-            <p className="text-sm text-muted-foreground">There are no employees available for this station.</p>
-            <p className="text-muted-foreground"> To assign a manager, please add employees to this station first.</p>
+            <p className="text-sm text-muted-foreground">
+              There are no employees available for this station.
+            </p>
+            <p className="text-muted-foreground">
+              {" "}
+              To assign a manager, please add employees to this station first.
+            </p>
           </div>
           <Button>
-            <Link href={`/tenant/stations/new`} className="flex items-center gap-2">
+            <Link
+              href={`/tenant/stations/new`}
+              className="flex items-center gap-2"
+            >
               Add Employee
             </Link>
           </Button>
         </div>
-      )
+      );
     }
 
     return (
@@ -149,8 +173,8 @@ const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, big
           <label className="text-sm font-medium">Select Employee</label>
           <Select
             onValueChange={(value) => {
-              const employee = employees.find(e => e.id === value) || null
-              setSelectedEmployee(employee)
+              const employee = employees.find((e) => e.id === value) || null;
+              setSelectedEmployee(employee);
             }}
             value={selectedEmployee?.id || ""}
           >
@@ -165,7 +189,9 @@ const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, big
                     <span>
                       {employee.firstName} {employee.lastName}
                     </span>
-                    <span className="text-muted-foreground">- {employee.position}</span>
+                    <span className="text-muted-foreground">
+                      - {employee.position}
+                    </span>
                   </div>
                 </SelectItem>
               ))}
@@ -175,16 +201,19 @@ const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, big
 
         {selectedEmployee && (
           <div className="rounded-lg border bg-muted/50 p-3">
-            <h4 className="text-sm font-medium mb-2">Selected Employee</h4>
+            <h4 className="mb-2 text-sm font-medium">Selected Employee</h4>
             <div className="space-y-1 text-sm">
               <p>
-                <span className="font-medium">Name:</span> {selectedEmployee.firstName} {selectedEmployee.lastName}
+                <span className="font-medium">Name:</span>{" "}
+                {selectedEmployee.firstName} {selectedEmployee.lastName}
               </p>
               <p>
-                <span className="font-medium">Position:</span> {selectedEmployee.position}
+                <span className="font-medium">Position:</span>{" "}
+                {selectedEmployee.position}
               </p>
               <p>
-                <span className="font-medium">Email:</span> {selectedEmployee.email}
+                <span className="font-medium">Email:</span>{" "}
+                {selectedEmployee.email}
               </p>
             </div>
           </div>
@@ -194,14 +223,17 @@ const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, big
           <Button
             variant="outline"
             onClick={() => {
-              setDialogOpen(false)
-              setSelectedEmployee(null)
+              setDialogOpen(false);
+              setSelectedEmployee(null);
             }}
             disabled={isPending}
           >
             Cancel
           </Button>
-          <Button onClick={handleAssignManager} disabled={!selectedEmployee || isPending}>
+          <Button
+            onClick={handleAssignManager}
+            disabled={!selectedEmployee || isPending}
+          >
             {isPending ? (
               <>
                 <Loader className="mr-2 h-4 w-4 animate-spin" />
@@ -213,13 +245,18 @@ const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, big
           </Button>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant={bigButton ? "outline" : "ghost"} size="icon" className={bigButton ? "" : "p-0 size-6"} aria-label="Assign Manager">
+        <Button
+          variant={bigButton ? "outline" : "ghost"}
+          size="icon"
+          className={bigButton ? "" : "size-6 p-0"}
+          aria-label="Assign Manager"
+        >
           {bigButton ? (
             <Edit className="h-4 w-4" />
           ) : (
@@ -232,12 +269,14 @@ const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, big
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Assign Manager</DialogTitle>
-          <DialogDescription>Select an employee to assign as the manager for this station.</DialogDescription>
+          <DialogDescription>
+            Select an employee to assign as the manager for this station.
+          </DialogDescription>
         </DialogHeader>
         {renderContent()}
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default AssignManagerForm
+export default AssignManagerForm;

@@ -92,7 +92,7 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
       <div className="space-y-6 p-6 pt-2">
         <h2 className="text-2xl font-semibold">Create new station</h2>
         <Button
-          className="absolute left-6 -top-14"
+          className="absolute -top-14 left-6"
           onClick={() => router.back()}
         >
           Back to stations

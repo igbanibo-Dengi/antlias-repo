@@ -1,14 +1,27 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Info, Loader2 } from "lucide-react"
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Info, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -17,12 +30,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { deleteBranch, editBranch } from "@/lib/actions/tenant/tenant.action"
-import { Switch } from "@/components/ui/switch"
-import { toast } from "sonner"
-import AssignManagerForm from "./AssigngManagerForm"
-import { EditBranchFormValues } from "@/types"
+} from "@/components/ui/dialog";
+import { deleteBranch, editBranch } from "@/lib/actions/tenant/tenant.action";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
+import AssignManagerForm from "./AssigngManagerForm";
+import { EditBranchFormValues } from "@/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -31,24 +44,24 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { EditStationSchema } from "@/validators/branch-validator"
-import { useRouter } from "next/navigation"
+} from "@/components/ui/alert-dialog";
+import { EditStationSchema } from "@/validators/branch-validator";
+import { useRouter } from "next/navigation";
 
 export type EditStationFormProps = {
-  stationId: string
-  stationName?: string
-  stationPhone: string | null
-  stationAddress?: string
-  stationCity?: string
-  stationState?: string
-  stationManagerId?: string | null
-  stationManagerName?: string | null
-  isHeadQuarters?: boolean | null
-  isActive?: boolean | null
-  createdAt?: Date | null
-  onManagerAssigned?: () => void
-}
+  stationId: string;
+  stationName?: string;
+  stationPhone: string | null;
+  stationAddress?: string;
+  stationCity?: string;
+  stationState?: string;
+  stationManagerId?: string | null;
+  stationManagerName?: string | null;
+  isHeadQuarters?: boolean | null;
+  isActive?: boolean | null;
+  createdAt?: Date | null;
+  onManagerAssigned?: () => void;
+};
 
 const EditStationForm = ({
   stationId,
@@ -64,12 +77,12 @@ const EditStationForm = ({
   createdAt,
   onManagerAssigned,
 }: EditStationFormProps) => {
-  const [submitting, setSubmitting] = useState(false)
-  const [isDeleting, setDeleting] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [editMode, setEditMode] = useState(false)
-  const router = useRouter()
+  const [submitting, setSubmitting] = useState(false);
+  const [isDeleting, setDeleting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof EditStationSchema>>({
     resolver: zodResolver(EditStationSchema),
@@ -82,59 +95,59 @@ const EditStationForm = ({
       isHQ: isHeadQuarters ?? false,
       active: isActive ?? true,
     },
-  })
+  });
 
   // Reset edit mode when dialog closes
   const handleDialogOpenChange = (open: boolean) => {
     if (!open) {
-      setEditMode(false)
+      setEditMode(false);
     }
-    setDialogOpen(open)
-  }
+    setDialogOpen(open);
+  };
 
   const handleSubmit = async (values: EditBranchFormValues) => {
     try {
-      setSubmitting(true)
+      setSubmitting(true);
 
-      const response = await editBranch(stationId, values)
+      const response = await editBranch(stationId, values);
 
       if (response?.success) {
-        toast.success("Station updated successfully")
-        setEditMode(false)
+        toast.success("Station updated successfully");
+        setEditMode(false);
       } else {
-        toast.error(response?.error || "Failed to update station")
+        toast.error(response?.error || "Failed to update station");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred")
-      console.error("Error updating station:", error)
+      toast.error("An unexpected error occurred");
+      console.error("Error updating station:", error);
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   const handleDeleteBranch = async () => {
     try {
-      setDeleting(true)
+      setDeleting(true);
 
-      const response = await deleteBranch(stationId)
+      const response = await deleteBranch(stationId);
 
       if (response?.success) {
-        toast.success("Station Deleted successfully")
-        setDialogOpen(false)
-        setEditMode(false)
-        router.refresh()
+        toast.success("Station Deleted successfully");
+        setDialogOpen(false);
+        setEditMode(false);
+        router.refresh();
       } else {
-        toast.error(response?.error || "Failed to Delete station")
+        toast.error(response?.error || "Failed to Delete station");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred")
-      console.error("Error Deleting station:", error)
+      toast.error("An unexpected error occurred");
+      console.error("Error Deleting station:", error);
     } finally {
-      setDeleting(false)
+      setDeleting(false);
     }
-  }
+  };
 
-  const isFormDisabled = isLoading || submitting || !editMode
+  const isFormDisabled = isLoading || submitting || !editMode;
 
   return (
     <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
@@ -144,21 +157,26 @@ const EditStationForm = ({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
         <DialogHeader className="sr-only">
           <DialogTitle>Edit Station</DialogTitle>
           <DialogDescription>
-            Update the station details below. All fields marked with an asterisk (*) are required.
+            Update the station details below. All fields marked with an asterisk
+            (*) are required.
           </DialogDescription>
         </DialogHeader>
-        <Card className="w-full border-none shadow-none p-0">
+        <Card className="w-full border-none p-0 shadow-none">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle>Edit Station</CardTitle>
-              <CardDescription>Update the station information below</CardDescription>
+              <CardDescription>
+                Update the station information below
+              </CardDescription>
             </div>
             <div className="flex items-center gap-2">
-              <div className={editMode ? "text-primary" : "text-muted-foreground"}>
+              <div
+                className={editMode ? "text-primary" : "text-muted-foreground"}
+              >
                 Edit Mode
               </div>
               <Switch
@@ -171,8 +189,11 @@ const EditStationForm = ({
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-                <div className="grid grid-cols- gap-6">
+              <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="space-y-6"
+              >
+                <div className="grid-cols- grid gap-6">
                   <div className="grid grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
@@ -181,7 +202,11 @@ const EditStationForm = ({
                         <FormItem>
                           <FormLabel>Station Name*</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter station name" disabled={isFormDisabled} {...field} />
+                            <Input
+                              placeholder="Enter station name"
+                              disabled={isFormDisabled}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -213,14 +238,18 @@ const EditStationForm = ({
                       <FormItem>
                         <FormLabel>Address*</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter station address" disabled={isFormDisabled} {...field} />
+                          <Input
+                            placeholder="Enter station address"
+                            disabled={isFormDisabled}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <FormField
                       control={form.control}
                       name="city"
@@ -228,7 +257,11 @@ const EditStationForm = ({
                         <FormItem>
                           <FormLabel>City*</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter city" disabled={isFormDisabled} {...field} />
+                            <Input
+                              placeholder="Enter city"
+                              disabled={isFormDisabled}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -242,7 +275,11 @@ const EditStationForm = ({
                         <FormItem>
                           <FormLabel>State*</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter state" disabled={isFormDisabled} {...field} />
+                            <Input
+                              placeholder="Enter state"
+                              disabled={isFormDisabled}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -264,7 +301,7 @@ const EditStationForm = ({
                         currentManagerId={stationManagerId}
                         onManagerAssigned={onManagerAssigned}
                         bigButton={true}
-                      // disabled={!editMode}
+                        // disabled={!editMode}
                       />
                     </div>
                   </div>
@@ -277,7 +314,9 @@ const EditStationForm = ({
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                           <div className="space-y-0.5">
-                            <FormLabel className="text-base">Headquarters</FormLabel>
+                            <FormLabel className="text-base">
+                              Headquarters
+                            </FormLabel>
                             <p className="text-sm text-muted-foreground">
                               Mark this station as headquarters
                             </p>
@@ -322,7 +361,7 @@ const EditStationForm = ({
                     <AlertDialogTrigger asChild>
                       <Button
                         variant="destructive"
-                      // disabled={isFormDisabled}
+                        // disabled={isFormDisabled}
                       >
                         Delete Station
                       </Button>
@@ -331,15 +370,13 @@ const EditStationForm = ({
                       <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                         <p className="text-sm text-muted-foreground">
-                          This action cannot be undone. This will permanently delete the station and all its data.
+                          This action cannot be undone. This will permanently
+                          delete the station and all its data.
                         </p>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel asChild>
-                          <Button
-                            variant="outline"
-                            disabled={isDeleting}
-                          >
+                          <Button variant="outline" disabled={isDeleting}>
                             Cancel
                           </Button>
                         </AlertDialogCancel>
@@ -379,7 +416,7 @@ const EditStationForm = ({
         </Card>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default EditStationForm
+export default EditStationForm;

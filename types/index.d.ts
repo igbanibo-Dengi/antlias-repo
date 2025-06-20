@@ -20,14 +20,14 @@ export interface Branch {
 }
 
 export type EditBranchFormValues = {
-  branchName: string
-  address?: string
-  contactPhone?: string | null
-  city?: string
-  state?: string
+  branchName: string;
+  address?: string;
+  contactPhone?: string | null;
+  city?: string;
+  state?: string;
   isHQ: boolean | null;
   active: boolean | null;
-}
+};
 
 export interface BranchProps {
   branches: Branch[];

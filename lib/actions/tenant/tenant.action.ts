@@ -18,7 +18,10 @@ import {
   Employee,
   SellingPrices,
 } from "@/types";
-import { EditStationSchema, newStationSchema } from "@/validators/branch-validator";
+import {
+  EditStationSchema,
+  newStationSchema,
+} from "@/validators/branch-validator";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getAllEmployees } from "../employee/employee";
@@ -151,10 +154,10 @@ export const getBranchById = async (
 ): Promise<
   | Branch
   | {
-    success: false;
-    error: string;
-    statusCode: number;
-  }
+      success: false;
+      error: string;
+      statusCode: number;
+    }
 > => {
   try {
     const session = await auth();
@@ -256,10 +259,9 @@ export const assignManagerToBranch = async (
       return branch;
     }
 
-
     const updatedBranch = await db
       .update(branches)
-      .set({ managerId: employeeUserId, })
+      .set({ managerId: employeeUserId })
       .where(eq(branches.id, branchId))
       .returning()
       .then((res) => res[0]);
@@ -277,7 +279,7 @@ export const assignManagerToBranch = async (
       statusCode: 500,
     };
   }
-}
+};
 
 export const getManagerById = async (
   managerId: string,
@@ -340,16 +342,14 @@ export async function createBranch(
     };
   }
 
-  const
-    {
-      branchName,
-      city,
-      state,
-      address,
-      phone,
-      // managerId
-    } =
-      validatedFields.data;
+  const {
+    branchName,
+    city,
+    state,
+    address,
+    phone,
+    // managerId
+  } = validatedFields.data;
 
   try {
     const tenantIdResult = await getTenantId();
@@ -412,7 +412,7 @@ export async function editBranch(
     address,
     city,
     state,
-    contactPhone
+    contactPhone,
 
     // managerId
   } = validatedFields.data;
@@ -508,9 +508,7 @@ export async function deleteBranch(
       return branch;
     }
 
-    await db
-      .delete(branches)
-      .where(eq(branches.id, branchId));
+    await db.delete(branches).where(eq(branches.id, branchId));
 
     return {
       success: true,

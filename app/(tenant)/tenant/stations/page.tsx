@@ -35,7 +35,6 @@ export default async function FuelStationDashboard() {
 
   const branches = getBranches.data;
 
-
   const stations = await Promise.all(
     (branches ?? []).map(async (branch) => {
       const employees = await getEmployeeByBranchId(branch.id);
@@ -120,10 +119,7 @@ export default async function FuelStationDashboard() {
               {station.error}
             </div>
           ) : (
-            <StationCard
-              key={station.id}
-              station={station}
-            />
+            <StationCard key={station.id} station={station} />
           ),
         )}
       </div>

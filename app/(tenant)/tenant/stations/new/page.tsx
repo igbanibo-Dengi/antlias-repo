@@ -26,10 +26,7 @@ const page = async () => {
               : "Failed to Load Employees"}
           </h3>
           <Button>
-            <Link
-              href={`/tenant/stations`}
-              className="flex items-center gap-2"
-            >
+            <Link href={`/tenant/stations`} className="flex items-center gap-2">
               Back to stations
             </Link>
           </Button>

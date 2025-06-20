@@ -28,4 +28,4 @@ export const EditStationSchema = z.object({
   state: z.string().min(1, "State is required"),
   isHQ: z.boolean().default(false),
   active: z.boolean().default(true),
-})
+});

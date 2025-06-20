@@ -1,49 +1,56 @@
-"use client"
+"use client";
 
-import { Card } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import type { SellingPrices } from "@/types"
-import { useState } from "react"
-import AssignManagerForm from "./AssigngManagerForm"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import EditStationForm from "./EditStationForm"
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import type { SellingPrices } from "@/types";
+import { useState } from "react";
+import AssignManagerForm from "./AssigngManagerForm";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import EditStationForm from "./EditStationForm";
 
 export type Tank = {
-  name: string
-  level: number
-}
+  name: string;
+  level: number;
+};
 
 export type Station = {
-  id: string
-  tenantId: string
-  name: string
-  contactPhone: string | null
-  address: string
-  city: string
-  state: string
-  managerId: string | null
-  managerName: string | null
-  isHeadQuarters: boolean | null
-  isActive: boolean | null
-  createdAt: Date | null
-  employees: number | undefined
-  totalSalaries: number | undefined
-  prices: SellingPrices[]
-}
+  id: string;
+  tenantId: string;
+  name: string;
+  contactPhone: string | null;
+  address: string;
+  city: string;
+  state: string;
+  managerId: string | null;
+  managerName: string | null;
+  isHeadQuarters: boolean | null;
+  isActive: boolean | null;
+  createdAt: Date | null;
+  employees: number | undefined;
+  totalSalaries: number | undefined;
+  prices: SellingPrices[];
+};
 
 // Components
 export const StationInfoSection = ({
   station,
   onManagerAssigned,
 }: {
-  station: Station
-  onManagerAssigned?: () => void
+  station: Station;
+  onManagerAssigned?: () => void;
 }) => (
   <div className="w-full">
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="text-sm font-semibold text-muted-foreground">Station Information</h3>
+    <div className="mb-4 flex items-center justify-between">
+      <h3 className="text-sm font-semibold text-muted-foreground">
+        Station Information
+      </h3>
 
       <span>
         <EditStationForm
@@ -66,13 +73,15 @@ export const StationInfoSection = ({
     <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
       {/* Station ID */}
       <div className="flex flex-col space-y-1">
-        <div className="text-xs text-muted-foreground h-6 flex items-center">
+        <div className="flex h-6 items-center text-xs text-muted-foreground">
           <p>Station ID</p>
         </div>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="max-w-[65px] cursor-pointer truncate text-xs text-foreground">{station.id}</div>
+              <div className="max-w-[65px] cursor-pointer truncate text-xs text-foreground">
+                {station.id}
+              </div>
             </TooltipTrigger>
             <TooltipContent>
               <p>{station.id}</p>
@@ -85,8 +94,8 @@ export const StationInfoSection = ({
       <div className="flex flex-col space-y-1">
         <div className="flex items-center justify-between gap-2">
           {station.managerId === null ? (
-            <div className="flex flex-col w-full">
-              <div className="flex items-center gap-2 w-full justify-between">
+            <div className="flex w-full flex-col">
+              <div className="flex w-full items-center justify-between gap-2">
                 <p className="text-xs text-muted-foreground">Manager</p>
                 <AssignManagerForm
                   stationId={station.id}
@@ -97,8 +106,8 @@ export const StationInfoSection = ({
               <span className="text-xs text-red-500">Not assigned</span>
             </div>
           ) : (
-            <div className="flex flex-col w-full">
-              <div className="flex items-center gap-2 w-full justify-between">
+            <div className="flex w-full flex-col">
+              <div className="flex w-full items-center justify-between gap-2">
                 <p className="text-xs text-muted-foreground">Manager</p>
                 <AssignManagerForm
                   stationId={station.id}
@@ -106,7 +115,9 @@ export const StationInfoSection = ({
                   onManagerAssigned={onManagerAssigned}
                 />
               </div>
-              <span className="text-xs text-foreground">{station.managerName || station.managerId}</span>
+              <span className="text-xs text-foreground">
+                {station.managerName || station.managerId}
+              </span>
             </div>
           )}
         </div>
@@ -134,18 +145,22 @@ export const StationInfoSection = ({
       <div className="flex flex-col space-y-1">
         <p className="text-xs text-muted-foreground">Total Salaries</p>
         <p className="text-xs text-foreground">
-          {station.totalSalaries ? `$${station.totalSalaries.toLocaleString()}` : "N/A"}
+          {station.totalSalaries
+            ? `$${station.totalSalaries.toLocaleString()}`
+            : "N/A"}
         </p>
       </div>
     </div>
   </div>
-)
+);
 
 export const FuelPricesSection = ({ prices }: { prices: SellingPrices[] }) =>
   prices.length === 0 ? (
-    <div className="flex flex-col gap-2 items-center justify-center py-4">
+    <div className="flex flex-col items-center justify-center gap-2 py-4">
       <p className="text-sm text-muted-foreground">No pricing data available</p>
-      <Button size={"sm"} variant={"secondary"}>Set Prices</Button>
+      <Button size={"sm"} variant={"secondary"}>
+        Set Prices
+      </Button>
     </div>
   ) : (
     <div className="w-full">
@@ -153,36 +168,48 @@ export const FuelPricesSection = ({ prices }: { prices: SellingPrices[] }) =>
       <div className="grid grid-cols-4 gap-2">
         {prices.map((fuel) => (
           <div key={fuel.id} className="space-y-2">
-            <p className="text-xs capitalize text-muted-foreground">{fuel.fuelType}</p>
+            <p className="text-xs capitalize text-muted-foreground">
+              {fuel.fuelType}
+            </p>
             <p className="text-xs font-medium">${fuel.price}</p>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 
 export const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
   <div className="w-full">
     <h3 className="mb-2 text-sm text-muted-foreground">Present Tank Status</h3>
     {tanks.map((tank, index) => (
-      <div key={index} className="gap-30 mb-4 flex items-center justify-between">
-        <p className="whitespace-nowrap text-xs text-muted-foreground">{tank.name}</p>
+      <div
+        key={index}
+        className="gap-30 mb-4 flex items-center justify-between"
+      >
+        <p className="whitespace-nowrap text-xs text-muted-foreground">
+          {tank.name}
+        </p>
         <div className="relative h-6 max-w-[180px] flex-1 overflow-hidden rounded-[4px] bg-black p-1 2xl:h-10">
-          <div className="flex h-full items-center rounded-[2px] bg-green-600" style={{ width: `${tank.level}%` }}>
-            <span className="absolute right-2 px-2 text-[10px] text-white">{tank.level}%</span>
+          <div
+            className="flex h-full items-center rounded-[2px] bg-green-600"
+            style={{ width: `${tank.level}%` }}
+          >
+            <span className="absolute right-2 px-2 text-[10px] text-white">
+              {tank.level}%
+            </span>
           </div>
         </div>
       </div>
     ))}
   </div>
-)
+);
 
 export const StationCard = ({ station }: { station: Station }) => {
-  const router = useRouter()
+  const router = useRouter();
 
   const handleManagerAssigned = () => {
-    router.refresh()
-  }
+    router.refresh();
+  };
 
   return (
     <Card className="space-y-6 bg-white p-6 shadow-lg">
@@ -195,5 +222,5 @@ export const StationCard = ({ station }: { station: Station }) => {
       <Separator />
       {/* <TankStatusSection tanks={station.tanks} /> */}
     </Card>
-  )
-}
+  );
+};
