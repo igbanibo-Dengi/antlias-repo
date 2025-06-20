@@ -8,6 +8,7 @@ import { useState } from "react"
 import AssignManagerForm from "./AssigngManagerForm"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import EditStationForm from "./EditStationForm"
 
 export type Tank = {
   name: string
@@ -18,11 +19,15 @@ export type Station = {
   id: string
   tenantId: string
   name: string
+  contactPhone: string | null
   address: string
   city: string
   state: string
   managerId: string | null
   managerName: string | null
+  isHeadQuarters: boolean | null
+  isActive: boolean | null
+  createdAt: Date | null
   employees: number | undefined
   totalSalaries: number | undefined
   prices: SellingPrices[]
@@ -37,7 +42,26 @@ export const StationInfoSection = ({
   onManagerAssigned?: () => void
 }) => (
   <div className="w-full">
-    <h3 className="mb-4 text-sm font-semibold text-muted-foreground">Station Information</h3>
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="text-sm font-semibold text-muted-foreground">Station Information</h3>
+
+      <span>
+        <EditStationForm
+          stationId={station.id}
+          stationName={station.name}
+          stationPhone={station.contactPhone}
+          stationAddress={station.address}
+          stationCity={station.city}
+          stationState={station.state}
+          stationManagerId={station.managerId}
+          stationManagerName={station.managerName}
+          isHeadQuarters={station.isHeadQuarters}
+          isActive={station.isActive}
+          createdAt={station.createdAt}
+          onManagerAssigned={onManagerAssigned}
+        />
+      </span>
+    </div>
 
     <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
       {/* Station ID */}
@@ -154,18 +178,18 @@ export const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
 )
 
 export const StationCard = ({ station }: { station: Station }) => {
-  const [key, setKey] = useState(0)
-
   const router = useRouter()
 
   const handleManagerAssigned = () => {
-    // Force re-render of the component to reflect the updated manager
     router.refresh()
   }
 
   return (
-    <Card key={key} className="space-y-6 bg-white py-6 pl-6 pr-2 shadow-lg">
-      <StationInfoSection station={station} onManagerAssigned={handleManagerAssigned} />
+    <Card className="space-y-6 bg-white p-6 shadow-lg">
+      <StationInfoSection
+        station={station}
+        onManagerAssigned={handleManagerAssigned}
+      />
       <Separator />
       <FuelPricesSection prices={station.prices} />
       <Separator />

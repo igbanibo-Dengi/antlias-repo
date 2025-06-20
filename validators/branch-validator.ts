@@ -14,3 +14,18 @@ export const newStationSchema = z.object({
       "Invalid phone number",
     ),
 });
+
+export const EditStationSchema = z.object({
+  branchName: z.string().min(1, "Name is required"),
+  contactPhone: z
+    .string()
+    .regex(
+      /^(?:\+234|234|0)?(7[0-9]|8[0-9]|9[0-9])[0-9]{8}$/,
+      "Invalid phone number",
+    ),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  isHQ: z.boolean().default(false),
+  active: z.boolean().default(true),
+})

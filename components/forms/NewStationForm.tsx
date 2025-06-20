@@ -67,7 +67,6 @@ const NewStationForm = ({ branches, employees }: NewStationFormProps) => {
       city: "",
       state: "",
       address: "",
-      // managerId: "",
       phone: "",
     },
   });

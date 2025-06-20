@@ -35,7 +35,6 @@ export default async function FuelStationDashboard() {
 
   const branches = getBranches.data;
 
-  // console.log(branches);
 
   const stations = await Promise.all(
     (branches ?? []).map(async (branch) => {
@@ -53,6 +52,7 @@ export default async function FuelStationDashboard() {
           id: branch.id,
           tenantId: branch.tenantId,
           name: branch.name,
+          contactPhone: branch.contactPhone,
           address: branch.address,
           city: branch.city,
           state: branch.state,
@@ -60,6 +60,9 @@ export default async function FuelStationDashboard() {
           managerName: manager
             ? `${manager.firstName} ${manager.lastName}`
             : null,
+          isHeadQuarters: branch.isHeadQuarters,
+          isActive: branch.isActive,
+          createdAt: branch.createdAt,
           employees: 0,
           totalSalaries: 0,
           prices: sellingPrices.data ?? [],
@@ -72,6 +75,7 @@ export default async function FuelStationDashboard() {
         id: branch.id,
         tenantId: branch.tenantId,
         name: branch.name,
+        contactPhone: branch.contactPhone,
         address: branch.address,
         city: branch.city,
         state: branch.state,
@@ -79,6 +83,9 @@ export default async function FuelStationDashboard() {
         managerName: manager
           ? `${manager.firstName} ${manager.lastName}`
           : null,
+        isHeadQuarters: branch.isHeadQuarters,
+        isActive: branch.isActive,
+        createdAt: branch.createdAt,
         employees: employees.data?.length,
         totalSalaries: employees.data?.reduce(
           (sum, emp) => sum + (emp.salary || 0),

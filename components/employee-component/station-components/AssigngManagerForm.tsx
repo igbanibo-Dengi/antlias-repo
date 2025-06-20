@@ -29,9 +29,10 @@ interface AssignManagerFormProps {
   stationId: string
   currentManagerId?: string | null
   onManagerAssigned?: () => void
+  bigButton?: boolean
 }
 
-const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned }: AssignManagerFormProps) => {
+const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned, bigButton = false }: AssignManagerFormProps) => {
   const [employees, setEmployees] = useState<Employee[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -218,8 +219,13 @@ const AssignManagerForm = ({ stationId, currentManagerId, onManagerAssigned }: A
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-6 w-6 p-0" aria-label="Assign Manager">
-          <Edit size={14} />
+        <Button variant={bigButton ? "outline" : "ghost"} size="icon" className={bigButton ? "" : "p-0 size-6"} aria-label="Assign Manager">
+          {bigButton ? (
+            <Edit className="h-4 w-4" />
+          ) : (
+            <Edit className="h-4 w-4" />
+          )}
+          {bigButton && <span className="sr-only">Assign Manager</span>}
         </Button>
       </DialogTrigger>
 

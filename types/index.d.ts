@@ -1,4 +1,3 @@
-// Define a consistent return type
 export type ActionResponse<T> = {
   success: boolean;
   data?: T;
@@ -18,6 +17,16 @@ export interface Branch {
   isHeadQuarters: boolean | null;
   isActive: boolean | null;
   createdAt: Date | null;
+}
+
+export type EditBranchFormValues = {
+  branchName: string
+  address?: string
+  contactPhone?: string | null
+  city?: string
+  state?: string
+  isHQ: boolean | null;
+  active: boolean | null;
 }
 
 export interface BranchProps {

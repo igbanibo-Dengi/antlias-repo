@@ -14,10 +14,11 @@ import {
   ActionResponse,
   Branch,
   DbUser,
+  EditBranchFormValues,
   Employee,
   SellingPrices,
 } from "@/types";
-import { newStationSchema } from "@/validators/branch-validator";
+import { EditStationSchema, newStationSchema } from "@/validators/branch-validator";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getAllEmployees } from "../employee/employee";
@@ -308,25 +309,6 @@ export async function createBranch(
 ): Promise<ActionResponse<Branch>> {
   const validatedFields = newStationSchema.safeParse(values);
 
-  if (!validatedFields.success) {
-    return {
-      success: false,
-      error: "Invalid input data",
-      statusCode: 400,
-    };
-  }
-
-  const
-    {
-      branchName,
-      city,
-      state,
-      address,
-      phone,
-      // managerId
-    } =
-      validatedFields.data;
-
   const session = await auth();
 
   // Authentication check
@@ -349,6 +331,25 @@ export async function createBranch(
       statusCode: 403,
     };
   }
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      error: "Invalid input data",
+      statusCode: 400,
+    };
+  }
+
+  const
+    {
+      branchName,
+      city,
+      state,
+      address,
+      phone,
+      // managerId
+    } =
+      validatedFields.data;
 
   try {
     const tenantIdResult = await getTenantId();
@@ -385,6 +386,141 @@ export async function createBranch(
     return {
       success: false,
       error: "An error occurred while creating the branch",
+      statusCode: 500,
+    };
+  }
+}
+
+export async function editBranch(
+  branchId: string,
+  values: EditBranchFormValues,
+): Promise<ActionResponse<Branch>> {
+  const validatedFields = EditStationSchema.safeParse(values);
+
+  console.log("Validated Fields:", validatedFields);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      error: "Invalid input data",
+      statusCode: 400,
+    };
+  }
+
+  const {
+    branchName,
+    address,
+    city,
+    state,
+    contactPhone
+
+    // managerId
+  } = validatedFields.data;
+
+  console.log(validatedFields.data);
+
+  const session = await auth();
+
+  // Authentication check
+  if (!session) {
+    return {
+      success: false,
+      error: "No session found",
+      statusCode: 401,
+    };
+  }
+
+  // Authorization check
+  if (
+    session.user?.role !== USER_ROLES.TENANT &&
+    session.user?.role !== USER_ROLES.ADMIN
+  ) {
+    return {
+      success: false,
+      error: "You are not authorized to perform this action",
+      statusCode: 403,
+    };
+  }
+
+  try {
+    const branch = await getBranchById(branchId);
+    if ("success" in branch && !branch.success) {
+      return branch;
+    }
+
+    const updatedBranch = await db
+      .update(branches)
+      .set({
+        name: branchName,
+        address: address,
+        city: city,
+        state: state,
+        contactPhone: contactPhone,
+      })
+      .where(eq(branches.id, branchId))
+      .returning()
+      .then((res) => res[0]);
+
+    return {
+      success: true,
+      data: updatedBranch,
+      statusCode: 200,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error: "An error occurred while updating the branch",
+      statusCode: 500,
+    };
+  }
+}
+
+export async function deleteBranch(
+  branchId: string,
+): Promise<ActionResponse<Branch>> {
+  const session = await auth();
+
+  // Authentication check
+  if (!session) {
+    return {
+      success: false,
+      error: "No session found",
+      statusCode: 401,
+    };
+  }
+
+  // Authorization check
+  if (
+    session.user?.role !== USER_ROLES.TENANT &&
+    session.user?.role !== USER_ROLES.ADMIN
+  ) {
+    return {
+      success: false,
+      error: "You are not authorized to perform this action",
+      statusCode: 403,
+    };
+  }
+
+  try {
+    const branch = await getBranchById(branchId);
+    if ("success" in branch && !branch.success) {
+      return branch;
+    }
+
+    await db
+      .delete(branches)
+      .where(eq(branches.id, branchId));
+
+    return {
+      success: true,
+      statusCode: 200,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error: "An error occurred while deleting the branch",
       statusCode: 500,
     };
   }
