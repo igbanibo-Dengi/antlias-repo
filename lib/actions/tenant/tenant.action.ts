@@ -154,10 +154,10 @@ export const getBranchById = async (
 ): Promise<
   | Branch
   | {
-    success: false;
-    error: string;
-    statusCode: number;
-  }
+      success: false;
+      error: string;
+      statusCode: number;
+    }
 > => {
   try {
     const session = await auth();
@@ -524,12 +524,9 @@ export async function deleteBranch(
   }
 }
 
-
-
-
 export async function transferAllEmployeesToBranch(
   fromBranchId: string,
-  toBranchId: string
+  toBranchId: string,
 ): Promise<ActionResponse<null>> {
   const session = await auth();
 

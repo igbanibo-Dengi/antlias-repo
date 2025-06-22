@@ -42,7 +42,7 @@ export type Station = {
 export const StationInfoSection = ({
   station,
   onManagerAssigned,
-  branches
+  branches,
 }: {
   station: Station;
   branches: Branch[] | undefined;
@@ -207,7 +207,13 @@ export const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
   </div>
 );
 
-export const StationCard = ({ station, branches }: { station: Station, branches: Branch[] | undefined }) => {
+export const StationCard = ({
+  station,
+  branches,
+}: {
+  station: Station;
+  branches: Branch[] | undefined;
+}) => {
   const router = useRouter();
 
   const handleManagerAssigned = () => {

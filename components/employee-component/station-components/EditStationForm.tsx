@@ -31,7 +31,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { deleteBranch, transferAllEmployeesToBranch, editBranch } from "@/lib/actions/tenant/tenant.action";
+import {
+  deleteBranch,
+  transferAllEmployeesToBranch,
+  editBranch,
+} from "@/lib/actions/tenant/tenant.action";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import AssignManagerForm from "./AssigngManagerForm";
@@ -61,7 +65,7 @@ export type EditStationFormProps = {
   isActive?: boolean | null;
   createdAt?: Date | null;
   onManagerAssigned?: () => void;
-  branches: Branch[] | undefined
+  branches: Branch[] | undefined;
 };
 
 const EditStationForm = ({
@@ -134,7 +138,10 @@ const EditStationForm = ({
 
       // If a transfer branch is selected, transfer employees first
       if (transferBranchId) {
-        const transferRes = await transferAllEmployeesToBranch(stationId, transferBranchId);
+        const transferRes = await transferAllEmployeesToBranch(
+          stationId,
+          transferBranchId,
+        );
         if (!transferRes.success) {
           toast.error(transferRes.error || "Failed to transfer employees");
           setDeleting(false);
@@ -369,10 +376,7 @@ const EditStationForm = ({
                 <div className="flex items-center justify-between">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button
-                        variant="destructive"
-                        disabled={submitting}
-                      >
+                      <Button variant="destructive" disabled={submitting}>
                         Delete Station
                       </Button>
                     </AlertDialogTrigger>
@@ -384,22 +388,28 @@ const EditStationForm = ({
                           delete this station and all employee data.
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Optionally you can transfer all employees to another station before deleting the station.
+                          Optionally you can transfer all employees to another
+                          station before deleting the station.
                         </p>
                         <div className="mt-4">
-                          <label htmlFor="transfer-branch" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="transfer-branch"
+                            className="block text-sm font-medium text-gray-700"
+                          >
                             Transfer employees to:
                           </label>
                           <select
                             id="transfer-branch"
-                            className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
+                            className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
                             value={transferBranchId}
-                            onChange={e => setTransferBranchId(e.target.value)}
+                            onChange={(e) =>
+                              setTransferBranchId(e.target.value)
+                            }
                           >
                             <option value="">-- Select branch --</option>
                             {(branches ?? [])
-                              .filter(branch => branch.id !== stationId)
-                              .map(branch => (
+                              .filter((branch) => branch.id !== stationId)
+                              .map((branch) => (
                                 <option key={branch.id} value={branch.id}>
                                   {branch.name}
                                 </option>
@@ -432,7 +442,11 @@ const EditStationForm = ({
                   {editMode && (
                     <div className="flex justify-end gap-4 pt-4">
                       <DialogClose asChild>
-                        <Button type="button" variant="outline" disabled={submitting}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={submitting}
+                        >
                           Cancel
                         </Button>
                       </DialogClose>
