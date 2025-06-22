@@ -131,7 +131,7 @@ export const employees = pgTable(
       .references(() => tenants.id),
     branchId: uuid("branch_id")
       .notNull()
-      .references(() => branches.id),
+      .references(() => branches.id, { onDelete: "cascade" }),
     firstName: text("first_name").notNull(),
     lastName: text("last_name").notNull(),
     position: text("position"),
