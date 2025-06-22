@@ -119,7 +119,7 @@ export default async function FuelStationDashboard() {
               {station.error}
             </div>
           ) : (
-            <StationCard key={station.id} station={station} />
+            <StationCard key={station.id} station={station} branches={branches} />
           ),
         )}
       </div>

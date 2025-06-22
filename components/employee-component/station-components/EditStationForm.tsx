@@ -31,11 +31,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { deleteBranch, editBranch } from "@/lib/actions/tenant/tenant.action";
+import { deleteBranch, transferAllEmployeesToBranch, editBranch } from "@/lib/actions/tenant/tenant.action";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import AssignManagerForm from "./AssigngManagerForm";
-import { EditBranchFormValues } from "@/types";
+import { Branch, EditBranchFormValues } from "@/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -61,6 +61,7 @@ export type EditStationFormProps = {
   isActive?: boolean | null;
   createdAt?: Date | null;
   onManagerAssigned?: () => void;
+  branches: Branch[] | undefined
 };
 
 const EditStationForm = ({
@@ -76,12 +77,14 @@ const EditStationForm = ({
   isActive,
   createdAt,
   onManagerAssigned,
+  branches,
 }: EditStationFormProps) => {
   const [submitting, setSubmitting] = useState(false);
   const [isDeleting, setDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [transferBranchId, setTransferBranchId] = useState<string>("");
   const router = useRouter();
 
   const form = useForm<z.infer<typeof EditStationSchema>>({
@@ -129,19 +132,29 @@ const EditStationForm = ({
     try {
       setDeleting(true);
 
+      // If a transfer branch is selected, transfer employees first
+      if (transferBranchId) {
+        const transferRes = await transferAllEmployeesToBranch(stationId, transferBranchId);
+        if (!transferRes.success) {
+          toast.error(transferRes.error || "Failed to transfer employees");
+          setDeleting(false);
+          return;
+        }
+      }
+
       const response = await deleteBranch(stationId);
 
       if (response?.success) {
-        toast.success("Station Deleted successfully");
+        toast.success("Station deleted successfully");
         setDialogOpen(false);
         setEditMode(false);
         router.refresh();
       } else {
-        toast.error(response?.error || "Failed to Delete station");
+        toast.error(response?.error || "Failed to delete station");
       }
     } catch (error) {
       toast.error("An unexpected error occurred");
-      console.error("Error Deleting station:", error);
+      console.error("Error deleting station:", error);
     } finally {
       setDeleting(false);
     }
@@ -287,7 +300,6 @@ const EditStationForm = ({
                     />
                   </div>
 
-                  {/* <FormItem> */}
                   <div>
                     <div>Station Manager</div>
                     <div className="flex items-center gap-2">
@@ -301,11 +313,9 @@ const EditStationForm = ({
                         currentManagerId={stationManagerId}
                         onManagerAssigned={onManagerAssigned}
                         bigButton={true}
-                        // disabled={!editMode}
                       />
                     </div>
                   </div>
-                  {/* </FormItem> */}
 
                   <div className="space-y-4 pt-2">
                     <FormField
@@ -361,7 +371,7 @@ const EditStationForm = ({
                     <AlertDialogTrigger asChild>
                       <Button
                         variant="destructive"
-                        // disabled={isFormDisabled}
+                        disabled={submitting}
                       >
                         Delete Station
                       </Button>
@@ -371,8 +381,31 @@ const EditStationForm = ({
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                         <p className="text-sm text-muted-foreground">
                           This action cannot be undone. This will permanently
-                          delete the station and all its data.
+                          delete this station and all employee data.
                         </p>
+                        <p className="text-sm text-muted-foreground">
+                          Optionally you can transfer all employees to another station before deleting the station.
+                        </p>
+                        <div className="mt-4">
+                          <label htmlFor="transfer-branch" className="block text-sm font-medium text-gray-700">
+                            Transfer employees to:
+                          </label>
+                          <select
+                            id="transfer-branch"
+                            className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
+                            value={transferBranchId}
+                            onChange={e => setTransferBranchId(e.target.value)}
+                          >
+                            <option value="">-- Select branch --</option>
+                            {(branches ?? [])
+                              .filter(branch => branch.id !== stationId)
+                              .map(branch => (
+                                <option key={branch.id} value={branch.id}>
+                                  {branch.name}
+                                </option>
+                              ))}
+                          </select>
+                        </div>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel asChild>
@@ -385,7 +418,13 @@ const EditStationForm = ({
                           onClick={handleDeleteBranch}
                           disabled={isDeleting}
                         >
-                          {isDeleting ? "Deleting..." : "Delete Station"}
+                          {isDeleting
+                            ? transferBranchId
+                              ? "Transferring and Deleting..."
+                              : "Deleting..."
+                            : transferBranchId
+                              ? "Transfer Employees & Delete"
+                              : "Delete Station and all data"}
                         </Button>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -393,7 +432,7 @@ const EditStationForm = ({
                   {editMode && (
                     <div className="flex justify-end gap-4 pt-4">
                       <DialogClose asChild>
-                        <Button type="button" variant="outline">
+                        <Button type="button" variant="outline" disabled={submitting}>
                           Cancel
                         </Button>
                       </DialogClose>

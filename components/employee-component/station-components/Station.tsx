@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { SellingPrices } from "@/types";
+import type { Branch, SellingPrices } from "@/types";
 import { useState } from "react";
 import AssignManagerForm from "./AssigngManagerForm";
 import { useRouter } from "next/navigation";
@@ -42,8 +42,10 @@ export type Station = {
 export const StationInfoSection = ({
   station,
   onManagerAssigned,
+  branches
 }: {
   station: Station;
+  branches: Branch[] | undefined;
   onManagerAssigned?: () => void;
 }) => (
   <div className="w-full">
@@ -66,6 +68,7 @@ export const StationInfoSection = ({
           isActive={station.isActive}
           createdAt={station.createdAt}
           onManagerAssigned={onManagerAssigned}
+          branches={branches}
         />
       </span>
     </div>
@@ -204,7 +207,7 @@ export const TankStatusSection = ({ tanks }: { tanks: Tank[] }) => (
   </div>
 );
 
-export const StationCard = ({ station }: { station: Station }) => {
+export const StationCard = ({ station, branches }: { station: Station, branches: Branch[] | undefined }) => {
   const router = useRouter();
 
   const handleManagerAssigned = () => {
@@ -215,6 +218,7 @@ export const StationCard = ({ station }: { station: Station }) => {
     <Card className="space-y-6 bg-white p-6 shadow-lg">
       <StationInfoSection
         station={station}
+        branches={branches}
         onManagerAssigned={handleManagerAssigned}
       />
       <Separator />

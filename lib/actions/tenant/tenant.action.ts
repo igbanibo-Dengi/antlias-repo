@@ -154,10 +154,10 @@ export const getBranchById = async (
 ): Promise<
   | Branch
   | {
-      success: false;
-      error: string;
-      statusCode: number;
-    }
+    success: false;
+    error: string;
+    statusCode: number;
+  }
 > => {
   try {
     const session = await auth();
@@ -519,6 +519,56 @@ export async function deleteBranch(
     return {
       success: false,
       error: "An error occurred while deleting the branch",
+      statusCode: 500,
+    };
+  }
+}
+
+
+
+
+export async function transferAllEmployeesToBranch(
+  fromBranchId: string,
+  toBranchId: string
+): Promise<ActionResponse<null>> {
+  const session = await auth();
+
+  if (!session) {
+    return {
+      success: false,
+      error: "No session found",
+      statusCode: 401,
+    };
+  }
+
+  if (
+    session.user?.role !== USER_ROLES.TENANT &&
+    session.user?.role !== USER_ROLES.ADMIN
+  ) {
+    return {
+      success: false,
+      error: "You are not authorized to perform this action",
+      statusCode: 403,
+    };
+  }
+
+  try {
+    // Update all employees' branchId
+    await db
+      .update(employees)
+      .set({ branchId: toBranchId, position: "undesignated" })
+      .where(eq(employees.branchId, fromBranchId));
+
+    return {
+      success: true,
+      statusCode: 200,
+      data: null,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error: "An error occurred while transferring employees",
       statusCode: 500,
     };
   }
