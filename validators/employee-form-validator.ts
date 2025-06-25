@@ -78,3 +78,32 @@ export const employeeFormSchema = z.object({
 });
 
 export type EmployeeFormValues = z.infer<typeof employeeFormSchema>;
+
+
+
+export const editEmployeeFormSchema = z.object({
+  branchId: z.string(),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  contactNumber: z.string().default(""),
+  email: z.string().email("Invalid email").default(""),
+  address: z.string().default(""),
+  position: z.string().default(""),
+  // role: z.string().default(""),
+  salary: z.number().min(0, "Salary must be positive").default(0),
+  accountNumber: z.string().default(""),
+  accountName: z.string().default(""),
+  bankName: z.string().default(""),
+  bvn: z.string().default(""),
+  guarantorName: z.string().default(""),
+  guarantorPhone: z.string().default(""),
+  guarantorAddress: z.string().default(""),
+  guarantorRelationship: z.string().default(""),
+  isActive: z.boolean().default(true),
+})
+
+export type EditEmployeeFormValues = z.infer<typeof editEmployeeFormSchema>
+
+
+
+

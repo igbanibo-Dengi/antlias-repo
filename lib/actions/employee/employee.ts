@@ -18,10 +18,12 @@ import { sendEmail } from "@/lib/workflow";
 import { sendForgotPasswordEmail } from "@/lib/emails/forgotPassword";
 import { USER_ROLES } from "@/lib/constants";
 import { auth } from "@/auth";
-import { employeeFormSchema } from "@/validators/employee-form-validator";
+import { editEmployeeFormSchema, EditEmployeeFormValues, employeeFormSchema } from "@/validators/employee-form-validator";
 import { z } from "zod";
 import { sendStationInvitationEmail } from "@/lib/emails/invitationEmail";
 import { ActionResponse, Employee } from "@/types";
+import { cache } from "react";
+import { revalidatePaths } from "@/lib/revalidate-paths";
 
 /**
  * Deletes a user by ID
@@ -264,6 +266,94 @@ const deleteEmployeeSchema = z.object({
   employeeId: z.string().uuid(),
 });
 
+
+export async function editEmployeeAction(
+  employeeId: string,
+  values: EditEmployeeFormValues
+): Promise<ActionResponse<Employee>> {
+  const session = await auth();
+
+  if (!session) {
+    return {
+      success: false,
+      error: "No session found",
+      statusCode: 401,
+    };
+  }
+
+  if (
+    session.user?.role !== USER_ROLES.TENANT &&
+    session.user?.role !== USER_ROLES.ADMIN
+  ) {
+    return {
+      success: false,
+      error: "You are not authorized to perform this action",
+      statusCode: 403,
+    };
+  }
+
+  const validated = editEmployeeFormSchema.safeParse(values);
+
+  if (!validated.success) {
+    return {
+      success: false,
+      error: "Invalid input data",
+      statusCode: 400,
+    };
+  }
+
+  try {
+    const updated = await db
+      .update(employees)
+      .set({
+        isActive: validated.data.isActive,
+        firstName: validated.data.firstName,
+        lastName: validated.data.lastName,
+        contactNumber: validated.data.contactNumber,
+        email: validated.data.email,
+        address: validated.data.address,
+        position: validated.data.position,
+        salary: validated.data.salary,
+        accountNumber: validated.data.accountNumber,
+        accountName: validated.data.accountName,
+        bankName: validated.data.bankName,
+        bvn: validated.data.bvn,
+        guarantorName: validated.data.guarantorName,
+        guarantorPhone: validated.data.guarantorPhone,
+        guarantorRelationship: validated.data.guarantorRelationship,
+        guarantorAddress: validated.data.guarantorAddress,
+      })
+      .where(eq(employees.id, employeeId))
+      .returning()
+      .then((res) => res[0]);
+
+    if (!updated) {
+      return {
+        success: false,
+        error: "Employee not found or not updated",
+        statusCode: 404,
+      };
+    }
+
+    await revalidatePaths([
+      `/tenant/employees`,
+    ])
+
+    return {
+      success: true,
+      // data: updated,
+      statusCode: 200,
+    };
+  } catch (error) {
+    console.error("Error updating employee:", error);
+    return {
+      success: false,
+      error: "An error occurred while updating the employee",
+      statusCode: 500,
+    };
+  }
+}
+
 /**
  * Server action to delete an employee and their associated user account
  * @param employeeId The ID of the employee to delete
@@ -356,18 +446,19 @@ export async function deleteEmployeeAction(
   }
 }
 
-export async function getEmployeeByBranchId(
-  branchId: string,
-): Promise<ActionResponse<Employee[]>> {
-  const session = await auth();
+
+export const getEmployeeByBranchId = cache(async (
+  branchId: string
+): Promise<ActionResponse<Employee[]>> => {
+  const session = await auth()
 
   // Authentication check
   if (!session) {
     return {
       success: false,
-      error: "No session found",
+      error: 'No session found',
       statusCode: 401,
-    };
+    }
   }
 
   // Authorization check
@@ -377,9 +468,9 @@ export async function getEmployeeByBranchId(
   ) {
     return {
       success: false,
-      error: "You are not authorized to perform this action",
+      error: 'You are not authorized to perform this action',
       statusCode: 403,
-    };
+    }
   }
 
   try {
@@ -387,26 +478,26 @@ export async function getEmployeeByBranchId(
       .select()
       .from(employees)
       .where(eq(employees.branchId, branchId))
-      .then((res) => res ?? []);
 
-    // Return success with data in a consistent format
     return {
       success: true,
-      data: response,
+      data: response ?? [],
       statusCode: 200,
-    };
+    }
   } catch (error) {
-    console.error(error);
+    console.error(error)
     return {
       success: false,
       error:
         error instanceof Error
           ? error.message
-          : "Error in getAllEmployees action",
+          : 'Error in getEmployeeByBranchId action',
       statusCode: 500,
-    };
+    }
   }
-}
+})
+
+
 
 export async function getAllEmployees(): Promise<ActionResponse<Employee[]>> {
   const session = await auth();
@@ -521,3 +612,5 @@ export async function getEmployeeByUserId(): Promise<ActionResponse<Employee>> {
     };
   }
 }
+
+

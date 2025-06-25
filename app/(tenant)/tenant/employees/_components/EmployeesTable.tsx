@@ -13,74 +13,31 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead,
+  TableHeader, TableRow
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-  MoreHorizontal,
-} from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+
+import { ChevronDown, ChevronLeft, ChevronRight, Filter } from "lucide-react";
+
 import type { ActionResponse, BranchProps, Employee } from "@/types";
 import { getEmployeeByBranchId } from "@/lib/actions/employee/employee";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { DeleteEmployeeButton } from "@/components/DeleteEmployeeButton";
+import { EditEmployeeDialog } from "./EditEmployeeDialog";
+
+interface EmployeesTableProps extends BranchProps {
+  initialBranchId: string;
+  initialEmployees: Employee[];
+}
 
 export const columns: ColumnDef<Employee>[] = [
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     accessorKey: "id",
     header: "ID",
@@ -99,26 +56,10 @@ export const columns: ColumnDef<Employee>[] = [
       </TooltipProvider>
     ),
   },
-  {
-    accessorKey: "firstName",
-    header: "first Name",
-  },
-  {
-    accessorKey: "lastName",
-    header: "Last Name",
-  },
-  {
-    accessorKey: "contactNumber",
-    header: "Contact Number",
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
-    accessorKey: "position",
-    header: "Position",
-  },
+  { accessorKey: "firstName", header: "First Name" },
+  { accessorKey: "lastName", header: "Last Name" },
+  { accessorKey: "contactNumber", header: "Contact Number" },
+  { accessorKey: "position", header: "Position" },
   {
     accessorKey: "salary",
     header: "Salary",
@@ -136,17 +77,14 @@ export const columns: ColumnDef<Employee>[] = [
     accessorKey: "isActive",
     header: "Status",
     cell: ({ row }) => {
-      const isActive = row.getValue("isActive");
-
-      const activeStatus = String(isActive).toLowerCase() === "true";
-
-      const variant = activeStatus
+      const isActive = String(row.getValue("isActive")).toLowerCase() === "true";
+      const variant = isActive
         ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
         : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
 
       return (
         <Badge className={`${variant} capitalize`}>
-          {activeStatus ? "Active" : "Inactive"}
+          {isActive ? "Active" : "Inactive"}
         </Badge>
       );
     },
@@ -157,67 +95,33 @@ export const columns: ColumnDef<Employee>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const id = String(row.getValue("id"));
-      const firstName = String(row.getValue("firstName"));
-      const lastName = String(row.getValue("lastName"));
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(id)}>
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <DeleteEmployeeButton
-                employeeId={id}
-                employeeName={`${firstName} ${lastName}`}
-              />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <EditEmployeeDialog employee={row.original} />,
   },
 ];
 
-export function EmployeesTable({ branches }: BranchProps) {
+export function EmployeesTable({ branches, initialBranchId, initialEmployees }: EmployeesTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [selectedBranch, setSelectedBranch] = useState<string>(
-    branches[0]?.id || "",
-  );
+  const [selectedBranch, setSelectedBranch] = useState<string>(initialBranchId);
+  const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
   const [isLoading, setIsLoading] = useState(false);
-  const [employees, setEmployees] = useState<Employee[]>([]);
   const [error, setError] = useState("");
 
-  // Create a fetch function
   const fetchEmployees = useCallback(async (branchId: string) => {
     setIsLoading(true);
     setError("");
 
     try {
-      const response: ActionResponse<Employee[]> =
-        await getEmployeeByBranchId(branchId);
-
+      const response: ActionResponse<Employee[]> = await getEmployeeByBranchId(branchId);
       if (response.success && response.data) {
         setEmployees(response.data);
       } else {
         setError(response.error || "Failed to fetch employees");
         setEmployees([]);
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
       setEmployees([]);
     } finally {
@@ -225,18 +129,10 @@ export function EmployeesTable({ branches }: BranchProps) {
     }
   }, []);
 
-  // Handle branch selection
   const handleBranchChange = (branchId: string) => {
     setSelectedBranch(branchId);
     fetchEmployees(branchId);
   };
-
-  // Initial fetch
-  useEffect(() => {
-    if (selectedBranch) {
-      fetchEmployees(selectedBranch);
-    }
-  }, []);
 
   const table = useReactTable({
     data: employees,
@@ -259,7 +155,7 @@ export function EmployeesTable({ branches }: BranchProps) {
 
   return (
     <div className="w-full">
-      <div className="mb-4 flex items-center justify-between rounded-lg border bg-white p-4 py-4 shadow-sm">
+      <div className="mb-4 flex items-center justify-between rounded-lg border bg-white p-4 shadow-sm">
         <p className="text-lg font-semibold">Employees</p>
         <div className="grid grid-cols-3 gap-4">
           <Select
@@ -268,11 +164,7 @@ export function EmployeesTable({ branches }: BranchProps) {
             disabled={isLoading}
           >
             <SelectTrigger className="w-[180px]">
-              {isLoading ? (
-                <p>Loading...</p>
-              ) : (
-                <SelectValue placeholder="Select branch" />
-              )}
+              {isLoading ? <p>Loading...</p> : <SelectValue placeholder="Select branch" />}
             </SelectTrigger>
             <SelectContent>
               {branches.map((branch) => (
@@ -282,25 +174,25 @@ export function EmployeesTable({ branches }: BranchProps) {
               ))}
             </SelectContent>
           </Select>
+
           <Input
             placeholder="Search by first name..."
-            value={
-              (table.getColumn("firstName")?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn("firstName")?.setFilterValue(event.target.value)
+            value={(table.getColumn("firstName")?.getFilterValue() as string) ?? ""}
+            onChange={(e) =>
+              table.getColumn("firstName")?.setFilterValue(e.target.value)
             }
             className="max-w-sm"
           />
           <Input
             placeholder="Search by employee ID..."
             value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("id")?.setFilterValue(event.target.value)
+            onChange={(e) =>
+              table.getColumn("id")?.setFilterValue(e.target.value)
             }
             className="max-w-sm"
           />
         </div>
+
         <div className="flex items-center space-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -315,24 +207,15 @@ export function EmployeesTable({ branches }: BranchProps) {
                 <DropdownMenuCheckboxItem
                   key={status}
                   className="capitalize"
-                  checked={(
-                    (table
-                      .getColumn("isActive")
-                      ?.getFilterValue() as string[]) || []
-                  ).includes(status)}
+                  checked={
+                    ((table.getColumn("isActive")?.getFilterValue() as string[]) || []).includes(status)
+                  }
                   onCheckedChange={(checked) => {
-                    const currentFilters =
-                      (table
-                        .getColumn("isActive")
-                        ?.getFilterValue() as string[]) || [];
+                    const currentFilters = (table.getColumn("isActive")?.getFilterValue() as string[]) || [];
                     const newFilters = checked
                       ? [...currentFilters, status]
-                      : currentFilters.filter((value) => value !== status);
-                    table
-                      .getColumn("isActive")
-                      ?.setFilterValue(
-                        newFilters.length ? newFilters : undefined,
-                      );
+                      : currentFilters.filter((v) => v !== status);
+                    table.getColumn("isActive")?.setFilterValue(newFilters.length ? newFilters : undefined);
                   }}
                 >
                   {status}
@@ -348,23 +231,16 @@ export function EmployeesTable({ branches }: BranchProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
+              {table.getAllColumns().filter(c => c.getCanHide()).map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(v) => column.toggleVisibility(!!v)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -373,46 +249,30 @@ export function EmployeesTable({ branches }: BranchProps) {
       <div className="rounded-lg border bg-white shadow-sm">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
+            {table.getHeaderGroups().map((group) => (
+              <TableRow key={group.id}>
+                {group.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
@@ -431,11 +291,9 @@ export function EmployeesTable({ branches }: BranchProps) {
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Rows per page</p>
             <select
-              className="h-8 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="h-8 rounded-md border px-3 py-2 text-sm"
               value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
+              onChange={(e) => table.setPageSize(Number(e.target.value))}
             >
               {[5, 10, 20, 30, 40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
@@ -454,9 +312,8 @@ export function EmployeesTable({ branches }: BranchProps) {
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
+            <div className="flex w-[100px] justify-center text-sm font-medium">
+              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
             </div>
             <Button
               variant="outline"

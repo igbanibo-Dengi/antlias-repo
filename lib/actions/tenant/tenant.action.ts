@@ -154,10 +154,10 @@ export const getBranchById = async (
 ): Promise<
   | Branch
   | {
-      success: false;
-      error: string;
-      statusCode: number;
-    }
+    success: false;
+    error: string;
+    statusCode: number;
+  }
 > => {
   try {
     const session = await auth();
@@ -216,6 +216,7 @@ export const getEmployeeById = async (
     }
 
     return employee;
+
   } catch (error) {
     console.error("Error in getEmployeeById:", error);
     return {
