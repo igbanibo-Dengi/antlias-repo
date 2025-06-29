@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { useCallback, useEffect, useState } from "react";
+import { useState, useMemo, useCallback } from "react"
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -12,128 +12,136 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
+} from "@tanstack/react-table"
 
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 import {
-  Table, TableBody, TableCell, TableHead,
-  TableHeader, TableRow
-} from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+import { Skeleton } from "@/components/ui/skeleton"
 
-import { ChevronDown, ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Filter, RefreshCw } from "lucide-react"
 
-import type { ActionResponse, BranchProps, Employee } from "@/types";
-import { getEmployeeByBranchId } from "@/lib/actions/employee/employee";
-import { EditEmployeeDialog } from "./EditEmployeeDialog";
+import type { BranchProps, Employee } from "@/types"
+import { TableSkeleton } from "./TableSkeleton"
+import { OptimizedEditEmployeeDialog } from "./EditEmployeeDialog"
+import { useDebounce } from "@/hooks/useDebounce"
+import { useEmployees } from "@/hooks/useEmployees"
 
-interface EmployeesTableProps extends BranchProps {
-  initialBranchId: string;
-  initialEmployees: Employee[];
+interface OptimizedEmployeesTableProps extends BranchProps {
+  initialBranchId: string
+  initialEmployees: Employee[]
 }
 
-export const columns: ColumnDef<Employee>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="flex cursor-pointer flex-col">
-              <div className="max-w-[82px] truncate">{row.getValue("id")}</div>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{row.getValue("id")}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    ),
-  },
-  { accessorKey: "firstName", header: "First Name" },
-  { accessorKey: "lastName", header: "Last Name" },
-  { accessorKey: "contactNumber", header: "Contact Number" },
-  { accessorKey: "position", header: "Position" },
-  {
-    accessorKey: "salary",
-    header: "Salary",
-    cell: ({ row }) => {
-      const amount = Number.parseFloat(row.getValue("salary"));
-      const formatted = new Intl.NumberFormat("en-NG", {
-        style: "currency",
-        currency: "NGN",
-      }).format(amount);
+// Memoized column component to prevent unnecessary re-renders
+const EmployeeActions = ({
+  employee,
+  onUpdate,
+  onDelete,
+}: {
+  employee: Employee
+  onUpdate: (id: string, values: any) => Promise<any>
+  onDelete: (id: string) => Promise<any>
+}) => {
+  return <OptimizedEditEmployeeDialog employee={employee} onEmployeeUpdated={onUpdate} onEmployeeDeleted={onDelete} />
+}
 
-      return <div className="font-medium">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "isActive",
-    header: "Status",
-    cell: ({ row }) => {
-      const isActive = String(row.getValue("isActive")).toLowerCase() === "true";
-      const variant = isActive
-        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+export function OptimizedEmployeesTable({ branches, initialBranchId, initialEmployees }: OptimizedEmployeesTableProps) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+  const [searchTerm, setSearchTerm] = useState("")
+  const [idSearchTerm, setIdSearchTerm] = useState("")
 
-      return (
-        <Badge className={`${variant} capitalize`}>
-          {isActive ? "Active" : "Inactive"}
-        </Badge>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(String(row.getValue(id)));
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => <EditEmployeeDialog employee={row.original} />,
-  },
-];
+  // Debounce search terms to prevent excessive filtering
+  const debouncedSearchTerm = useDebounce(searchTerm, 300)
+  const debouncedIdSearchTerm = useDebounce(idSearchTerm, 300)
 
-export function EmployeesTable({ branches, initialBranchId, initialEmployees }: EmployeesTableProps) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-  const [selectedBranch, setSelectedBranch] = useState<string>(initialBranchId);
-  const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const {
+    employees,
+    isLoading,
+    error,
+    selectedBranch,
+    switchBranch,
+    updateEmployee,
+    deleteEmployee,
+    refreshCurrentBranch,
+  } = useEmployees({ initialEmployees, initialBranchId })
 
-  const fetchEmployees = useCallback(async (branchId: string) => {
-    setIsLoading(true);
-    setError("");
+  // Memoized columns to prevent recreation
+  const columns = useMemo<ColumnDef<Employee>[]>(
+    () => [
+      {
+        accessorKey: "id",
+        header: "ID",
+        cell: ({ row }) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex cursor-pointer flex-col">
+                  <div className="max-w-[82px] truncate">{row.getValue("id")}</div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{row.getValue("id")}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ),
+      },
+      { accessorKey: "firstName", header: "First Name" },
+      { accessorKey: "lastName", header: "Last Name" },
+      { accessorKey: "contactNumber", header: "Contact Number" },
+      { accessorKey: "position", header: "Position" },
+      {
+        accessorKey: "salary",
+        header: "Salary",
+        cell: ({ row }) => {
+          const amount = Number.parseFloat(row.getValue("salary"))
+          const formatted = new Intl.NumberFormat("en-NG", {
+            style: "currency",
+            currency: "NGN",
+          }).format(amount)
 
-    try {
-      const response: ActionResponse<Employee[]> = await getEmployeeByBranchId(branchId);
-      if (response.success && response.data) {
-        setEmployees(response.data);
-      } else {
-        setError(response.error || "Failed to fetch employees");
-        setEmployees([]);
-      }
-    } catch {
-      setError("An unexpected error occurred");
-      setEmployees([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+          return <div className="font-medium">{formatted}</div>
+        },
+      },
+      {
+        accessorKey: "isActive",
+        header: "Status",
+        cell: ({ row }) => {
+          const isActive = String(row.getValue("isActive")).toLowerCase() === "true"
+          const variant = isActive
+            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+            : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
 
-  const handleBranchChange = (branchId: string) => {
-    setSelectedBranch(branchId);
-    fetchEmployees(branchId);
-  };
+          return <Badge className={`${variant} capitalize`}>{isActive ? "Active" : "Inactive"}</Badge>
+        },
+        filterFn: (row, id, value) => {
+          return value.includes(String(row.getValue(id)))
+        },
+      },
+      {
+        id: "actions",
+        enableHiding: false,
+        cell: ({ row }) => (
+          <EmployeeActions employee={row.original} onUpdate={updateEmployee} onDelete={deleteEmployee} />
+        ),
+      },
+    ],
+    [updateEmployee, deleteEmployee],
+  )
 
+  // Update table filters when debounced search terms change
   const table = useReactTable({
     data: employees,
     columns,
@@ -151,20 +159,51 @@ export function EmployeesTable({ branches, initialBranchId, initialEmployees }: 
       columnVisibility,
       rowSelection,
     },
-  });
+  })
+
+  // Update filters when debounced values change
+  useMemo(() => {
+    table.getColumn("firstName")?.setFilterValue(debouncedSearchTerm || undefined)
+  }, [debouncedSearchTerm, table])
+
+  useMemo(() => {
+    table.getColumn("id")?.setFilterValue(debouncedIdSearchTerm || undefined)
+  }, [debouncedIdSearchTerm, table])
+
+  const handleRefresh = useCallback(() => {
+    refreshCurrentBranch()
+  }, [refreshCurrentBranch])
 
   return (
     <div className="w-full">
       <div className="mb-4 flex items-center justify-between rounded-lg border bg-white p-4 shadow-sm">
-        <p className="text-lg font-semibold">Employees</p>
-        <div className="grid grid-cols-3 gap-4">
-          <Select
-            value={selectedBranch}
-            onValueChange={handleBranchChange}
+        <div className="flex items-center gap-4">
+          <p className="text-lg font-semibold">Employees</p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
             disabled={isLoading}
+            className="h-8 bg-transparent"
           >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+            Refresh
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <Select value={selectedBranch} onValueChange={switchBranch} disabled={isLoading}>
             <SelectTrigger className="w-[180px]">
-              {isLoading ? <p>Loading...</p> : <SelectValue placeholder="Select branch" />}
+              <SelectValue placeholder="Select branch">
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-4 rounded-full" />
+                    <span>Loading...</span>
+                  </div>
+                ) : (
+                  branches.find((b) => b.id === selectedBranch)?.name || "Select branch"
+                )}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {branches.map((branch) => (
@@ -177,18 +216,14 @@ export function EmployeesTable({ branches, initialBranchId, initialEmployees }: 
 
           <Input
             placeholder="Search by first name..."
-            value={(table.getColumn("firstName")?.getFilterValue() as string) ?? ""}
-            onChange={(e) =>
-              table.getColumn("firstName")?.setFilterValue(e.target.value)
-            }
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="max-w-sm"
           />
           <Input
             placeholder="Search by employee ID..."
-            value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
-            onChange={(e) =>
-              table.getColumn("id")?.setFilterValue(e.target.value)
-            }
+            value={idSearchTerm}
+            onChange={(e) => setIdSearchTerm(e.target.value)}
             className="max-w-sm"
           />
         </div>
@@ -196,7 +231,7 @@ export function EmployeesTable({ branches, initialBranchId, initialEmployees }: 
         <div className="flex items-center space-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto w-full">
+              <Button variant="outline" className="ml-auto w-full bg-transparent">
                 <Filter className="mr-2 h-4 w-4" />
                 Status
                 <ChevronDown className="ml-2 h-4 w-4" />
@@ -207,15 +242,13 @@ export function EmployeesTable({ branches, initialBranchId, initialEmployees }: 
                 <DropdownMenuCheckboxItem
                   key={status}
                   className="capitalize"
-                  checked={
-                    ((table.getColumn("isActive")?.getFilterValue() as string[]) || []).includes(status)
-                  }
+                  checked={((table.getColumn("isActive")?.getFilterValue() as string[]) || []).includes(status)}
                   onCheckedChange={(checked) => {
-                    const currentFilters = (table.getColumn("isActive")?.getFilterValue() as string[]) || [];
+                    const currentFilters = (table.getColumn("isActive")?.getFilterValue() as string[]) || []
                     const newFilters = checked
                       ? [...currentFilters, status]
-                      : currentFilters.filter((v) => v !== status);
-                    table.getColumn("isActive")?.setFilterValue(newFilters.length ? newFilters : undefined);
+                      : currentFilters.filter((v) => v !== status)
+                    table.getColumn("isActive")?.setFilterValue(newFilters.length ? newFilters : undefined)
                   }}
                 >
                   {status}
@@ -226,21 +259,24 @@ export function EmployeesTable({ branches, initialBranchId, initialEmployees }: 
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+              <Button variant="outline" className="ml-auto bg-transparent">
                 Columns <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {table.getAllColumns().filter(c => c.getCanHide()).map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(v) => column.toggleVisibility(!!v)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
+              {table
+                .getAllColumns()
+                .filter((c) => c.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(v) => column.toggleVisibility(!!v)}
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -260,20 +296,20 @@ export function EmployeesTable({ branches, initialBranchId, initialEmployees }: 
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {isLoading ? (
+              <TableSkeleton rows={5} columns={8} />
+            ) : table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                <TableRow key={row.id} data-state={row.getIsSelected() ? "selected" : undefined}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {error ? `Error: ${error}` : "No results."}
                 </TableCell>
               </TableRow>
             )}
@@ -283,8 +319,8 @@ export function EmployeesTable({ branches, initialBranchId, initialEmployees }: 
 
       <div className="flex items-center justify-between px-2 py-4">
         <div className="text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
+          selected.
         </div>
 
         <div className="flex items-center space-x-6 lg:space-x-8">
@@ -306,7 +342,7 @@ export function EmployeesTable({ branches, initialBranchId, initialEmployees }: 
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 bg-transparent"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
@@ -317,7 +353,7 @@ export function EmployeesTable({ branches, initialBranchId, initialEmployees }: 
             </div>
             <Button
               variant="outline"
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 bg-transparent"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
@@ -327,5 +363,5 @@ export function EmployeesTable({ branches, initialBranchId, initialEmployees }: 
         </div>
       </div>
     </div>
-  );
+  )
 }

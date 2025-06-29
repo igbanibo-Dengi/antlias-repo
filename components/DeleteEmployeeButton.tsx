@@ -80,7 +80,7 @@ export function DeleteEmployeeButton({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Employee</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete {employeeName}? This action will
+            Are you sure you want to delete <span className="text-muted-foreground font-semibold">{employeeName}</span> ? This action will
             permanently remove the employee and their user account. This action
             cannot be undone.
           </AlertDialogDescription>

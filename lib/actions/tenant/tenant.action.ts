@@ -25,6 +25,7 @@ import {
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getAllEmployees } from "../employee/employee";
+import { cache } from "react";
 
 export const getTenantId = async () => {
   try {
@@ -90,10 +91,8 @@ export const getTenantById = async (tenantId: string) => {
     };
   }
 };
-
-export async function getAllTenantBranches(): Promise<
-  ActionResponse<Branch[]>
-> {
+export const getAllTenantBranches = cache(async ():
+  Promise<ActionResponse<Branch[]>> => {
   const session = await auth();
 
   // Authentication check
@@ -119,6 +118,8 @@ export async function getAllTenantBranches(): Promise<
 
   try {
     const tenantIdResult = await getTenantId();
+    console.log(tenantIdResult);
+
 
     if (!tenantIdResult || typeof tenantIdResult !== "string") {
       return {
@@ -147,7 +148,7 @@ export async function getAllTenantBranches(): Promise<
       statusCode: 500,
     };
   }
-}
+})
 
 export const getBranchById = async (
   id: string,

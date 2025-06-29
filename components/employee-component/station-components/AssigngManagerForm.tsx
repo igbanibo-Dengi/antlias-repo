@@ -157,7 +157,7 @@ const AssignManagerForm = ({
           </div>
           <Button>
             <Link
-              href={`/tenant/stations/new`}
+              href={`/tenant/employees/new`}
               className="flex items-center gap-2"
             >
               Add Employee

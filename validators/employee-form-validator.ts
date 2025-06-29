@@ -89,7 +89,6 @@ export const editEmployeeFormSchema = z.object({
   email: z.string().email("Invalid email").default(""),
   address: z.string().default(""),
   position: z.string().default(""),
-  // role: z.string().default(""),
   salary: z.number().min(0, "Salary must be positive").default(0),
   accountNumber: z.string().default(""),
   accountName: z.string().default(""),
