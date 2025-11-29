@@ -4,15 +4,12 @@ import { Footer } from "@/components/Footer";
 import { auth } from "@/auth";
 import { after } from "next/server";
 import db from "@/database/drizzle";
-import { tenants, users } from "@/database/drizzle/schema";
+import { users } from "@/database/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import Image from "next/image";
 import { cookies } from "next/headers";
-import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { TenantDashboardSidebar } from "../_components/TenantDashboardSidebar";
-import { getEmployeeByUserId } from "@/lib/actions/employee/employee";
-import { Employee } from "@/types";
 import { getTenantById, getTenantId } from "@/lib/actions/tenant/tenant.action";
 
 export default async function RootLayout({
@@ -25,7 +22,7 @@ export default async function RootLayout({
 
   if (typeof tenantId !== "string") {
     console.error("Invalid tenant ID:", tenantId);
-    return null; // or handle the error appropriately
+    return null;
   }
 
   const tenant = await getTenantById(tenantId);

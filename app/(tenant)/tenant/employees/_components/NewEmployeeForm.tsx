@@ -178,11 +178,10 @@ export function NewEmployeeForm({ branches }: BranchProps) {
               <button
                 key={section.id}
                 type="button"
-                className={`px-4 py-2 font-medium ${
-                  activeSection === section.id
+                className={`px-4 py-2 font-medium ${activeSection === section.id
                     ? "border-b-2 border-primary text-primary"
                     : "text-muted-foreground"
-                }`}
+                  }`}
                 onClick={() => {
                   // Only allow clicking on tabs that are before the current active section
                   const currentIndex = sections.findIndex(
@@ -367,7 +366,7 @@ export function NewEmployeeForm({ branches }: BranchProps) {
                     </FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                    // defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>

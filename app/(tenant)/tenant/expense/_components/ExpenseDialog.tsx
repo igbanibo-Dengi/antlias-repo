@@ -10,8 +10,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ExpenseForm from "./expenseform";
+import type { Branch, ActionResponse } from "@/types";
+import type { ExpenseFormValues } from "@/validators/expense-validator";
 
-export function ExpenseDialog() {
+interface ExpenseDialogProps {
+  branches: Branch[];
+  createExpense: (
+    values: ExpenseFormValues,
+  ) => Promise<ActionResponse<unknown>>;
+}
+
+export function ExpenseDialog({ branches, createExpense }: ExpenseDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -27,7 +36,12 @@ export function ExpenseDialog() {
       </DialogTrigger>
       <DialogContent className="h-[90vh] overflow-hidden px-0 2xl:h-fit">
         <DialogTitle className="sr-only">Expense Form</DialogTitle>
-        <ExpenseForm onClose={() => setIsOpen(false)} />
+        <ExpenseForm
+          branches={branches}
+          mode="create"
+          onSubmitAction={createExpense}
+          onClose={() => setIsOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   );
