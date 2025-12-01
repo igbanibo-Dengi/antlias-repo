@@ -1,57 +1,39 @@
-"use client";
-
-import React, { useState } from "react";
-import Image from "next/image";
-import InputSection from "@/components/transactions-component/InputSection";
-import TableSection from "@/components/transactions-component/TableSection";
-import ExpenseFormModal from "@/components/transactions-component/ExpenseFormModal";
-import { Filter, Plus, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { TransactionsClient } from "./_components/TransactionsClient";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import TransactionFormModal from "@/components/forms/TransactionFormModal";
+  createTransactionAction,
+  deleteTransactionAction,
+  getTransactionsAction,
+  updateTransactionAction,
+} from "@/lib/actions/transaction/transaction.actions";
+import { getAllTenantBranches } from "@/lib/actions/tenant/tenant.action";
+import { getAllEmployees } from "@/lib/actions/employee/employee";
 
-const Page = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+export default async function TransactionsPage() {
+  const [branchesResult, employeesResult, transactionsResult] =
+    await Promise.all([
+      getAllTenantBranches(),
+      getAllEmployees(),
+      getTransactionsAction(),
+    ]);
 
-  const handleDialogToggle = (open: boolean) => {
-    setIsDialogOpen(open);
-  };
-
-  const closeDialog = () => {
-    setIsDialogOpen(false);
-  };
+  const branches =
+    branchesResult.success && branchesResult.data ? branchesResult.data : [];
+  const employees =
+    employeesResult.success && employeesResult.data ? employeesResult.data : [];
+  const transactions =
+    transactionsResult.success && transactionsResult.data
+      ? transactionsResult.data
+      : [];
 
   return (
-    <div>
-      <Dialog open={isDialogOpen} onOpenChange={handleDialogToggle}>
-        <DialogTrigger asChild>
-          <Button
-            size={"lg"}
-            className="absolute -top-7 left-5 mb-10 cursor-pointer"
-          >
-            <Plus className="h-4 w-4 rounded-full bg-gray-100/40" />
-            New Transactions
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="pl-6 pr-2">
-          <DialogTitle className="sr-only">New transactions</DialogTitle>
-          <TransactionFormModal onClose={closeDialog} />
-        </DialogContent>
-      </Dialog>
-
-      <div className="w-full">
-        <TableSection />
-      </div>
-    </div>
+    <TransactionsClient
+      branches={branches}
+      employees={employees}
+      transactions={transactions}
+      createTransaction={createTransactionAction}
+      fetchTransactions={getTransactionsAction}
+      updateTransaction={updateTransactionAction}
+      deleteTransaction={deleteTransactionAction}
+    />
   );
-};
-
-export default Page;
+}
